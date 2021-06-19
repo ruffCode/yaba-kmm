@@ -9,6 +9,7 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module
 import tech.alexib.yaba.kmm.AppInfo
 import tech.alexib.yaba.kmm.data.api.apiModule
+import tech.alexib.yaba.kmm.data.db.AppSettings
 import tech.alexib.yaba.kmm.data.repository.AuthRepository
 import tech.alexib.yaba.kmm.data.repository.AuthRepositoryImpl
 

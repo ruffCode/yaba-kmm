@@ -103,7 +103,7 @@ object Lib {
     }
 
     object Accompanist {
-        private const val version = "0.8.0"
+        private const val version = "0.10.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }

@@ -5,7 +5,7 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import tech.alexib.yaba.LoginMutation
 import tech.alexib.yaba.RegisterMutation
-import tech.alexib.yaba.model.response.AuthResponse
+import tech.alexib.yaba.kmm.model.response.AuthResponse
 import tech.alexib.yaba.model.request.UserLoginInput
 import tech.alexib.yaba.model.request.UserRegisterInput
 

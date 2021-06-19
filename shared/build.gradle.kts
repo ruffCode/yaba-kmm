@@ -34,6 +34,8 @@ kotlin {
             languageSettings {
                 useExperimentalAnnotation("com.apollographql.apollo.api.ApolloExperimental")
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                useExperimentalAnnotation("com.russhwolf.settings.ExperimentalSettingsApi")
+                useExperimentalAnnotation("com.russhwolf.settings.ExperimentalSettingsImplementation")
             }
         }
     }
@@ -68,6 +70,9 @@ kotlin {
             dependencies{
                 implementation(Lib.MultiplatformSettings.datastore)
                 implementation("androidx.datastore:datastore-preferences:1.0.0-beta02")
+                implementation("androidx.security:security-crypto:1.1.0-alpha03")
+                implementation("androidx.biometric:biometric:1.2.0-alpha03")
+                implementation("androidx.work:work-runtime-ktx:2.6.0-beta01")
             }
         }
         val androidTest by getting {

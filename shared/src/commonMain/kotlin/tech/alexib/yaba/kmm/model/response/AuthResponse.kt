@@ -1,4 +1,4 @@
-package tech.alexib.yaba.model.response
+package tech.alexib.yaba.kmm.model.response
 
 import com.benasher44.uuid.Uuid
 

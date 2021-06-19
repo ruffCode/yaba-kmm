@@ -29,17 +29,21 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.3.0-beta02")
     implementation("androidx.navigation:navigation-compose:2.4.0-alpha03")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
-
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08")
+
+    implementation(Lib.Accompanist.coil)
+    implementation(Lib.Accompanist.insets)
+
 }
 
 android {
-    compileSdk =30
+    compileSdk = 30
     buildToolsVersion = "30.0.3"
     defaultConfig {
         applicationId = "tech.alexib.yaba.kmm.android"
         minSdk = 29
-        targetSdk =30
+        targetSdk = 30
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -48,7 +52,7 @@ android {
         }
     }
     buildTypes {
-        release{
+        release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -77,7 +81,7 @@ android {
     kotlinOptions {
         jvmTarget = "11"
         freeCompilerArgs = listOf(
-             "-Xopt-in=kotlin.RequiresOptIn",
+            "-Xopt-in=kotlin.RequiresOptIn",
             "-Xskip-prerelease-check",
             "-Xuse-experimental=kotlin.Experimental",
             "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
