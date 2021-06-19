@@ -64,7 +64,10 @@ private fun SettingsScreen(
 
     Settings { action ->
         when (action) {
-            is SettingsScreenAction.Logout -> viewModel.logout()
+            is SettingsScreenAction.Logout -> {
+                viewModel.logout()
+                navigateTo(SettingsScreenAction.NavDestination.Auth)
+            }
             is SettingsScreenAction.Navigate -> navigateTo(action.destination)
         }
     }

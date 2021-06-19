@@ -3,6 +3,8 @@ package tech.alexib.yaba.kmm.android
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,6 +34,17 @@ sealed class AuthRoute(val route: String) {
 
 sealed class SettingsRoute(val route: String) {
     object Main : SettingsRoute("settingsMain")
+}
+
+
+fun shouldShowBottomBar(navBackStackEntry: NavBackStackEntry?): Boolean {
+    return navBackStackEntry?.destination?.hierarchy?.any {
+        it.route in listOf(
+            Route.Home.route,
+            SettingsRoute.Main.route
+        )
+    } ?: false
+
 }
 
 @Composable
@@ -88,7 +101,7 @@ fun AppNavigation(
                     when (navDestination) {
                         is SettingsScreenAction.NavDestination.Auth -> navController.navigate(
                             AuthRoute.Splash.route
-                        ){
+                        ) {
                             launchSingleTop = true
                         }
                     }
