@@ -1,4 +1,4 @@
-package tech.alexib.yaba.kmm.android.ui.auth
+package tech.alexib.yaba.kmm.android.ui.auth.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,16 +24,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
 import com.google.accompanist.coil.rememberCoilPainter
-import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.R
+import tech.alexib.yaba.kmm.android.ui.AddSpace
+import tech.alexib.yaba.kmm.android.ui.auth.RegisterUserViewModel
+import tech.alexib.yaba.kmm.android.ui.auth.components.Password
+import tech.alexib.yaba.kmm.android.ui.auth.components.Username
 import tech.alexib.yaba.kmm.android.ui.theme.BlueSlate
 import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
 

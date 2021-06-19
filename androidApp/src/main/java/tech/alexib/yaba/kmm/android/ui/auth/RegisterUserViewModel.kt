@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import tech.alexib.yaba.kmm.android.ui.auth.register.RegistrationScreenState
 import tech.alexib.yaba.kmm.data.repository.AndroidAuthRepository
 import tech.alexib.yaba.kmm.data.repository.AuthResult
 
