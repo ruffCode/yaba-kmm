@@ -1,5 +1,9 @@
 package tech.alexib.yaba.kmm.data.repository
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
+import tech.alexib.yaba.kmm.data.api.ApolloResponse
+
 sealed class DataResult<T> {
     open fun get(): T? = null
 
@@ -16,9 +20,10 @@ data class Success<T>(val data: T) : DataResult<T>() {
 data class ErrorResult<T>(val error: String) : DataResult<T>()
 
 
-//internal fun <T> ApolloResponse<T>.toDataResult(): DataResult<T> {
-//    when (this) {
-//        is ApolloResponse.Success -> Success(this.data)
-//        is ApolloResponse.Error -> ErrorResult(this.errors.first().message)
-//    }
-//}
+inline fun <reified T, reified R : DataResult<T>> Flow<ApolloResponse<T>>.toDataResult(): Flow<R> =
+    this.transform {
+        when (it) {
+            is ApolloResponse.Success<T> -> Success(it.data)
+            is ApolloResponse.Error -> ErrorResult(it.message)
+        }
+    }

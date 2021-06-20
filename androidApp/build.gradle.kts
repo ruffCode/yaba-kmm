@@ -31,7 +31,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08")
-
+    implementation("com.plaid.link:sdk-core:3.4.0")
     implementation(Lib.Accompanist.coil)
     implementation(Lib.Accompanist.insets)
 

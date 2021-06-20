@@ -19,7 +19,6 @@ finishActivity:() -> Unit
 ) {
     val navController = rememberNavController()
 
-
     Scaffold(
         bottomBar = {
             YabaBottomBar(navController)

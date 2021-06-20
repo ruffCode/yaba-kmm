@@ -95,7 +95,7 @@ fun AppNavigation(
         navigation(SettingsRoute.Main.route, Route.Settings.route) {
             composable(SettingsRoute.Main.route) {
                 BackHandler {
-                    navigateHome()
+                   handleBack()
                 }
                 SettingsScreen { navDestination ->
                     when (navDestination) {

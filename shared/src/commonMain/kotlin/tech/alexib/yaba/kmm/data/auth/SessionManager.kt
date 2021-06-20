@@ -10,7 +10,8 @@ interface SessionManager {
     fun isBioEnabled(): Flow<Boolean>
     suspend fun enableBio()
     fun startLogoutTimer()
-    fun isShowOnBoarding():Flow<Boolean>
+    fun isShowOnBoarding(): Flow<Boolean>
+    suspend fun bioToken()
 }
 
 

@@ -1,0 +1,13 @@
+mutation CreateItem($institutionId:String!,$publicToken:String!){
+    itemCreate(input:{
+        publicToken:$publicToken,
+        institutionId:$institutionId
+    }){
+        name
+        accounts{
+            mask
+            name
+            plaidAccountId
+        }
+    }
+}
