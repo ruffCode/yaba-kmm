@@ -1,6 +1,23 @@
-# Yaba Kotlin Multiplatform Mobile
+# yaba (yet another budgeting app) Kotlin Multiplatform Mobile
 
+An app which uses Plaid's APIs and allows users to track the balances and transactions for any financial institution they choose to link.
 
+This is a work in progress and at this time, only the Android app is being developed as I am just starting to learn Swift.
+
+The backend is using Plaid's sandbox api so you can only get fake data.
+
+## Usage
+
+Register with any email address you'd like, it just has to be a valid format.
+
+When linking an account, when prompted for a username and password for the financial institution, the credentials are:
+
+```
+username: user_good
+password: pass_good
+```
+
+[The backend is at https://github.com/ruffCode/yaba-server](https://github.com/ruffCode/yaba-server)
 
 ## 📝 License
 
