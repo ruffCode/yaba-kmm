@@ -1,13 +1,16 @@
 package tech.alexib.yaba.kmm.android
 
+import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
 import androidx.navigation.navigation
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
@@ -16,6 +19,9 @@ import tech.alexib.yaba.kmm.android.ui.auth.login.Login
 import tech.alexib.yaba.kmm.android.ui.auth.register.RegistrationScreen
 import tech.alexib.yaba.kmm.android.ui.home.Home
 import tech.alexib.yaba.kmm.android.ui.home.SplashScreenViewModel
+import tech.alexib.yaba.kmm.android.ui.plaid.PlaidItem
+import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkResultScreen
+import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkScreen
 import tech.alexib.yaba.kmm.android.ui.settings.SettingsScreen
 import tech.alexib.yaba.kmm.android.ui.settings.SettingsScreenAction
 
@@ -23,6 +29,7 @@ sealed class Route(val route: String) {
     object Auth : Route("auth")
     object Home : Route("home")
     object Settings : Route("settings")
+    object PlaidLink : Route("plaid")
 }
 
 sealed class AuthRoute(val route: String) {
@@ -34,6 +41,11 @@ sealed class AuthRoute(val route: String) {
 
 sealed class SettingsRoute(val route: String) {
     object Main : SettingsRoute("settingsMain")
+}
+
+sealed class PlaidLinkRoute(val route: String) {
+    object Launcher : PlaidLinkRoute("plaidLinkLauncher")
+    object PlaidLinkResult : PlaidLinkRoute("plaidLinkResult")
 }
 
 
@@ -74,10 +86,10 @@ fun AppNavigation(
             }
             composable(AuthRoute.Login.route) {
                 BackHandler {
-                    finishActivity()
+                    handleBack()
                 }
                 Login({
-
+                    navController.navigate(AuthRoute.Registration.route)
                 }) {
                     navigateHome()
                 }
@@ -86,7 +98,7 @@ fun AppNavigation(
                 BackHandler {
                     finishActivity()
                 }
-                RegistrationScreen {
+                RegistrationScreen({ navController.navigate(AuthRoute.Login.route) }) {
                     navigateHome()
                 }
             }
@@ -95,7 +107,7 @@ fun AppNavigation(
         navigation(SettingsRoute.Main.route, Route.Settings.route) {
             composable(SettingsRoute.Main.route) {
                 BackHandler {
-                   handleBack()
+                    handleBack()
                 }
                 SettingsScreen { navDestination ->
                     when (navDestination) {
@@ -116,7 +128,59 @@ fun AppNavigation(
             }
 
             Log.d("NAVIGATOR", "navigate home")
-            Home()
+            Home {
+                navController.navigate(PlaidLinkRoute.Launcher.route) {
+                    launchSingleTop = true
+                }
+            }
+        }
+
+        navigation(PlaidLinkRoute.Launcher.route, Route.PlaidLink.route) {
+
+            composable(PlaidLinkRoute.Launcher.route) {
+
+                BackHandler {
+                    Log.d("PLAID LINK ROUTE", "handling back")
+                    handleBack()
+                }
+                PlaidLinkScreen({ Log.d("PLAID LINK ROUTE", "navigate home") }) { plaidItem ->
+
+                    navController.currentBackStackEntry?.arguments?.putParcelable(
+                        "plaidItem",
+                        plaidItem
+                    )
+                    navController.currentBackStackEntry?.arguments =
+                        Bundle().apply {
+                            putParcelable(
+                                "plaidItem",
+                                plaidItem
+                            )
+                        }
+                    navController.navigate(PlaidLinkRoute.PlaidLinkResult.route)
+                }
+            }
+
+            composable(
+                PlaidLinkRoute.PlaidLinkResult.route,
+                arguments = listOf(navArgument("plaidItem") {
+
+                    NavType.ParcelableType(PlaidItem::class.java)
+                })
+            ) {
+
+                BackHandler {
+                    navigateHome()
+                }
+                val result =
+                    navController.previousBackStackEntry?.arguments?.getParcelable<PlaidItem>("plaidItem")
+                        ?: throw
+                        IllegalArgumentException("plaid item was null")
+
+                PlaidLinkResultScreen(result = result) {
+                    navigateHome()
+                }
+            }
+
         }
     }
 }

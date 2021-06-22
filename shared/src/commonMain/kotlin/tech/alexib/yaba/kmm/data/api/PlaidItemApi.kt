@@ -3,6 +3,7 @@ package tech.alexib.yaba.kmm.data.api
 import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
 import com.apollographql.apollo.ApolloClient
+import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,18 +16,20 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.CreateItemMutation
 import tech.alexib.yaba.CreateLinkTokenMutation
+import tech.alexib.yaba.SetAccountsToHideMutation
 import tech.alexib.yaba.kmm.data.repository.DataResult
 import tech.alexib.yaba.kmm.data.repository.ErrorResult
 import tech.alexib.yaba.kmm.data.repository.Success
 import tech.alexib.yaba.kmm.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.kmm.model.request.PlaidLinkEventCreateRequest
 import tech.alexib.yaba.kmm.model.response.CreateLinkTokenResponse
-import tech.alexib.yaba.kmm.model.response.CreatePlaidItemResponse
+import tech.alexib.yaba.kmm.model.response.PlaidItemCreateResponse
 
 interface PlaidItemApi {
     fun createLinkToken(): Flow<DataResult<CreateLinkTokenResponse>>
-    fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<CreatePlaidItemResponse>>
+    fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<PlaidItemCreateResponse>>
     fun sendLinkEvent(request: PlaidLinkEventCreateRequest)
+    fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>)
 }
 
 class PlaidItemApiImpl(
@@ -71,18 +74,21 @@ class PlaidItemApiImpl(
 
     }
 
-    override fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<CreatePlaidItemResponse>> {
+    override fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<PlaidItemCreateResponse>> {
         val mutation = CreateItemMutation(request.institutionId, request.publicToken)
 
         return runCatching {
 
-            flow<DataResult<CreatePlaidItemResponse>> {
+            flow<DataResult<PlaidItemCreateResponse>> {
                 val result = client.safeMutation(mutation) { result ->
                     result.itemCreate.let {
-                        CreatePlaidItemResponse(
+                        PlaidItemCreateResponse(
+                            id = it.itemId as Uuid,
                             name = it.name,
+                            logo = it.logo,
                             accounts = it.accounts.map { account ->
-                                CreatePlaidItemResponse.Account(
+                                PlaidItemCreateResponse.Account(
+
                                     mask = account.mask,
                                     plaidAccountId = account.plaidAccountId,
                                     name = account.name
@@ -113,6 +119,18 @@ class PlaidItemApiImpl(
                 client.mutate(request.toMutation()).execute().firstOrNull()
             }.getOrElse {
                 log.e { "error sending link event ${it.message}" }
+            }
+        }
+    }
+
+    override fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>) {
+        val mutation = SetAccountsToHideMutation(itemId, plaidAccountIds)
+
+        CoroutineScope(Dispatchers.Default).launch {
+            runCatching {
+                client.mutate(mutation).execute().firstOrNull()
+            }.getOrElse {
+                log.e { "error setting accounts to hide ${it.message}" }
             }
         }
 

@@ -1,7 +1,12 @@
 package tech.alexib.yaba.kmm.model.response
 
-data class CreatePlaidItemResponse(
+import com.benasher44.uuid.Uuid
+
+
+data class PlaidItemCreateResponse(
+    val id:Uuid,
     val name:String,
+    val logo:String,
     val accounts:List<Account>
 ){
     data class Account(

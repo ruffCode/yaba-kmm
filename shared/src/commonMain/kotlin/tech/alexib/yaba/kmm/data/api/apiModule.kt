@@ -2,11 +2,14 @@ package tech.alexib.yaba.kmm.data.api
 
 import org.koin.dsl.module
 import tech.alexib.yaba.kmm.di.getWith
+import kotlin.jvm.JvmInline
 
+@JvmInline
+value class ApolloUrl(val value: String)
 
 val apiModule = module {
     single {
-        ApolloApi("https://ruffrevival.ngrok.io/graphql", get(), getWith("ApolloAPi"))
+        ApolloApi(get(), get(), getWith("ApolloAPi"))
 
     }
     single<AuthApi> {

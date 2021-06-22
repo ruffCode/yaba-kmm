@@ -19,7 +19,7 @@ import tech.alexib.yaba.type.CustomType
 
 
 class ApolloApi(
-    private val serverUrl: String,
+    private val serverUrl: ApolloUrl,
     private val sessionManager: SessionManager,
     log: Kermit
 ) {
@@ -37,21 +37,25 @@ class ApolloApi(
 
         val token = token()
         log.d { "TOKEN $token" }
-        val headers = mapOf(
+        val headers = mutableMapOf(
             "Accept" to "application/json",
             "Content-Type" to "application/json",
-            "Authorization" to "Bearer $token"
-        )
+
+            )
+
+        if(token!=null){
+            headers["Authorization"] = "Bearer $token"
+        }
 
         return ApolloClient(
             networkTransport = ApolloHttpNetworkTransport(
-                serverUrl = serverUrl,
+                serverUrl = serverUrl.value,
                 headers = headers,
             ),
 
             subscriptionNetworkTransport = ApolloWebSocketNetworkTransport(
                 webSocketFactory = ApolloWebSocketFactory(
-                    serverUrl = serverUrl,
+                    serverUrl = serverUrl.value,
                     headers
                 )
             ),
@@ -65,11 +69,7 @@ class ApolloApi(
         )
     }
 
-    private fun webSocketUrl(): String {
-        val isHttps = serverUrl.startsWith("https", ignoreCase = true)
-        val url = serverUrl.substringAfter("://")
-        return if (isHttps) "wss://$url" else "ws://$url"
-    }
+
 }
 
 //private val catchApolloError: suspend FlowCollector<ApolloResponse.Error>.(cause: Throwable) -> Unit =

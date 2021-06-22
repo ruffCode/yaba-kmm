@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
+    id("kotlin-parcelize")
 }
 
 dependencies {
@@ -34,7 +35,7 @@ dependencies {
     implementation("com.plaid.link:sdk-core:3.4.0")
     implementation(Lib.Accompanist.coil)
     implementation(Lib.Accompanist.insets)
-
+    implementation(Lib.uuid)
 }
 
 android {
@@ -61,7 +62,7 @@ android {
         }
         debug {
             isMinifyEnabled = false
-
+            isDebuggable = true
             matchingFallbacks += "release"
         }
     }

@@ -4,10 +4,17 @@ mutation CreateItem($institutionId:String!,$publicToken:String!){
         institutionId:$institutionId
     }){
         name
+        logo
+        itemId
         accounts{
             mask
             name
             plaidAccountId
         }
     }
+}
+
+
+mutation SetAccountsToHide($itemId:UUID!,$plaidAccountIds:[String!]!){
+    setAccountsToHide(itemId:$itemId,plaidAccountIds: $plaidAccountIds)
 }

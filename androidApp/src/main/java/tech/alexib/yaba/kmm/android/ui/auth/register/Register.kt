@@ -31,7 +31,6 @@ import com.google.accompanist.coil.rememberCoilPainter
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.R
 import tech.alexib.yaba.kmm.android.ui.AddSpace
-import tech.alexib.yaba.kmm.android.ui.auth.RegisterUserViewModel
 import tech.alexib.yaba.kmm.android.ui.auth.components.Password
 import tech.alexib.yaba.kmm.android.ui.auth.components.Username
 import tech.alexib.yaba.kmm.android.ui.theme.BlueSlate
@@ -55,6 +54,7 @@ data class RegistrationScreenState(
 sealed class RegisterScreenAction {
     object RegisterAction : RegisterScreenAction()
     object NavigateHomeAction : RegisterScreenAction()
+    object NavigateToLoginAction : RegisterScreenAction()
     data class SetEmail(val email: String) : RegisterScreenAction()
     data class SetPassword(val password: String) : RegisterScreenAction()
 }
@@ -62,15 +62,17 @@ sealed class RegisterScreenAction {
 
 @Composable
 fun RegistrationScreen(
+    navigateToLogin: () -> Unit,
     navigateHome: () -> Unit
 ) {
     val viewModel: RegisterUserViewModel = getViewModel()
-    RegisterScreen(viewModel, navigateHome)
+    RegisterScreen(viewModel, navigateToLogin, navigateHome)
 }
 
 @Composable
 private fun RegisterScreen(
     viewModel: RegisterUserViewModel,
+    navigateToLogin: () -> Unit,
     navigateHome: () -> Unit
 
 ) {
@@ -82,6 +84,7 @@ private fun RegisterScreen(
             is RegisterScreenAction.SetPassword -> viewModel.setPassword(action.password)
             is RegisterScreenAction.RegisterAction -> viewModel.register()
             is RegisterScreenAction.NavigateHomeAction -> navigateHome()
+            is RegisterScreenAction.NavigateToLoginAction -> navigateToLogin()
         }
 
     }
@@ -92,7 +95,7 @@ private fun RegisterScreen(
     state: RegistrationScreenState,
     actioner: (RegisterScreenAction) -> Unit
 ) {
-    if(state.registrationSuccess){
+    if (state.registrationSuccess) {
         actioner(RegisterScreenAction.NavigateHomeAction)
     }
     Scaffold(modifier = Modifier.fillMaxSize()) {
@@ -110,7 +113,7 @@ private fun RegisterScreen(
             var password by remember { mutableStateOf(TextFieldValue(state.password)) }
             val focusRequester = remember { FocusRequester() }
 
-            Text(text = "Welcome To", style = MaterialTheme.typography.h5,color = BlueSlate)
+            Text(text = "Welcome To", style = MaterialTheme.typography.h5, color = BlueSlate)
             AddSpace()
             Image(
                 modifier = Modifier
@@ -155,6 +158,17 @@ private fun RegisterScreen(
 //                enabled = state.canSubmit
             ) {
                 Text(text = "Register")
+            }
+            AddSpace()
+            Button(
+
+                onClick = { actioner(RegisterScreenAction.NavigateToLoginAction) },
+                modifier = Modifier
+                    .height(20.dp)
+                    .fillMaxWidth(),
+//                enabled = state.canSubmit
+            ) {
+                Text(text = "Login")
             }
             AddSpace(100.dp)
         }
