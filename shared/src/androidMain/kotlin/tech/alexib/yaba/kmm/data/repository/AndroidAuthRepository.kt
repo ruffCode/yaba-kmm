@@ -17,8 +17,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import tech.alexib.yaba.kmm.YabaAppSettings
+import tech.alexib.yaba.kmm.BiometricSettings
 import tech.alexib.yaba.kmm.data.auth.SessionManager
+import tech.alexib.yaba.kmm.data.db.AppSettings
 import tech.alexib.yaba.kmm.model.response.AuthResponse
 import java.util.concurrent.Executor
 
@@ -36,11 +37,12 @@ class AndroidAuthRepository(
     log: Kermit,
     val sessionManager: SessionManager,
     private val ioDispatcher: CoroutineDispatcher,
-    private val yabaAppSettings: YabaAppSettings,
-) : BiometricsRepository, KoinComponent {
+
+    ) : BiometricsRepository, KoinComponent {
     private val coroutineScope: CoroutineScope = MainScope()
     private val log = log
 
+    private val biometricSettings: BiometricSettings by inject()
     private val appContext: Context by inject()
     private val authRepository: AuthRepository by inject()
 
@@ -107,10 +109,9 @@ class AndroidAuthRepository(
 
     suspend fun handleBioLogin(): AuthResult {
         withContext(ioDispatcher) {
-            yabaAppSettings.bioToken()
+            sessionManager.bioToken()
         }
         return withContext(Dispatchers.Main) {
-
             AuthResult.Success
         }
     }
@@ -171,7 +172,7 @@ class AndroidAuthRepository(
 
 
     override fun promptForBiometrics() {
-        val cryptoObject = yabaAppSettings.cryptoObject()
+        val cryptoObject = biometricSettings.cryptoObject()
         if (cryptoObject != null) {
             biometricPrompt?.authenticate(
                 promptInfo, cryptoObject

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">YABA - KMM</string>
     <string name="transaction_notification_channel_id" translatable="false">fcm_transactions</string>
+    <string name="base_url">https://ruffrevival.ngrok.io</string>
 </resources>

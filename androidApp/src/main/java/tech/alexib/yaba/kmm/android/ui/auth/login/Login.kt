@@ -54,7 +54,7 @@ fun Login(
     val loginState = viewModel.loginResult.collectAsState()
 
     val showError = remember { mutableStateOf(false) }
-    when (val result = loginState.value) {
+    when (loginState.value) {
         null -> {
             Log.e("LOGIN", "null")
         }
@@ -95,7 +95,7 @@ private fun LoginScreen(
     ) {
 
         val username = remember { mutableStateOf(TextFieldValue("alexi2@aol.com")) }
-        val password = remember { mutableStateOf(TextFieldValue("password")) }
+        val password = remember { mutableStateOf(TextFieldValue("password1234")) }
         val focusRequester = remember { FocusRequester() }
 
         Image(

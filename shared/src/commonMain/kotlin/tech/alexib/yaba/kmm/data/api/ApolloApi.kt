@@ -13,40 +13,49 @@ import com.apollographql.apollo.network.ws.ApolloWebSocketFactory
 import com.apollographql.apollo.network.ws.ApolloWebSocketNetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import tech.alexib.yaba.kmm.data.auth.SessionManager
+import tech.alexib.yaba.kmm.getSync
 import tech.alexib.yaba.type.CustomType
 
 
 class ApolloApi(
-    private val serverUrl: String,
-    log:Kermit
+    private val serverUrl: ApolloUrl,
+    private val sessionManager: SessionManager,
+    log: Kermit
 ) {
 
     @Suppress("CanBePrimaryConstructorProperty")
     private val log = log
+
     init {
         ensureNeverFrozen()
     }
 
+    fun token(): String? = getSync { sessionManager.getToken() }
 
-    fun client(authToken: String? = null): ApolloClient {
+    fun client(): ApolloClient {
 
-        val headers = mapOf(
+        val token = token()
+        log.d { "TOKEN $token" }
+        val headers = mutableMapOf(
             "Accept" to "application/json",
             "Content-Type" to "application/json",
-        ).apply {
-            authToken?.let {
-                "Authentication" to "Bearer $it"
-            }
+
+            )
+
+        if(token!=null){
+            headers["Authorization"] = "Bearer $token"
         }
+
         return ApolloClient(
             networkTransport = ApolloHttpNetworkTransport(
-                serverUrl = serverUrl,
+                serverUrl = serverUrl.value,
                 headers = headers,
             ),
 
             subscriptionNetworkTransport = ApolloWebSocketNetworkTransport(
                 webSocketFactory = ApolloWebSocketFactory(
-                    serverUrl = serverUrl,
+                    serverUrl = serverUrl.value,
                     headers
                 )
             ),
@@ -60,11 +69,7 @@ class ApolloApi(
         )
     }
 
-    private fun webSocketUrl(): String {
-        val isHttps = serverUrl.startsWith("https", ignoreCase = true)
-        val url = serverUrl.substringAfter("://")
-        return if (isHttps) "wss://$url" else "ws://$url"
-    }
+
 }
 
 //private val catchApolloError: suspend FlowCollector<ApolloResponse.Error>.(cause: Throwable) -> Unit =

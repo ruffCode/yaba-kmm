@@ -1,0 +1,17 @@
+mutation CreateLinkToken{
+    createLinkToken{
+        linkToken
+    }
+}
+
+
+mutation CreateLinkEvent($requestId:String,$type:String!,$linkSessionId:String!
+    $errorCode:String,$errorType:String){
+    createLinkEvent(input:{
+        requestId: $requestId,
+        type:$type,
+        linkSessionId: $linkSessionId,
+        errorCode: $errorCode,
+        errorType: $errorType
+    })
+}
