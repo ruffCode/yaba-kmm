@@ -86,6 +86,7 @@ object Lib {
         const val runtime = "com.squareup.sqldelight:runtime:$version"
         const val coroutineExtensions = "com.squareup.sqldelight:coroutines-extensions:$version"
         const val androidDriver = "com.squareup.sqldelight:android-driver:$version"
+        const val iosDriver = "com.squareup.sqldelight:native-driver:$version"
 
     }
 

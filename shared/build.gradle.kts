@@ -6,6 +6,7 @@ plugins {
     id("com.android.library")
     id("com.apollographql.apollo")
     kotlin("plugin.serialization")
+    id("com.squareup.sqldelight")
 }
 
 version = "1.0"
@@ -19,7 +20,11 @@ kotlin {
         else
             ::iosX64
 
-    iosTarget("ios") {}
+    iosTarget("ios") {
+
+    }
+
+
 
     cocoapods {
         summary = "Some description for the Shared Module"
@@ -40,8 +45,8 @@ kotlin {
         }
     }
     sourceSets {
-        val commonMain by getting{
-            dependencies{
+        val commonMain by getting {
+            dependencies {
                 implementation(Lib.KotlinX.Coroutines.bom)
                 implementation(Lib.KotlinX.Coroutines.core)
 //                {
@@ -58,6 +63,8 @@ kotlin {
                 implementation(Lib.MultiplatformSettings.settings)
                 implementation(Lib.MultiplatformSettings.coroutines)
                 implementation(Lib.MultiplatformSettings.test)
+                implementation(Lib.SqlDelight.runtime)
+                implementation(Lib.SqlDelight.coroutineExtensions)
             }
         }
         val commonTest by getting {
@@ -67,7 +74,11 @@ kotlin {
             }
         }
         val androidMain by getting {
-            dependencies{
+            dependencies {
+
+                implementation(kotlin("stdlib", Version.kotlin))
+                implementation(Lib.SqlDelight.androidDriver)
+                implementation(Lib.KotlinX.Coroutines.android)
                 implementation(Lib.MultiplatformSettings.datastore)
                 implementation("androidx.datastore:datastore-preferences:1.0.0-beta02")
                 implementation("androidx.security:security-crypto:1.1.0-alpha03")
@@ -81,7 +92,17 @@ kotlin {
                 implementation("junit:junit:4.13.2")
             }
         }
-        val iosMain by getting
+        val iosMain by getting {
+            dependencies {
+                implementation(Lib.KotlinX.Coroutines.core) {
+                    version {
+                        strictly(Version.coroutines)
+                    }
+                }
+                implementation(Lib.SqlDelight.iosDriver)
+            }
+
+        }
         val iosTest by getting
     }
 
@@ -121,4 +142,14 @@ configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
             "smallint" to "kotlin.Int"
         )
     )
+}
+
+
+sqldelight {
+
+    database("YabaDb") {
+        packageName = "tech.alexib.yaba.data.db"
+//        schemaOutputDirectory = file("src/main/sqldelight/databases")
+        dialect = "sqlite:3.24"
+    }
 }

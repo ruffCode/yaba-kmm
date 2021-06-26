@@ -1,4 +1,7 @@
-# yaba (yet another budgeting app) Kotlin Multiplatform Mobile
+# yaba (yet another budgeting app)
+## Kotlin Multiplatform Mobile
+
+#### Learning in public
 
 An app which uses Plaid's APIs and allows users to track the balances and transactions for any financial institution they choose to link.
 
