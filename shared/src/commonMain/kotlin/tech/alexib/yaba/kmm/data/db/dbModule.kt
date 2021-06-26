@@ -2,8 +2,17 @@ package tech.alexib.yaba.kmm.data.db
 
 import org.koin.dsl.module
 import tech.alexib.yaba.data.db.YabaDb
+import tech.alexib.yaba.kmm.data.db.dao.AccountDao
+import tech.alexib.yaba.kmm.data.db.dao.AccountDaoImpl
+import tech.alexib.yaba.kmm.data.db.dao.InstitutionDao
+import tech.alexib.yaba.kmm.data.db.dao.InstitutionDaoImpl
+import tech.alexib.yaba.kmm.data.db.dao.ItemDao
+import tech.alexib.yaba.kmm.data.db.dao.ItemDaoImpl
 
 internal val dbModule = module {
 
-    single { YabaDatabase(get()).getInstance() }
+    single<YabaDb> { YabaDatabase(get()).getInstance() }
+    single<ItemDao> { ItemDaoImpl(get(), get()) }
+    single<InstitutionDao> { InstitutionDaoImpl(get(), get()) }
+    single<AccountDao> { AccountDaoImpl(get(), get()) }
 }
