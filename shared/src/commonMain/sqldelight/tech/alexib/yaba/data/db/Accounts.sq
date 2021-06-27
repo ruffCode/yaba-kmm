@@ -39,3 +39,8 @@ WHERE a.item_id = ?;
 deleteByItemId:
 DELETE FROM AccountEntity
 WHERE item_id = ?;
+
+availableBalance:
+SELECT SUM(available_balance) AS available
+FROM AccountEntity
+WHERE type = 'DEPOSITORY';

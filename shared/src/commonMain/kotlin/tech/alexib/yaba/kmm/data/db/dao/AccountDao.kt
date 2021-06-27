@@ -4,6 +4,7 @@ import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
+import com.squareup.sqldelight.runtime.coroutines.mapToOne
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -19,9 +20,10 @@ import tech.alexib.yaba.kmm.model.AccountType
 internal interface AccountDao {
     suspend fun insert(account: Account)
     suspend fun insert(accounts: List<Account>)
-    suspend fun selectAll(): Flow<List<Account>>
-    suspend fun selectById(accountId: Uuid): Flow<Account?>
-    suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
+    fun selectAll(): Flow<List<Account>>
+    fun selectById(accountId: Uuid): Flow<Account?>
+    fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
+    fun availableBalance(): Flow<Double>
 //    suspend fun selectDetailByItemId(itemId: Uuid):Flow<Account>
 }
 
@@ -55,19 +57,24 @@ internal class AccountDaoImpl(
 
     }
 
-    override suspend fun selectAll(): Flow<List<Account>> {
+    override fun selectAll(): Flow<List<Account>> {
         return accountQueries.selectAll(accountMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
-    override suspend fun selectById(accountId: Uuid): Flow<Account?> {
+    override fun selectById(accountId: Uuid): Flow<Account?> {
         return accountQueries.selectById(accountId, accountMapper).asFlow()
             .mapToOneOrNull()
             .flowOn(backgroundDispatcher)
     }
 
-    override suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>> {
+    override fun selectAllByItemId(itemId: Uuid): Flow<List<Account>> {
         return accountQueries.selectAllByItemId(itemId, accountMapper).asFlow().mapToList()
+            .flowOn(backgroundDispatcher)
+    }
+
+    override fun availableBalance(): Flow<Double> {
+        return accountQueries.availableBalance { available -> available ?: 0.0 }.asFlow().mapToOne()
             .flowOn(backgroundDispatcher)
     }
 
