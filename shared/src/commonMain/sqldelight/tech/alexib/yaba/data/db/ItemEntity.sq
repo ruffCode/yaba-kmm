@@ -3,25 +3,36 @@ import com.benasher44.uuid.Uuid;
 CREATE TABLE ItemEntity (
 id TEXT AS Uuid PRIMARY KEY NOT NULL,
 plaid_institution_id TEXT NOT NULL,
-status TEXT NOT NULL,
 FOREIGN KEY (plaid_institution_id) REFERENCES InstitutionEntity(id)
 ON DELETE CASCADE
 );
+
+CREATE VIEW itemWithLogo AS
+SELECT
+ItemEntity.id,
+ItemEntity.plaid_institution_id,
+InstitutionEntity.logo,
+InstitutionEntity.name
+FROM ItemEntity
+JOIN InstitutionEntity ON ItemEntity.plaid_institution_id = InstitutionEntity.id;
 
 insert:
 INSERT OR REPLACE INTO ItemEntity
 VALUES ?;
 
-selectAllWithInstitution:
-SELECT *
-FROM ItemEntity
-JOIN InstitutionEntity i ON ItemEntity.plaid_institution_id = i.id;
+-- selectAll:
+-- SELECT *
+-- FROM ItemEntity
+-- JOIN InstitutionEntity i ON ItemEntity.plaid_institution_id = i.id;
 
-selectByIdWithInstitution:
+selectAll:
 SELECT *
-FROM ItemEntity
-JOIN InstitutionEntity i ON ItemEntity.plaid_institution_id = i.id
-WHERE ItemEntity.id = ?;
+FROM itemWithLogo;
+
+selectById:
+SELECT *
+FROM itemWithLogo
+WHERE itemWithLogo.id = ?;
 
 deleteById:
 DELETE FROM ItemEntity

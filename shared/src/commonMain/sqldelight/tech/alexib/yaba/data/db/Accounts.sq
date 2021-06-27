@@ -6,9 +6,9 @@ import tech.alexib.yaba.kmm.model.AccountType;
 CREATE TABLE AccountEntity (
 id TEXT AS Uuid PRIMARY KEY NOT NULL,
 name TEXT NOT NULL,
+mask TEXT NOT NULL,
 current_balance REAL AS Double NOT NULL,
 available_balance REAL AS Double NOT NULL,
-mask TEXT NOT NULL,
 item_id TEXT AS Uuid NOT NULL,
 type TEXT AS AccountType NOT NULL,
 subtype TEXT AS AccountSubtype NOT NULL,
@@ -16,31 +16,23 @@ hidden INTEGER AS Boolean NOT NULL DEFAULT 1,
 FOREIGN KEY (item_id) REFERENCES ItemEntity(id)
 );
 
+
 insertAccount:
 INSERT OR REPLACE INTO AccountEntity
 VALUES ?;
 
-selectAllAccountsWithItem:
-SELECT a.id, a.mask,a.name, a.available_balance,a.current_balance,a.item_id, a.type, a.subtype,
-a.hidden, it.id FROM AccountEntity a
-JOIN ItemEntity i ON a.item_id = i.id
-JOIN InstitutionEntity it ON i.plaid_institution_id = it.id;
+selectAll:
+SELECT * FROM AccountEntity;
 
-selectAccountByIdWithItem:
-SELECT a.id, a.mask,a.name, a.available_balance,a.current_balance,a.item_id, a.type, a.subtype,
-a.hidden,it.id FROM AccountEntity a
-JOIN ItemEntity i ON a.item_id = i.id
-JOIN InstitutionEntity it ON i.plaid_institution_id = it.id
-WHERE a.id = ?;
+selectById:
+SELECT * FROM AccountEntity
+WHERE id =?;
 
-selectAccountByItemId:
-SELECT a.id, a.mask,a.name, a.available_balance,a.current_balance,a.item_id, a.type, a.subtype,
-a.hidden,it.id FROM AccountEntity a
-JOIN ItemEntity i ON a.item_id = i.id
-JOIN InstitutionEntity it ON i.plaid_institution_id = it.id
-WHERE a.item_id = ?;
+selectAllByItemId:
+SELECT * FROM AccountEntity
+WHERE item_id = ?;
 
-selectAccountDetailByItemId:
+selectDetailByItemId:
 SELECT a.id,a.item_id, a.subtype,a.hidden,a.name, a.mask FROM AccountEntity a
 WHERE a.item_id = ?;
 
