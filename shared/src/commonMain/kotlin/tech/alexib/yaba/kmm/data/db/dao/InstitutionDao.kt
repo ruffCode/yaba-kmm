@@ -1,5 +1,6 @@
 package tech.alexib.yaba.kmm.data.db.dao
 
+import co.touchlab.stately.ensureNeverFrozen
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,6 +24,11 @@ internal class InstitutionDaoImpl(
     private val backgroundDispatcher: CoroutineDispatcher
 ) : InstitutionDao {
     private val queries: InstitutionEntityQueries = database.institutionEntityQueries
+
+    init {
+        ensureNeverFrozen()
+
+    }
     override suspend fun insert(institution: Institution) {
         withContext(backgroundDispatcher) {
             queries.insertInstitution(

@@ -1,5 +1,6 @@
 package tech.alexib.yaba.kmm.data.db.dao
 
+import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
@@ -16,7 +17,7 @@ import tech.alexib.yaba.kmm.model.PlaidItem
 import tech.alexib.yaba.kmm.model.PlaidItemId
 
 internal interface ItemDao {
-    suspend fun insert(item: PlaidItem)
+    suspend fun insert(item: ItemEntity)
     suspend fun selectAll(): Flow<List<PlaidItem>>
     suspend fun selectById(id: Uuid): Flow<PlaidItem>
 }
@@ -28,44 +29,42 @@ internal class ItemDaoImpl(
 ) : ItemDao {
     private val queries: ItemEntityQueries = database.itemEntityQueries
 
-    override suspend fun insert(item: PlaidItem) {
+    init {
+        ensureNeverFrozen()
+
+    }
+
+    override suspend fun insert(item: ItemEntity) {
         withContext(backgroundDispatcher) {
             queries.insert(
-                ItemEntity(
-                    id = item.id.value,
-                    plaid_institution_id = item.plaidInstitutionId.value,
-                    status = item.status
-                )
+               item
             )
         }
     }
 
     override suspend fun selectAll(): Flow<List<PlaidItem>> {
-        return queries.selectAllWithInstitution(itemMapper).asFlow().mapToList()
+        return queries.selectAll(itemMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
     override suspend fun selectById(id: Uuid): Flow<PlaidItem> {
-        return queries.selectByIdWithInstitution(id, itemMapper).asFlow().mapToOne()
+        return queries.selectById(id, itemMapper).asFlow().mapToOne()
             .flowOn(backgroundDispatcher)
     }
 
     companion object {
-        private val itemMapper = { id: Uuid,
-                                   plaid_institution_id: String,
-                                   status: String,
-                                   name: String,
-                                   _: String,
-                                   _: String,
-                                   _: String
+        private val itemMapper = {
+                id: Uuid,
+                plaid_institution_id: String,
+                name: String,
+                logo: String,
             ->
             PlaidItem(
                 id = PlaidItemId(id),
                 plaidInstitutionId = PlaidInstitutionId(plaid_institution_id),
-                status = status,
-                name = name
+                name = name,
+                base64Logo = logo
             )
-
         }
     }
 }

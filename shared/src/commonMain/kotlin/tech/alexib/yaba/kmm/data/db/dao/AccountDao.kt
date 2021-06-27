@@ -1,5 +1,6 @@
 package tech.alexib.yaba.kmm.data.db.dao
 
+import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
@@ -21,6 +22,7 @@ internal interface AccountDao {
     suspend fun selectAll(): Flow<List<Account>>
     suspend fun selectById(accountId: Uuid): Flow<Account?>
     suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
+//    suspend fun selectDetailByItemId(itemId: Uuid):Flow<Account>
 }
 
 internal class AccountDaoImpl(
@@ -28,6 +30,11 @@ internal class AccountDaoImpl(
     private val backgroundDispatcher: CoroutineDispatcher
 ) : AccountDao {
     private val accountQueries = database.accountsQueries
+
+    init {
+        ensureNeverFrozen()
+
+    }
 
     override suspend fun insert(account: Account) {
         withContext(backgroundDispatcher) {
@@ -49,32 +56,33 @@ internal class AccountDaoImpl(
     }
 
     override suspend fun selectAll(): Flow<List<Account>> {
-        return accountQueries.selectAllAccountsWithItem(accountMapper).asFlow().mapToList()
+        return accountQueries.selectAll(accountMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
     override suspend fun selectById(accountId: Uuid): Flow<Account?> {
-        return accountQueries.selectAccountByIdWithItem(accountId, accountMapper).asFlow()
+        return accountQueries.selectById(accountId, accountMapper).asFlow()
             .mapToOneOrNull()
             .flowOn(backgroundDispatcher)
     }
 
     override suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>> {
-        return accountQueries.selectAccountByItemId(itemId, accountMapper).asFlow().mapToList()
+        return accountQueries.selectAllByItemId(itemId, accountMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
     companion object {
-        private val accountMapper = { id: Uuid,
-                                      mask: String,
-                                      name: String,
-                                      available_balance: Double,
-                                      current_balance: Double,
-                                      item_id: Uuid,
-                                      type: AccountType,
-                                      subtype: AccountSubtype,
-                                      hidden: Boolean,
-                                      id_: String
+        private val accountMapper = {
+                id: Uuid,
+                name: String,
+                mask: String,
+                available_balance: Double,
+                current_balance: Double,
+                item_id: Uuid,
+                type: AccountType,
+                subtype: AccountSubtype,
+                hidden: Boolean,
+
             ->
             Account(
                 id = id,
@@ -83,14 +91,10 @@ internal class AccountDaoImpl(
                 availableBalance = available_balance,
                 mask = mask,
                 itemId = item_id,
-                institutionId = id_,
                 type = type,
                 subtype = subtype,
                 hidden = hidden
-
             )
-
-
         }
     }
 
@@ -105,6 +109,4 @@ internal class AccountDaoImpl(
         subtype = subtype,
         hidden = hidden
     )
-
-
 }

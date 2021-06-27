@@ -10,12 +10,12 @@ data class Account(
     val availableBalance: Double,
     val mask: String,
     val itemId: Uuid,
-    val institutionId: String,
+//    val institutionId: String,
     val type: AccountType,
     val subtype: AccountSubtype,
     val hidden: Boolean = false
 ) {
-    val logo = "https://ruffrevival.ngrok.io/logo/${institutionId}.png"
+//   val logo = "https://ruffrevival.ngrok.io/logo/${institutionId}.png"
 }
 
 enum class AccountType {

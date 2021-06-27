@@ -1,5 +1,6 @@
 package tech.alexib.yaba.kmm.data.db.dao
 
+import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
@@ -15,7 +16,7 @@ import tech.alexib.yaba.data.db.YabaDb
 import tech.alexib.yaba.kmm.model.Transaction
 import tech.alexib.yaba.kmm.model.TransactionType
 
-interface TransactionDao {
+internal interface TransactionDao {
     suspend fun insert(transaction: Transaction)
     suspend fun selectAll(): Flow<List<Transaction>>
     suspend fun selectById(id: Uuid): Flow<Transaction>
@@ -23,13 +24,19 @@ interface TransactionDao {
     suspend fun selectByItemId(itemId: Uuid): Flow<List<Transaction>>
     suspend fun deleteByItemId(itemId: Uuid)
     suspend fun count(): Flow<Long>
+    suspend fun selectRecent(): Flow<List<Transaction>>
 }
 
-class TransactionDaoImpl(
+internal class TransactionDaoImpl(
     database: YabaDb,
     private val backgroundDispatcher: CoroutineDispatcher
 ) : TransactionDao {
     private val queries: TransactionsQueries = database.transactionsQueries
+
+    init {
+        ensureNeverFrozen()
+
+    }
 
     override suspend fun insert(transaction: Transaction) {
         withContext(backgroundDispatcher) {
@@ -75,6 +82,11 @@ class TransactionDaoImpl(
         withContext(backgroundDispatcher) {
             queries.deleteByItemId(itemId)
         }
+    }
+
+    override suspend fun selectRecent(): Flow<List<Transaction>> {
+        return queries.selectRecent(transactionMapper).asFlow().mapToList()
+            .flowOn(backgroundDispatcher)
     }
 
     override suspend fun count(): Flow<Long> {
