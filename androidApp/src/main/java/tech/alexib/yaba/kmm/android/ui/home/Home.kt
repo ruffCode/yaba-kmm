@@ -12,6 +12,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -34,10 +35,13 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.android.ui.AddSpace
+import tech.alexib.yaba.kmm.android.ui.components.TransactionItem
 import tech.alexib.yaba.kmm.android.ui.theme.MoneyGreen
 import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.kmm.data.Initializer
 import tech.alexib.yaba.kmm.data.repository.AccountRepository
+import tech.alexib.yaba.kmm.data.repository.TransactionRepository
+import tech.alexib.yaba.kmm.model.Transaction
 import java.text.DecimalFormat
 
 class HomeViewModel(
@@ -45,13 +49,19 @@ class HomeViewModel(
 ) : ViewModel(), KoinComponent {
 
     private val accountRepository: AccountRepository by inject()
+    private val transactionRepository: TransactionRepository by inject()
     private val log: Kermit by inject { parametersOf("HomeViewModel") }
     private val loading = MutableStateFlow(false)
     private val error: MutableStateFlow<String?> = MutableStateFlow(null)
 
     val state: Flow<HomeScreenState> =
-        combine(loading, error, accountRepository.cashBalance()) { loading, error, cashBalance ->
-            HomeScreenState(loading, error, cashBalance)
+        combine(
+            loading,
+            error,
+            accountRepository.cashBalance(),
+            transactionRepository.recentTransactions()
+        ) { loading, error, cashBalance, recentTransactions ->
+            HomeScreenState(loading, error, cashBalance, recentTransactions)
         }
 
     fun init() {
@@ -67,7 +77,8 @@ class HomeViewModel(
 data class HomeScreenState(
     val loading: Boolean = false,
     val error: String? = null,
-    val cashBalance: Double = 0.0
+    val cashBalance: Double = 0.0,
+    val recentTransactions: List<Transaction> = emptyList()
 ) {
     companion object {
         val Empty = HomeScreenState()
@@ -119,15 +130,27 @@ private fun Home(
     ) {
 
         AddSpace()
-        
-        if(state.cashBalance == 0.0){
+
+        if (state.cashBalance == 0.0) {
             Button(onClick = {
                 actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
             }) {
                 Text(text = "Link Account")
             }
-        }else{
+        } else {
             TotalCashBalanceRow(state.cashBalance)
+            AddSpace()
+            RecentTransactions(transactions = state.recentTransactions) {
+
+
+            }
+            AddSpace()
+            Button(onClick = {
+                actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
+            }) {
+                Text(text = "Link Account")
+            }
+
         }
         AddSpace()
     }
@@ -163,6 +186,44 @@ fun TotalCashBalanceRow(
         }
     }
 
+}
+
+@Composable
+fun RecentTransactions(
+    transactions: List<Transaction>,
+    onSelectAllTransactions: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(align = Alignment.Top)
+            .padding(16.dp), elevation = 3.dp
+    ) {
+
+        Column(
+//        modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+
+            transactions.forEach {
+                Row {
+                    TransactionItem(transaction = it)
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                TextButton(onClick = { onSelectAllTransactions() }) {
+                    Text(text = "View all transactions")
+                }
+            }
+        }
+    }
 }
 
 val moneyFormat = DecimalFormat("#,###.00")

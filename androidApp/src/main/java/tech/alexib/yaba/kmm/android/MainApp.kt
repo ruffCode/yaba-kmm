@@ -25,7 +25,6 @@ class MainApp : Application() {
         single<Context> { this@MainApp }
         single<AppInfo> { AndroidAppInfo }
         single { apolloUrl }
-//        single<PlaidLinkService> { PlankLinkServiceImpl() }
         single {
             { Log.i("Startup", "Hello from Android/Kotlin!") }
         }
