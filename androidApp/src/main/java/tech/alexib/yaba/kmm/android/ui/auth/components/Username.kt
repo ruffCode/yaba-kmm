@@ -11,7 +11,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -42,6 +41,9 @@ fun Username(
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
         keyboardActions = KeyboardActions(
             onDone = {
+                onImeAction()
+            },
+            onNext = {
                 onImeAction()
             }
         )
@@ -77,6 +79,9 @@ fun Username(
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
         keyboardActions = KeyboardActions(
             onDone = {
+                onImeAction()
+            },
+            onNext = {
                 onImeAction()
             }
         )

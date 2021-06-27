@@ -1,4 +1,4 @@
-package tech.alexib.yaba.kmm.android.ui.auth
+package tech.alexib.yaba.kmm.android.ui.auth.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,8 +15,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
 import tech.alexib.yaba.kmm.android.R
-
-import tech.alexib.yaba.kmm.android.ui.home.SplashScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.theme.BlueSlate
 
 @Composable

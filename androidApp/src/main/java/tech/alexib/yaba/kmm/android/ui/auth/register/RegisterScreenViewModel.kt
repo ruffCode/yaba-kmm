@@ -13,14 +13,14 @@ import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.data.repository.AndroidAuthRepository
 import tech.alexib.yaba.kmm.data.repository.AuthResult
 
-class RegisterUserViewModel : ViewModel(), KoinComponent {
+class RegisterScreenViewModel : ViewModel(), KoinComponent {
 
     private val authRepository: AndroidAuthRepository by inject()
 
     private val log: Kermit by inject { parametersOf("RegisterUserViewModel") }
 
-    private val email = MutableStateFlow("alexi5@aol.com")
-    private val password = MutableStateFlow("passwordpassword")
+    private val email = MutableStateFlow("")
+    private val password = MutableStateFlow("")
     private val errorMessage = MutableStateFlow<String?>(null)
     private val registrationSuccess = MutableStateFlow(false)
     val state: Flow<RegistrationScreenState> = combine(
@@ -38,14 +38,14 @@ class RegisterUserViewModel : ViewModel(), KoinComponent {
 
     }
 
-    private fun checkCanSubmit(email: String, password: String): Boolean {
+    private fun credentialsAreValid(): Boolean {
 
         return when {
-            !Email(email).isValid() -> {
+            !Email(email.value).isValid() -> {
                 errorMessage.value = "Invalid email"
                 false
             }
-            password.length < 12 -> {
+            password.value.length < 12 -> {
                 errorMessage.value = "Password must be 12 characters or greater"
                 false
             }
@@ -56,7 +56,7 @@ class RegisterUserViewModel : ViewModel(), KoinComponent {
     fun register() {
         viewModelScope.launch {
 
-            if (checkCanSubmit(email.value, password.value)) {
+            if (credentialsAreValid()) {
 
                 when (val result = authRepository.register(email.value, password.value)) {
                     AuthResult.Success -> {

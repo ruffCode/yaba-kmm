@@ -12,8 +12,12 @@ import tech.alexib.yaba.kmm.data.Initializer
 import tech.alexib.yaba.kmm.data.InitializerImpl
 import tech.alexib.yaba.kmm.data.api.apiModule
 import tech.alexib.yaba.kmm.data.db.dbModule
+import tech.alexib.yaba.kmm.data.repository.AccountRepository
+import tech.alexib.yaba.kmm.data.repository.AccountRepositoryImpl
 import tech.alexib.yaba.kmm.data.repository.AuthRepository
 import tech.alexib.yaba.kmm.data.repository.AuthRepositoryImpl
+import tech.alexib.yaba.kmm.data.repository.TransactionRepository
+import tech.alexib.yaba.kmm.data.repository.TransactionRepositoryImpl
 
 fun initKoin(appModule: Module): KoinApplication {
 
@@ -44,6 +48,8 @@ fun initKoin(appModule: Module): KoinApplication {
 val repositoryModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get(), getWith("AuthRepository")) }
     single<Initializer> { InitializerImpl(get()) }
+    single<AccountRepository> { AccountRepositoryImpl() }
+    single<TransactionRepository> { TransactionRepositoryImpl() }
 }
 
 internal inline fun <reified T> Scope.getWith(vararg params: Any?): T {

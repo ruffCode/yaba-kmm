@@ -3,12 +3,16 @@ package tech.alexib.yaba.kmm.android.ui.auth.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Kermit
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import tech.alexib.yaba.kmm.android.ui.auth.register.Email
+import tech.alexib.yaba.kmm.android.ui.auth.register.isValid
 import tech.alexib.yaba.kmm.data.repository.AndroidAuthRepository
 import tech.alexib.yaba.kmm.data.repository.AuthResult
 
@@ -18,14 +22,57 @@ class LoginScreenViewModel(
 
     private val log: Kermit by inject { parametersOf("LoginScreenViewModel") }
 
-    private val loginResultFlow = MutableStateFlow<AuthResult?>(null)
-    val loginResult: StateFlow<AuthResult?> = loginResultFlow
+    private val email = MutableStateFlow("")
+    private val password = MutableStateFlow("passwordpassword")
+    private val errorMessage = MutableStateFlow<String?>(null)
+    private val loggedIn = MutableStateFlow(false)
 
-    fun login(email: String, password: String) {
-        viewModelScope.launch {
-            val result = authRepository.login(email, password)
-            log.d { result.toString() }
-            loginResultFlow.emit(result)
+    val state: Flow<LoginScreenState> =
+        combine(email, password, errorMessage, loggedIn) { email, password, error, loggedIn ->
+
+            LoginScreenState(
+                email = email,
+                password = password,
+                errorMessage = error,
+                loggedIn = loggedIn
+            )
+
+        }
+
+
+    fun login() {
+        if (credentialsAreValid()) {
+            viewModelScope.launch {
+                val result = authRepository.login(email.value, password.value)
+                log.d { result.toString() }
+                when (result) {
+                    is AuthResult.Success -> loggedIn.value = true
+                    is AuthResult.Error -> errorMessage.value = result.message
+                }
+            }
+        }
+    }
+
+    fun setEmail(input: String) {
+        email.value = input
+    }
+
+    fun setPassword(input: String) {
+        password.value = input
+    }
+
+    private fun credentialsAreValid(): Boolean {
+
+        return when {
+            !Email(email.value).isValid() -> {
+                errorMessage.value = "Invalid email"
+                false
+            }
+            password.value.length < 12 -> {
+                errorMessage.value = "Password must be 12 characters or greater"
+                false
+            }
+            else -> true
         }
     }
 }

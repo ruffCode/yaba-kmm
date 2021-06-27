@@ -18,13 +18,13 @@ import tech.alexib.yaba.kmm.model.TransactionType
 
 internal interface TransactionDao {
     suspend fun insert(transaction: Transaction)
-    suspend fun selectAll(): Flow<List<Transaction>>
-    suspend fun selectById(id: Uuid): Flow<Transaction>
-    suspend fun selectByAccountId(accountId: Uuid): Flow<List<Transaction>>
-    suspend fun selectByItemId(itemId: Uuid): Flow<List<Transaction>>
+    fun selectAll(): Flow<List<Transaction>>
+    fun selectById(id: Uuid): Flow<Transaction>
+    fun selectByAccountId(accountId: Uuid): Flow<List<Transaction>>
+    fun selectByItemId(itemId: Uuid): Flow<List<Transaction>>
     suspend fun deleteByItemId(itemId: Uuid)
-    suspend fun count(): Flow<Long>
-    suspend fun selectRecent(): Flow<List<Transaction>>
+    fun count(): Flow<Long>
+    fun selectRecent(): Flow<List<Transaction>>
 }
 
 internal class TransactionDaoImpl(
@@ -58,22 +58,22 @@ internal class TransactionDaoImpl(
         }
     }
 
-    override suspend fun selectAll(): Flow<List<Transaction>> {
+    override fun selectAll(): Flow<List<Transaction>> {
         return queries.selectAll(transactionMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
-    override suspend fun selectById(id: Uuid): Flow<Transaction> {
+    override fun selectById(id: Uuid): Flow<Transaction> {
         return queries.selectById(id, transactionMapper).asFlow().mapToOne()
             .flowOn(backgroundDispatcher)
     }
 
-    override suspend fun selectByAccountId(accountId: Uuid): Flow<List<Transaction>> {
+    override fun selectByAccountId(accountId: Uuid): Flow<List<Transaction>> {
         return queries.selectByAccontId(accountId, transactionMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
-    override suspend fun selectByItemId(itemId: Uuid): Flow<List<Transaction>> {
+    override fun selectByItemId(itemId: Uuid): Flow<List<Transaction>> {
         return queries.selectByItemId(itemId, transactionMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
@@ -84,12 +84,12 @@ internal class TransactionDaoImpl(
         }
     }
 
-    override suspend fun selectRecent(): Flow<List<Transaction>> {
+    override fun selectRecent(): Flow<List<Transaction>> {
         return queries.selectRecent(transactionMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
-    override suspend fun count(): Flow<Long> {
+    override fun count(): Flow<Long> {
         return queries.count().asFlow().mapToOne().flowOn(backgroundDispatcher)
     }
 

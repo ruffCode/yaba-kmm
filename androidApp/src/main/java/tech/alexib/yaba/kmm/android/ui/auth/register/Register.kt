@@ -3,15 +3,16 @@ package tech.alexib.yaba.kmm.android.ui.auth.register
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
@@ -39,9 +40,8 @@ import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
 
 @Immutable
 data class RegistrationScreenState(
-    val email: String = "alexi6@aol.com",
-    val password: String = "passwordpassword",
-    val canSubmit: Boolean = false,
+    val email: String = "",
+    val password: String = "",
     val errorMessage: String? = null,
     val registrationSuccess: Boolean = false
 ) {
@@ -65,13 +65,13 @@ fun RegistrationScreen(
     navigateToLogin: () -> Unit,
     navigateHome: () -> Unit
 ) {
-    val viewModel: RegisterUserViewModel = getViewModel()
+    val viewModel: RegisterScreenViewModel = getViewModel()
     RegisterScreen(viewModel, navigateToLogin, navigateHome)
 }
 
 @Composable
 private fun RegisterScreen(
-    viewModel: RegisterUserViewModel,
+    viewModel: RegisterScreenViewModel,
     navigateToLogin: () -> Unit,
     navigateHome: () -> Unit
 
@@ -99,78 +99,98 @@ private fun RegisterScreen(
         actioner(RegisterScreenAction.NavigateHomeAction)
     }
     Scaffold(modifier = Modifier.fillMaxSize()) {
-
-        Column(
+        var email by remember { mutableStateOf(TextFieldValue(state.email)) }
+        var password by remember { mutableStateOf(TextFieldValue(state.password)) }
+        val focusRequester = remember { FocusRequester() }
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-
                 .background(color = MaterialTheme.colors.surface)
                 .padding(16.dp),
+
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
-            var email by remember { mutableStateOf(TextFieldValue(state.email)) }
-            var password by remember { mutableStateOf(TextFieldValue(state.password)) }
-            val focusRequester = remember { FocusRequester() }
 
-            Text(text = "Welcome To", style = MaterialTheme.typography.h5, color = BlueSlate)
-            AddSpace()
-            Image(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .height(200.dp),
-                painter = rememberCoilPainter(
-                    R.drawable.yaba_y_bl,
-                    previewPlaceholder = R.drawable.yaba_y_bl
-                ),
-                contentScale = ContentScale.Fit,
-                contentDescription = "YABA logo",
-            )
-
-
-            Username(usernameState = email, onValueChange = { value ->
-                email = value
-                actioner(RegisterScreenAction.SetEmail(value.text))
-            }, onImeAction = { focusRequester.requestFocus() })
-            AddSpace()
-            Password(
-                label = "Password",
-                passwordState = password,
-                onValueChange = { value ->
-                    password = value
-                    actioner(RegisterScreenAction.SetPassword(value.text))
-                },
-                modifier = Modifier.focusRequester(focusRequester),
-                onImeAction = { actioner(RegisterScreenAction.RegisterAction) }
-            )
-            AddSpace()
-
-            state.errorMessage?.let {
-                Text(text = it, style = TextStyle(color = MaterialTheme.colors.error))
+//            item { AddSpace(100.dp) }
+            item {
+                Text(
+                    text = "Welcome To",
+                    style = MaterialTheme.typography.h5,
+                    color = BlueSlate
+                )
             }
-            AddSpace()
-            Button(
 
-                onClick = { actioner(RegisterScreenAction.RegisterAction) },
-                modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth(),
-//                enabled = state.canSubmit
-            ) {
-                Text(text = "Register")
+            item {
+                Image(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .height(200.dp),
+                    painter = rememberCoilPainter(
+                        R.drawable.yaba_y_bl,
+                        previewPlaceholder = R.drawable.yaba_y_bl
+                    ),
+                    contentScale = ContentScale.Fit,
+                    contentDescription = "YABA logo",
+                )
             }
-            AddSpace()
-            Button(
 
-                onClick = { actioner(RegisterScreenAction.NavigateToLoginAction) },
-                modifier = Modifier
-                    .height(20.dp)
-                    .fillMaxWidth(),
-//                enabled = state.canSubmit
-            ) {
-                Text(text = "Login")
+
+            item {
+                Username(usernameState = email, onValueChange = { value ->
+                    email = value
+                    actioner(RegisterScreenAction.SetEmail(value.text))
+                }, onImeAction = { focusRequester.requestFocus() })
             }
-            AddSpace(100.dp)
+            item { AddSpace() }
+            item {
+                Password(
+                    label = "Password",
+                    passwordState = password,
+                    onValueChange = { value ->
+                        password = value
+                        actioner(RegisterScreenAction.SetPassword(value.text))
+                    },
+                    modifier = Modifier.focusRequester(focusRequester),
+                    onImeAction = { actioner(RegisterScreenAction.RegisterAction) }
+                )
+            }
+            item { AddSpace() }
+
+            item {
+                state.errorMessage?.let {
+                    Text(text = it, style = TextStyle(color = MaterialTheme.colors.error))
+                }
+            }
+
+            item { AddSpace() }
+            item {
+                Button(
+
+                    onClick = { actioner(RegisterScreenAction.RegisterAction) },
+                    modifier = Modifier
+                        .height(50.dp)
+                        .fillMaxWidth(),
+                ) {
+                    Text(text = "Register")
+                }
+            }
+
+            item { AddSpace() }
+
+
+            item {
+                TextButton(
+
+                    onClick = { actioner(RegisterScreenAction.NavigateToLoginAction) },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                ) {
+                    Text(text = "Already have an account?")
+                }
+            }
+            item { AddSpace(100.dp) }
+
         }
     }
 }

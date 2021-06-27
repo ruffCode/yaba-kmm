@@ -18,12 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.ui.AddSpace
-import tech.alexib.yaba.kmm.android.ui.BankLogo
+import tech.alexib.yaba.kmm.android.ui.components.BankLogo
 import tech.alexib.yaba.kmm.android.util.base64ToBitmap
 
 @Composable
@@ -69,7 +70,7 @@ fun PlaidLinkResultScreen(
             .fillMaxSize()
             .padding(vertical = 100.dp, horizontal = 16.dp)
     ) {
-        LazyColumn {
+        LazyColumn(modifier = Modifier.align(Alignment.TopCenter)) {
             item {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                     Text(
@@ -96,18 +97,17 @@ fun PlaidLinkResultScreen(
                 }
             }
 
-            item {
-                Button(
-                    onClick = {
-                        handleSubmit()
-                    },
-                    modifier = Modifier
-                        .padding(top = 50.dp, bottom = 50.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text(text = "Continue")
-                }
-            }
+        }
+        Button(
+            onClick = {
+                handleSubmit()
+            },
+            modifier = Modifier
+                .padding(top = 50.dp)
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        ) {
+            Text(text = "Continue")
         }
     }
 }

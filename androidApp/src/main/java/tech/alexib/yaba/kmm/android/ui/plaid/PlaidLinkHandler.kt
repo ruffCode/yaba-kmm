@@ -1,4 +1,4 @@
-package tech.alexib.yaba.kmm.android.ui.plaid_items
+package tech.alexib.yaba.kmm.android.ui.plaid
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher

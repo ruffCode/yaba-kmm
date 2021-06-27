@@ -132,6 +132,8 @@ class InitializerImpl(
             data.transactions.forEach {
                 transactionDao.insert(it)
             }
+        }.getOrElse {
+            log.e { "Error inserting user data: ${it.message}" }
         }
     }
 }
