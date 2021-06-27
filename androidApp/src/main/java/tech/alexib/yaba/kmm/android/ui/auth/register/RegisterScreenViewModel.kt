@@ -13,14 +13,14 @@ import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.data.repository.AndroidAuthRepository
 import tech.alexib.yaba.kmm.data.repository.AuthResult
 
-class RegisterUserViewModel : ViewModel(), KoinComponent {
+class RegisterScreenViewModel : ViewModel(), KoinComponent {
 
     private val authRepository: AndroidAuthRepository by inject()
 
     private val log: Kermit by inject { parametersOf("RegisterUserViewModel") }
 
-    private val email = MutableStateFlow("alexi5@aol.com")
-    private val password = MutableStateFlow("passwordpassword")
+    private val email = MutableStateFlow("")
+    private val password = MutableStateFlow("")
     private val errorMessage = MutableStateFlow<String?>(null)
     private val registrationSuccess = MutableStateFlow(false)
     val state: Flow<RegistrationScreenState> = combine(

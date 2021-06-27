@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.component.KoinComponent
@@ -42,6 +43,7 @@ class SettingsScreenViewModel : ViewModel(), KoinComponent {
     fun logout() {
         viewModelScope.launch {
             authRepository.sessionManager.logout()
+            delay(300)
         }
     }
 }
