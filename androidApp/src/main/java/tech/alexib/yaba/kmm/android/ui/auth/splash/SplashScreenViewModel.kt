@@ -7,12 +7,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import mu.KotlinLogging
 import tech.alexib.yaba.kmm.android.AuthRoute
 import tech.alexib.yaba.kmm.android.Route
 import tech.alexib.yaba.kmm.data.repository.AndroidAuthRepository
 
-private val logger = KotlinLogging.logger { }
 
 class SplashScreenViewModel(
     private val navHostController: NavHostController,
@@ -26,29 +24,18 @@ class SplashScreenViewModel(
 
 
     fun splashScreenNavigation() = viewModelScope.launch {
-
+        delay(1000)
         when (isLoggedIn().first()) {
 
-            true -> {
-                delay(1000)
-                navHostController.navigate(Route.Home.route) { launchSingleTop = true }
-            }
+            true -> navHostController.navigate(Route.Home.route) { launchSingleTop = true }
             false -> {
                 when (showOnBoarding().first()) {
-                    true -> {
-                        delay(1000)
-                        navHostController.navigate(AuthRoute.Registration.route)
+                    true -> navHostController.navigate(AuthRoute.Registration.route)
+                    else -> navHostController.navigate(AuthRoute.Login.route) {
+                        launchSingleTop = true
                     }
-                    else -> {
-                        delay(1000)
-                        navHostController.navigate(AuthRoute.Login.route) { launchSingleTop = true }
-                    }
-
                 }
-
             }
         }
     }
-
-
 }
