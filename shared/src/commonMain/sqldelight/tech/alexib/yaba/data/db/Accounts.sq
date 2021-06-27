@@ -1,0 +1,41 @@
+import com.benasher44.uuid.Uuid;
+import tech.alexib.yaba.kmm.model.AccountSubtype;
+import tech.alexib.yaba.kmm.model.AccountType;
+
+
+CREATE TABLE AccountEntity (
+id TEXT AS Uuid PRIMARY KEY NOT NULL,
+name TEXT NOT NULL,
+mask TEXT NOT NULL,
+current_balance REAL AS Double NOT NULL,
+available_balance REAL AS Double NOT NULL,
+item_id TEXT AS Uuid NOT NULL,
+type TEXT AS AccountType NOT NULL,
+subtype TEXT AS AccountSubtype NOT NULL,
+hidden INTEGER AS Boolean NOT NULL DEFAULT 1,
+FOREIGN KEY (item_id) REFERENCES ItemEntity(id)
+);
+
+
+insertAccount:
+INSERT OR REPLACE INTO AccountEntity
+VALUES ?;
+
+selectAll:
+SELECT * FROM AccountEntity;
+
+selectById:
+SELECT * FROM AccountEntity
+WHERE id =?;
+
+selectAllByItemId:
+SELECT * FROM AccountEntity
+WHERE item_id = ?;
+
+selectDetailByItemId:
+SELECT a.id,a.item_id, a.subtype,a.hidden,a.name, a.mask FROM AccountEntity a
+WHERE a.item_id = ?;
+
+deleteByItemId:
+DELETE FROM AccountEntity
+WHERE item_id = ?;

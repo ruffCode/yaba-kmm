@@ -1,0 +1,59 @@
+import com.benasher44.uuid.Uuid;
+import kotlinx.datetime.LocalDate;
+import tech.alexib.yaba.kmm.model.TransactionType;
+
+CREATE TABLE TransactionEntity (
+id TEXT AS Uuid NOT NULL PRIMARY KEY,
+name TEXT NOT NULL,
+type TEXT AS TransactionType NOT NULL,
+amount REAL AS Double NOT NULL,
+date INTEGER AS LocalDate NOT NULL,
+account_id TEXT AS Uuid NOT NULL,
+item_id TEXT AS Uuid NOT NULL,
+category TEXT,
+subcategory TEXT,
+iso_currency_code TEXT,
+pending INTEGER AS Boolean DEFAULT 1,
+FOREIGN KEY(account_id) REFERENCES AccountEntity(id),
+FOREIGN KEY(item_id) REFERENCES ItemEntity(id)
+);
+
+
+insert:
+INSERT OR REPLACE INTO TransactionEntity
+VALUES ?;
+
+selectAll:
+SELECT *
+FROM TransactionEntity
+ORDER BY date DESC;
+
+selectRecent:
+SELECT *
+FROM TransactionEntity
+ORDER BY date DESC
+LIMIT 10;
+
+selectById:
+SELECT *
+FROM TransactionEntity
+WHERE id = ?;
+
+selectByAccontId:
+SELECT *
+FROM TransactionEntity
+WHERE account_id = ?
+ORDER BY date DESC;
+
+selectByItemId:
+SELECT *
+FROM TransactionEntity
+WHERE item_id = ?
+ORDER BY date DESC;
+
+count:
+SELECT COUNT(*) FROM TransactionEntity;
+
+deleteByItemId:
+DELETE FROM TransactionEntity
+WHERE item_id = ?;

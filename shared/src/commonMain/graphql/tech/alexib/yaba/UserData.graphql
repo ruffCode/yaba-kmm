@@ -1,0 +1,79 @@
+fragment Institution on Institution{
+    institutionId
+    name
+    logo
+    primaryColor
+}
+
+query UserTransactions{
+    transactionsByUser{
+        type
+        amount
+        date
+        accountId
+        itemId
+        id
+        category
+        subcategory
+    }
+}
+
+query UserAccounts{
+    accountsByUser{
+        id
+        name
+        currentBalance
+        availableBalance
+        mask
+        itemId
+        type
+        subtype
+        hidden
+    }
+}
+
+query AllUserData{
+    me{
+        email
+        accounts{
+            id
+            name
+            currentBalance
+            availableBalance
+            mask
+            itemId
+            type
+            subtype
+            hidden
+        }
+        items{
+            id
+            plaidInstitutionId
+            institution{
+                institutionId
+                name
+                logo
+                primaryColor
+            }
+
+        }
+        transactions{
+            name
+            id
+            type
+            amount
+            date
+            accountId
+            itemId
+            category
+            pending
+            subcategory
+            isoCurrencyCode
+        }
+    }
+
+}
+
+mutation DeleteItem($id:UUID!){
+    itemDelete(itemId:$id)
+}
