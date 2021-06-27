@@ -63,7 +63,7 @@ class ApolloApi(
                 mapOf(
                     CustomType.UUID to uuidAdapter,
                     CustomType.ID to uuidAdapter,
-//                    CustomType.LOCALDATE to localDateAdapter
+                    CustomType.LOCALDATE to localDateAdapter
                 )
             )
         )
