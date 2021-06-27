@@ -1,8 +1,6 @@
 fragment Institution on Institution{
     institutionId
     name
-    products
-    countryCodes
     logo
     primaryColor
 }
@@ -22,12 +20,15 @@ query UserTransactions{
 
 query UserAccounts{
     accountsByUser{
+        id
         name
-        officialName
         currentBalance
         availableBalance
-        id
-
+        mask
+        itemId
+        type
+        subtype
+        hidden
     }
 }
 
@@ -44,12 +45,10 @@ query AllUserData{
             type
             subtype
             hidden
-
         }
         items{
             id
             plaidInstitutionId
-            status
             institution{
                 institutionId
                 name
