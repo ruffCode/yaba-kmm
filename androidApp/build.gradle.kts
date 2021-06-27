@@ -60,11 +60,25 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+//            buildConfigField("String","APOLLO_URL","\"https://yabasandbox.alexib.dev/graphql\"")
         }
         debug {
             isMinifyEnabled = false
             isDebuggable = true
             matchingFallbacks += "release"
+//            buildConfigField("String","APOLLO_URL","\"https://ruffrevival.ngrok.io/graphql\"")
+        }
+
+    }
+    flavorDimensions("environment")
+    productFlavors{
+        create("prod"){
+            dimension = "environment"
+            buildConfigField("String","APOLLO_URL","\"https://yabasandbox.alexib.dev/graphql\"")
+        }
+        create("dev"){
+            dimension = "environment"
+            buildConfigField("String","APOLLO_URL","\"https://ruffrevival.ngrok.io/graphql\"")
         }
     }
 

@@ -18,9 +18,9 @@ import tech.alexib.yaba.kmm.di.initKoin
 
 class MainApp : Application() {
 
-    private val apolloUrl: ApolloUrl =
-        if (BuildConfig.DEBUG) ApolloUrl("https://ruffrevival.ngrok.io/graphql")
-        else ApolloUrl("https://yabasandbox.alexib.dev/graphql")
+    private val apolloUrl: ApolloUrl =ApolloUrl( BuildConfig.APOLLO_URL)
+//        if (BuildConfig.DEBUG) ApolloUrl("https://ruffrevival.ngrok.io/graphql")
+//        else ApolloUrl("https://yabasandbox.alexib.dev/graphql")
     private val appModule = module {
         single<Context> { this@MainApp }
         single<AppInfo> { AndroidAppInfo }
