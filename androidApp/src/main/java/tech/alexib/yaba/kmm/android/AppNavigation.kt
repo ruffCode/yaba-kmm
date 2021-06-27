@@ -14,11 +14,12 @@ import androidx.navigation.compose.navArgument
 import androidx.navigation.navigation
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.kmm.android.ui.auth.Splash
+import tech.alexib.yaba.kmm.android.ui.auth.splash.Splash
 import tech.alexib.yaba.kmm.android.ui.auth.login.Login
 import tech.alexib.yaba.kmm.android.ui.auth.register.RegistrationScreen
+import tech.alexib.yaba.kmm.android.ui.auth.splash.SplashScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.home.Home
-import tech.alexib.yaba.kmm.android.ui.home.SplashScreenViewModel
+
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidItem
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkResultScreen
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkScreen
@@ -86,7 +87,7 @@ fun AppNavigation(
             }
             composable(AuthRoute.Login.route) {
                 BackHandler {
-                    handleBack()
+                    finishActivity()
                 }
                 Login({
                     navController.navigate(AuthRoute.Registration.route)

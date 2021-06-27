@@ -7,9 +7,9 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import tech.alexib.yaba.kmm.AppInfo
 import tech.alexib.yaba.kmm.android.ui.auth.login.LoginScreenViewModel
-import tech.alexib.yaba.kmm.android.ui.auth.register.RegisterUserViewModel
+import tech.alexib.yaba.kmm.android.ui.auth.register.RegisterScreenViewModel
+import tech.alexib.yaba.kmm.android.ui.auth.splash.SplashScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.home.HomeViewModel
-import tech.alexib.yaba.kmm.android.ui.home.SplashScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkResultScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkViewModel
 import tech.alexib.yaba.kmm.android.ui.settings.SettingsScreenViewModel
@@ -31,7 +31,7 @@ class MainApp : Application() {
 
         viewModel { parameters -> SplashScreenViewModel(parameters.get(), get()) }
         viewModel { LoginScreenViewModel(get()) }
-        viewModel { RegisterUserViewModel() }
+        viewModel { RegisterScreenViewModel() }
         viewModel { SettingsScreenViewModel() }
         viewModel { PlaidLinkViewModel(get()) }
         viewModel { PlaidLinkResultScreenViewModel() }

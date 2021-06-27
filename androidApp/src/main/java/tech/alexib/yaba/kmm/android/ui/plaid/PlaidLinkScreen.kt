@@ -14,7 +14,6 @@ import com.plaid.link.result.LinkResult
 import kotlinx.parcelize.Parcelize
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.ui.defaultLogoBase64
-import tech.alexib.yaba.kmm.android.ui.plaid_items.PlaidLinkHandler
 import tech.alexib.yaba.kmm.model.response.PlaidItemCreateResponse
 
 

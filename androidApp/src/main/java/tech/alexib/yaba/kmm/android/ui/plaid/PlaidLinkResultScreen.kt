@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.ui.AddSpace
-import tech.alexib.yaba.kmm.android.ui.BankLogo
+import tech.alexib.yaba.kmm.android.ui.components.BankLogo
 import tech.alexib.yaba.kmm.android.util.base64ToBitmap
 
 @Composable

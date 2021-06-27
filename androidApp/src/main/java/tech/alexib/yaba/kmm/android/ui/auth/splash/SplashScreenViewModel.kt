@@ -1,4 +1,4 @@
-package tech.alexib.yaba.kmm.android.ui.home
+package tech.alexib.yaba.kmm.android.ui.auth.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -23,55 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Kermit
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.android.ui.AddSpace
 import tech.alexib.yaba.kmm.android.ui.components.TransactionItem
 import tech.alexib.yaba.kmm.android.ui.theme.MoneyGreen
 import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
-import tech.alexib.yaba.kmm.data.Initializer
-import tech.alexib.yaba.kmm.data.repository.AccountRepository
-import tech.alexib.yaba.kmm.data.repository.TransactionRepository
 import tech.alexib.yaba.kmm.model.Transaction
 import java.text.DecimalFormat
-
-class HomeViewModel(
-    private val initializer: Initializer
-) : ViewModel(), KoinComponent {
-
-    private val accountRepository: AccountRepository by inject()
-    private val transactionRepository: TransactionRepository by inject()
-    private val log: Kermit by inject { parametersOf("HomeViewModel") }
-    private val loading = MutableStateFlow(false)
-    private val error: MutableStateFlow<String?> = MutableStateFlow(null)
-
-    val state: Flow<HomeScreenState> =
-        combine(
-            loading,
-            error,
-            accountRepository.cashBalance(),
-            transactionRepository.recentTransactions()
-        ) { loading, error, cashBalance, recentTransactions ->
-            HomeScreenState(loading, error, cashBalance, recentTransactions)
-        }
-
-    fun init() {
-        viewModelScope.launch {
-            loading.value = true
-            initializer.init()
-            loading.value = false
-        }
-    }
-}
 
 @Immutable
 data class HomeScreenState(
@@ -201,11 +159,10 @@ fun RecentTransactions(
     ) {
 
         Column(
-//        modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
+//only pulls 5 transactions
             transactions.forEach {
                 Row {
                     TransactionItem(transaction = it)
