@@ -17,14 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import tech.alexib.yaba.kmm.data.repository.AndroidAuthRepository
 
 sealed class SettingsScreenAction {
     object Logout : SettingsScreenAction()
@@ -33,18 +26,6 @@ sealed class SettingsScreenAction {
 
     sealed class NavDestination {
         object Auth : NavDestination()
-    }
-}
-
-class SettingsScreenViewModel : ViewModel(), KoinComponent {
-
-    private val authRepository: AndroidAuthRepository by inject()
-
-    fun logout() {
-        viewModelScope.launch {
-            authRepository.sessionManager.logout()
-            delay(300)
-        }
     }
 }
 

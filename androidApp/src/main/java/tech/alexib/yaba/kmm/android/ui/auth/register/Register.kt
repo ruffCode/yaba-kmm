@@ -40,9 +40,8 @@ import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
 
 @Immutable
 data class RegistrationScreenState(
-    val email: String = "alexi6@aol.com",
-    val password: String = "passwordpassword",
-    val canSubmit: Boolean = false,
+    val email: String = "",
+    val password: String = "",
     val errorMessage: String? = null,
     val registrationSuccess: Boolean = false
 ) {

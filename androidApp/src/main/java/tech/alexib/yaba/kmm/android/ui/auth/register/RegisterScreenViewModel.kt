@@ -38,14 +38,14 @@ class RegisterScreenViewModel : ViewModel(), KoinComponent {
 
     }
 
-    private fun checkCanSubmit(email: String, password: String): Boolean {
+    private fun credentialsAreValid(): Boolean {
 
         return when {
-            !Email(email).isValid() -> {
+            !Email(email.value).isValid() -> {
                 errorMessage.value = "Invalid email"
                 false
             }
-            password.length < 12 -> {
+            password.value.length < 12 -> {
                 errorMessage.value = "Password must be 12 characters or greater"
                 false
             }
@@ -56,7 +56,7 @@ class RegisterScreenViewModel : ViewModel(), KoinComponent {
     fun register() {
         viewModelScope.launch {
 
-            if (checkCanSubmit(email.value, password.value)) {
+            if (credentialsAreValid()) {
 
                 when (val result = authRepository.register(email.value, password.value)) {
                     AuthResult.Success -> {

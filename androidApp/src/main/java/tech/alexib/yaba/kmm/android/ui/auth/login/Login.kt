@@ -189,94 +189,89 @@ private fun LoginScreen(
 }
 
 
-@Composable
-private fun LoginScreen(
-    modifier: Modifier = Modifier,
-    errorMessage: String? = null,
-    login: (email: String, password: String) -> Unit,
-    register: () -> Unit
-) {
-    val username = remember { mutableStateOf(TextFieldValue("alexi2@aol.com")) }
-    val password = remember { mutableStateOf(TextFieldValue("password1234")) }
-    val focusRequester = remember { FocusRequester() }
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-
-            .background(color = MaterialTheme.colors.surface)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
-    ) {
-
-        item {
-            Text(
-                text = "Welcome To",
-                style = MaterialTheme.typography.h5,
-                color = BlueSlate
-            )
-        }
-        item {
-            Image(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .height(200.dp),
-                painter = rememberCoilPainter(
-                    R.drawable.yaba_y_bl,
-                    previewPlaceholder = R.drawable.yaba_y_bl
-                ),
-                contentScale = ContentScale.Fit,
-                contentDescription = "$",
-            )
-        }
-
-
-        item { Username(usernameState = username, onImeAction = { focusRequester.requestFocus() }) }
-        item { AddSpace() }
-        item {
-            Password(
-                label = "Password",
-                passwordState = password,
-                modifier = Modifier.focusRequester(focusRequester),
-                onImeAction = { login(username.value.text, password.value.text) }
-            )
-        }
-
-
-        item { AddSpace() }
-        item {
-            Button(
-                onClick = { login(username.value.text, password.value.text) },
-                modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(text = "Login")
-            }
-        }
-        errorMessage?.let {
-            item {
-                Text(text = errorMessage, style = TextStyle(color = MaterialTheme.colors.error))
-            }
-        }
-        item { AddSpace() }
-        item {
-            TextButton(
-                onClick = register,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text(text = "Don't have an account?")
-            }
-        }
-        item { AddSpace(100.dp) }
-
-
-    }
-}
-
-
-
-
-
-
+//@Composable
+//private fun LoginScreen(
+//    modifier: Modifier = Modifier,
+//    errorMessage: String? = null,
+//    login: (email: String, password: String) -> Unit,
+//    register: () -> Unit
+//) {
+//    val username = remember { mutableStateOf(TextFieldValue("alexi2@aol.com")) }
+//    val password = remember { mutableStateOf(TextFieldValue("password1234")) }
+//    val focusRequester = remember { FocusRequester() }
+//    LazyColumn(
+//        modifier = modifier
+//            .fillMaxSize()
+//
+//            .background(color = MaterialTheme.colors.surface)
+//            .padding(16.dp),
+//        horizontalAlignment = Alignment.CenterHorizontally,
+//        verticalArrangement = Arrangement.Bottom
+//    ) {
+//
+//        item {
+//            Text(
+//                text = "Welcome To",
+//                style = MaterialTheme.typography.h5,
+//                color = BlueSlate
+//            )
+//        }
+//        item {
+//            Image(
+//                modifier = Modifier
+//                    .padding(16.dp)
+//                    .height(200.dp),
+//                painter = rememberCoilPainter(
+//                    R.drawable.yaba_y_bl,
+//                    previewPlaceholder = R.drawable.yaba_y_bl
+//                ),
+//                contentScale = ContentScale.Fit,
+//                contentDescription = "$",
+//            )
+//        }
+//
+//
+//        item { Username(usernameState = username, onImeAction = { focusRequester.requestFocus() }) }
+//        item { AddSpace() }
+//        item {
+//            Password(
+//                label = "Password",
+//                passwordState = password.value,
+//                onValueChange = {}
+//                modifier = Modifier.focusRequester(focusRequester),
+//                onImeAction = { login(username.value.text, password.value.text) }
+//            )
+//        }
+//
+//
+//        item { AddSpace() }
+//        item {
+//            Button(
+//                onClick = { login(username.value.text, password.value.text) },
+//                modifier = Modifier
+//                    .height(50.dp)
+//                    .fillMaxWidth()
+//            ) {
+//                Text(text = "Login")
+//            }
+//        }
+//        errorMessage?.let {
+//            item {
+//                Text(text = errorMessage, style = TextStyle(color = MaterialTheme.colors.error))
+//            }
+//        }
+//        item { AddSpace() }
+//        item {
+//            TextButton(
+//                onClick = register,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            ) {
+//                Text(text = "Don't have an account?")
+//            }
+//        }
+//        item { AddSpace(100.dp) }
+//
+//
+//    }
+//}
