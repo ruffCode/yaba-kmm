@@ -6,18 +6,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
-import org.koin.dsl.module
 import tech.alexib.yaba.kmm.AppInfo
-import tech.alexib.yaba.kmm.data.Initializer
-import tech.alexib.yaba.kmm.data.InitializerImpl
-import tech.alexib.yaba.kmm.data.api.apiModule
-import tech.alexib.yaba.kmm.data.db.dbModule
-import tech.alexib.yaba.kmm.data.repository.AccountRepository
-import tech.alexib.yaba.kmm.data.repository.AccountRepositoryImpl
-import tech.alexib.yaba.kmm.data.repository.AuthRepository
-import tech.alexib.yaba.kmm.data.repository.AuthRepositoryImpl
-import tech.alexib.yaba.kmm.data.repository.TransactionRepository
-import tech.alexib.yaba.kmm.data.repository.TransactionRepositoryImpl
 
 fun initKoin(appModule: Module): KoinApplication {
 
@@ -45,12 +34,6 @@ fun initKoin(appModule: Module): KoinApplication {
     return koinApplication
 }
 
-val repositoryModule = module {
-    single<AuthRepository> { AuthRepositoryImpl(get(), getWith("AuthRepository")) }
-    single<Initializer> { InitializerImpl(get()) }
-    single<AccountRepository> { AccountRepositoryImpl() }
-    single<TransactionRepository> { TransactionRepositoryImpl() }
-}
 
 internal inline fun <reified T> Scope.getWith(vararg params: Any?): T {
     return get(parameters = { parametersOf(*params) })
