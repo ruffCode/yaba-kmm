@@ -13,17 +13,15 @@ import com.apollographql.apollo.network.ws.ApolloWebSocketFactory
 import com.apollographql.apollo.network.ws.ApolloWebSocketNetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import tech.alexib.yaba.kmm.data.auth.SessionManager
+import tech.alexib.yaba.kmm.data.auth.AuthTokenProvider
 import tech.alexib.yaba.kmm.di.ApolloUrl
-import tech.alexib.yaba.kmm.getSync
 import tech.alexib.yaba.type.CustomType
 
 
-class ApolloApi(
+internal class ApolloApi(
     private val serverUrl: ApolloUrl,
-    private val sessionManager: SessionManager,
     log: Kermit
-) {
+) : AuthTokenProvider() {
 
     @Suppress("CanBePrimaryConstructorProperty")
     private val log = log
@@ -32,20 +30,17 @@ class ApolloApi(
         ensureNeverFrozen()
     }
 
-    fun token(): String? = getSync { sessionManager.getToken() }
 
     fun client(): ApolloClient {
 
-        val token = token()
-        log.d { "TOKEN $token" }
         val headers = mutableMapOf(
             "Accept" to "application/json",
             "Content-Type" to "application/json",
 
             )
 
-        if(token!=null){
-            headers["Authorization"] = "Bearer $token"
+        authToken.value?.let {
+            headers["Authorization"] = "Bearer $it"
         }
 
         return ApolloClient(
