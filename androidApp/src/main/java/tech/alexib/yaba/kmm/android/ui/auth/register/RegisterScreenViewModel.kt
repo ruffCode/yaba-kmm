@@ -10,12 +10,12 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.kmm.data.repository.AndroidAuthRepository
+import tech.alexib.yaba.kmm.auth.SessionManagerAndroid
 import tech.alexib.yaba.kmm.data.repository.AuthResult
 
 class RegisterScreenViewModel : ViewModel(), KoinComponent {
 
-    private val authRepository: AndroidAuthRepository by inject()
+    private val sessionManager: SessionManagerAndroid by inject()
 
     private val log: Kermit by inject { parametersOf("RegisterUserViewModel") }
 
@@ -58,7 +58,7 @@ class RegisterScreenViewModel : ViewModel(), KoinComponent {
 
             if (credentialsAreValid()) {
 
-                when (val result = authRepository.register(email.value.trim(), password.value.trim())) {
+                when (val result = sessionManager.register(email.value, password.value)) {
                     AuthResult.Success -> {
                         log.d { "registration success" }
                         registrationSuccess.value = true
@@ -76,11 +76,11 @@ class RegisterScreenViewModel : ViewModel(), KoinComponent {
     }
 
     fun setEmail(input: String) {
-        email.value = input
+        email.value = input.trim()
     }
 
     fun setPassword(input: String) {
-        password.value = input
+        password.value = input.trim()
     }
 
 }

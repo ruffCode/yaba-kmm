@@ -10,7 +10,7 @@ import tech.alexib.yaba.kmm.android.ui.MainAppLayout
 import tech.alexib.yaba.kmm.android.ui.theme.BlueSlate
 import tech.alexib.yaba.kmm.android.ui.theme.SystemUiController
 import tech.alexib.yaba.kmm.android.ui.theme.YabaTheme
-import tech.alexib.yaba.kmm.data.repository.activityForBio
+import tech.alexib.yaba.kmm.auth.activityForBio
 
 
 class MainActivity : AppCompatActivity() {

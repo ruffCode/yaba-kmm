@@ -1,4 +1,4 @@
-package tech.alexib.yaba.kmm.data.repository
+package tech.alexib.yaba.kmm.auth
 
 import android.content.Context
 import android.widget.Toast
@@ -17,99 +17,39 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.BiometricSettings
-import tech.alexib.yaba.kmm.data.auth.SessionManager
-import tech.alexib.yaba.kmm.model.response.AuthResponse
+import tech.alexib.yaba.kmm.data.db.AppSettings
+import tech.alexib.yaba.kmm.data.repository.AuthApiRepository
+import tech.alexib.yaba.kmm.data.repository.AuthResult
+import tech.alexib.yaba.kmm.data.auth.BiometricsManager
 import java.util.concurrent.Executor
 
 lateinit var activityForBio: FragmentActivity
+class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
 
-
-private val promptInfo: BiometricPrompt.PromptInfo = BiometricPrompt.PromptInfo
-    .Builder()
-    .setTitle("Biometric login for yaba")
-    .setSubtitle("Log in using your biometric credential")
-    .setNegativeButtonText("Use account email and password")
-    .build()
-
-class AndroidAuthRepository(
-    log: Kermit,
-    val sessionManager: SessionManager,
-    private val ioDispatcher: CoroutineDispatcher,
-
-    ) : BiometricsRepository, KoinComponent {
     private val coroutineScope: CoroutineScope = MainScope()
-    private val log = log
-
+    private val log: Kermit by inject { parametersOf("BiometricsManagerAndroid") }
     private val biometricSettings: BiometricSettings by inject()
+    private val appSettings:AppSettings by inject()
     private val appContext: Context by inject()
-    private val authRepository: AuthRepository by inject()
+    private val authApiRepository: AuthApiRepository by inject()
+    private val ioDispatcher: CoroutineDispatcher by inject()
+    private var executor: Executor? = null
+    private var biometricPrompt: BiometricPrompt? = null
+    val bioEnabled: Flow<Boolean> = biometricSettings.isBioEnabled()
+
 
     init {
         ensureNeverFrozen()
-    }
-
-    private var executor: Executor? = null
-    private var biometricPrompt: BiometricPrompt? = null
-    val bioEnabled: Flow<Boolean> = sessionManager.isBioEnabled()
-
-
-    suspend fun login(email: String, password: String): AuthResult {
-        return runCatching {
-            handleAuthResponse(authRepository.login(email, password).getOrThrow())
-        }.getOrElse {
-            log.e(it) { "Login Error" }
-            AuthResult.Error("Authentication Error")
-        }
-
-    }
-
-    private suspend fun handleAuthResponse(authResponse: AuthResponse): AuthResult {
-        return if (authResponse.token.isNotEmpty()) {
-            sessionManager.setToken(authResponse.token)
-            sessionManager.setUserId(authResponse.id)
-            AuthResult.Success
-        } else AuthResult.Error("Authentication Error")
-    }
-
-
-    suspend fun register(email: String, password: String): AuthResult {
-        return runCatching {
-            handleAuthResponse(authRepository.register(email, password).getOrThrow())
-
-        }.getOrElse {
-            AuthResult.Error(it.message ?: "User Registration Error")
-        }
-
-    }
-
-    init {
         if (biometricPrompt == null) {
             coroutineScope.launch {
-                if (bioEnabled.first() && !sessionManager.isLoggedIn().first()) {
+                if (bioEnabled.first() && !appSettings.isLoggedIn().first()) {
                     setupBiometrics()
                 }
             }
         }
     }
-
-    suspend fun handleBioLogin(): AuthResult {
-        val tokenIsValid = withContext(ioDispatcher) {
-            sessionManager.bioToken()
-            val tokenVerificationResponse = authRepository.verifyToken().get()
-            if (tokenVerificationResponse?.id == null) {
-                sessionManager.handleUnsuccessfulBioLogin()
-                false
-            } else {
-                sessionManager.setUserId(tokenVerificationResponse.id)
-                true
-            }
-        }
-        return withContext(Dispatchers.Main) {
-            if (tokenIsValid) AuthResult.Success else AuthResult.Error("Unauthorized")
-        }
-    }
-
     override fun setupBiometrics(
 
     ) {
@@ -140,7 +80,7 @@ class AndroidAuthRepository(
                         ) {
                             super.onAuthenticationSucceeded(result)
                             coroutineScope.launch {
-                                sessionManager.enableBio()
+                                biometricSettings.enableBio()
                                 handleBioLogin()
                             }
 
@@ -174,4 +114,30 @@ class AndroidAuthRepository(
             ) ?: setupBiometrics()
         }
     }
+
+    override suspend fun handleBioLogin(): AuthResult {
+        val tokenIsValid = withContext(ioDispatcher) {
+            biometricSettings.bioToken()
+            val tokenVerificationResponse = authApiRepository.verifyToken().get()
+            if (tokenVerificationResponse?.id == null) {
+                biometricSettings.handleUnsuccessfulBioLogin()
+                false
+            } else {
+                appSettings.setUserId(tokenVerificationResponse.id)
+                true
+            }
+        }
+        return withContext(Dispatchers.Main) {
+            if (tokenIsValid) AuthResult.Success else AuthResult.Error("Unauthorized")
+        }
+    }
+
+    private val promptInfo: BiometricPrompt.PromptInfo = BiometricPrompt.PromptInfo
+        .Builder()
+        .setTitle("Biometric login for yaba")
+        .setSubtitle("Log in using your biometric credential")
+        .setNegativeButtonText("Use account email and password")
+        .setConfirmationRequired(false)
+        .build()
 }
+

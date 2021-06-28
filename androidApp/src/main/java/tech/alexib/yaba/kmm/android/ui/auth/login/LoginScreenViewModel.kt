@@ -12,11 +12,11 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.android.ui.auth.register.Email
 import tech.alexib.yaba.kmm.android.ui.auth.register.isValid
-import tech.alexib.yaba.kmm.data.repository.AndroidAuthRepository
+import tech.alexib.yaba.kmm.auth.SessionManagerAndroid
 import tech.alexib.yaba.kmm.data.repository.AuthResult
 
 class LoginScreenViewModel(
-    private val authRepository: AndroidAuthRepository
+    private val sessionManager: SessionManagerAndroid
 ) : ViewModel(), KoinComponent {
 
     private val log: Kermit by inject { parametersOf("LoginScreenViewModel") }
@@ -41,7 +41,7 @@ class LoginScreenViewModel(
     fun login() {
         if (credentialsAreValid()) {
             viewModelScope.launch {
-                val result = authRepository.login(email.value.trim(), password.value.trim())
+                val result = sessionManager.login(email.value, password.value)
                 log.d { result.toString() }
                 handleAuthResult(result)
             }
@@ -57,16 +57,16 @@ class LoginScreenViewModel(
 
     fun loginBio() {
         viewModelScope.launch {
-            handleAuthResult(authRepository.handleBioLogin())
+            handleAuthResult(sessionManager.handleBioLogin())
         }
     }
 
     fun setEmail(input: String) {
-        email.value = input
+        email.value = input.trim()
     }
 
     fun setPassword(input: String) {
-        password.value = input
+        password.value = input.trim()
     }
 
     private fun credentialsAreValid(): Boolean {

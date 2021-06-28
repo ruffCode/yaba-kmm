@@ -17,24 +17,23 @@ sealed class AuthResult {
 }
 
 
-interface AuthRepository {
+interface AuthApiRepository {
     suspend fun login(email: String, password: String): DataResult<AuthResponse>
     suspend fun register(email: String, password: String): DataResult<AuthResponse>
     suspend fun verifyToken(): DataResult<User>
 }
 
 
-class AuthRepositoryImpl(
+class AuthApiRepositoryImpl(
     private val authApi: AuthApi,
     log: Kermit
-) : AuthRepository {
+) : AuthApiRepository {
 
     init {
         ensureNeverFrozen()
     }
 
     private val log = log
-
 
     override suspend fun login(email: String, password: String): DataResult<AuthResponse> {
         val input = UserLoginInput(email, password)
@@ -73,7 +72,6 @@ class AuthRepositoryImpl(
                 ErrorResult(result.message)
             }
         }
-
     }
 
 }
