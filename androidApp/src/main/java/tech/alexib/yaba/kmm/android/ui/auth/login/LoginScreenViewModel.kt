@@ -41,7 +41,7 @@ class LoginScreenViewModel(
     fun login() {
         if (credentialsAreValid()) {
             viewModelScope.launch {
-                val result = authRepository.login(email.value, password.value)
+                val result = authRepository.login(email.value.trim(), password.value.trim())
                 log.d { result.toString() }
                 handleAuthResult(result)
             }

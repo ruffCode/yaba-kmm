@@ -58,7 +58,7 @@ class RegisterScreenViewModel : ViewModel(), KoinComponent {
 
             if (credentialsAreValid()) {
 
-                when (val result = authRepository.register(email.value, password.value)) {
+                when (val result = authRepository.register(email.value.trim(), password.value.trim())) {
                     AuthResult.Success -> {
                         log.d { "registration success" }
                         registrationSuccess.value = true
