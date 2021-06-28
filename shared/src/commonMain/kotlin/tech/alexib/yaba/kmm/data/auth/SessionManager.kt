@@ -1,6 +1,8 @@
 package tech.alexib.yaba.kmm.data.auth
 
+import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface SessionManager {
     fun isLoggedIn(): Flow<Boolean>
@@ -12,6 +14,9 @@ interface SessionManager {
     fun startLogoutTimer()
     fun isShowOnBoarding(): Flow<Boolean>
     suspend fun bioToken()
+    suspend fun handleUnsuccessfulBioLogin()
+    suspend fun setUserId(userId: Uuid)
+    val userId:StateFlow<Uuid>
 }
 
 
