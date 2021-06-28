@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,37 +20,47 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.BiometricSettings
+import tech.alexib.yaba.kmm.data.auth.BiometricsManager
 import tech.alexib.yaba.kmm.data.db.AppSettings
 import tech.alexib.yaba.kmm.data.repository.AuthApiRepository
 import tech.alexib.yaba.kmm.data.repository.AuthResult
-import tech.alexib.yaba.kmm.data.auth.BiometricsManager
 import java.util.concurrent.Executor
 
 lateinit var activityForBio: FragmentActivity
+
 class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
 
     private val coroutineScope: CoroutineScope = MainScope()
     private val log: Kermit by inject { parametersOf("BiometricsManagerAndroid") }
     private val biometricSettings: BiometricSettings by inject()
-    private val appSettings:AppSettings by inject()
+    private val appSettings: AppSettings by inject()
     private val appContext: Context by inject()
     private val authApiRepository: AuthApiRepository by inject()
     private val ioDispatcher: CoroutineDispatcher by inject()
     private var executor: Executor? = null
     private var biometricPrompt: BiometricPrompt? = null
-    val bioEnabled: Flow<Boolean> = biometricSettings.isBioEnabled()
 
 
     init {
         ensureNeverFrozen()
         if (biometricPrompt == null) {
             coroutineScope.launch {
-                if (bioEnabled.first() && !appSettings.isLoggedIn().first()) {
+                if (biometricSettings.isBioEnabled().first() && !appSettings.isLoggedIn().first()) {
                     setupBiometrics()
                 }
             }
         }
     }
+
+    override fun shouldPromptSetupBiometrics(): Flow<Boolean> {
+        return combine(
+            biometricSettings.isBioEnabled(),
+            biometricSettings.hasPromptedForBiometrics
+        ) { enabled, hasPrompted ->
+            !enabled && !hasPrompted
+        }
+    }
+
     override fun setupBiometrics(
 
     ) {

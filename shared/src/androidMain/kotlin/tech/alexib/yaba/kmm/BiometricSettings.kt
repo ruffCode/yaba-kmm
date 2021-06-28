@@ -32,10 +32,14 @@ internal class BiometricSettings : KoinComponent {
         clearBioToken()
     }
 
-    private suspend fun setHasPromptedBiometrics() {
+    suspend fun setHasPromptedBiometrics() {
         flowSettings.putBoolean(HAS_PROMPTED_FOR_BIOMETRICS, true)
     }
 
+
+    val hasPromptedForBiometrics: Flow<Boolean> = flowSettings.getBooleanFlow(
+        HAS_PROMPTED_FOR_BIOMETRICS, false
+    )
 
     fun isBioEnabled(): Flow<Boolean> = flowSettings.getBooleanFlow(IS_BIO_ENABLED, false)
     private suspend fun getBioToken() = flowSettings.getStringFlow(BIO_TOKEN, "").first()
@@ -57,11 +61,11 @@ internal class BiometricSettings : KoinComponent {
     }
 
 
-    suspend fun disableBio() {
+    private suspend fun disableBio() {
         setBioEnabled(false)
     }
 
-    suspend fun setBioToken(token: String) {
+    private suspend fun setBioToken(token: String) {
         if (isBioEnabled().first()) {
             flowSettings.putString(BIO_TOKEN, token.encrypt())
         }
@@ -70,6 +74,7 @@ internal class BiometricSettings : KoinComponent {
     private suspend fun clearBioToken() {
         flowSettings.putString(BIO_TOKEN, "")
     }
+
     suspend fun handleUnsuccessfulBioLogin() {
         disableBio()
         appSettings.clearAuthToken()

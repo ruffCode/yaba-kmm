@@ -54,7 +54,8 @@ data class LoginScreenState(
     val loggedIn: Boolean = false,
     val errorMessage: String? = null,
     val email: String = "",
-    val password: String = ""
+    val password: String = "",
+    val shouldPromptForBiometrics:Boolean = false
 ) {
     companion object {
         val Empty = LoginScreenState()

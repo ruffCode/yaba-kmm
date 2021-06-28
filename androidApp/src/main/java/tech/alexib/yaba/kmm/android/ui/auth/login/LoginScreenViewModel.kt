@@ -27,13 +27,20 @@ class LoginScreenViewModel(
     private val loggedIn = MutableStateFlow(false)
 
     val state: Flow<LoginScreenState> =
-        combine(email, password, errorMessage, loggedIn) { email, password, error, loggedIn ->
+        combine(
+            email,
+            password,
+            errorMessage,
+            loggedIn,
+            sessionManager.shouldPromptSetupBiometrics()
+        ) { email, password, error, loggedIn, shouldPromptForBiometrics ->
 
             LoginScreenState(
                 email = email,
                 password = password,
                 errorMessage = error,
-                loggedIn = loggedIn
+                loggedIn = loggedIn,
+                shouldPromptForBiometrics = shouldPromptForBiometrics
             )
         }
 
@@ -68,6 +75,7 @@ class LoginScreenViewModel(
     fun setPassword(input: String) {
         password.value = input.trim()
     }
+
 
     private fun credentialsAreValid(): Boolean {
 

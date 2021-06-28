@@ -1,0 +1,107 @@
+package tech.alexib.yaba.kmm.android.ui.auth.biometric
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Fingerprint
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
+import tech.alexib.yaba.kmm.android.ui.theme.YabaTheme
+
+@Composable
+fun BiometricSetupScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.primary)
+            .padding(16.dp)
+    ) {
+
+        Text(
+            text = "Would you like to enable biometric login?",
+            style = MaterialTheme.typography.h5.copy(
+                color = MaterialTheme.colors.onPrimary,
+                textAlign = TextAlign.Center,
+                lineHeight = 1.5.em
+            ),
+
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(bottom = 50.dp, top = 150.dp)
+        )
+
+        Icon(
+            Icons.Outlined.Fingerprint,
+            "fingerprint",
+            modifier = Modifier
+                .size(75.dp)
+                .align(Alignment.Center)
+,
+            tint = MaterialTheme.colors.onPrimary
+        )
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 16.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+
+            OutlinedButton(
+                onClick = {},
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
+                border = BorderStroke(2.dp, Color.White),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp, top = 100.dp)
+            ) {
+                Text(
+                    text = "Enable",
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.button,
+                    fontSize = 16.sp
+                )
+            }
+            TextButton(onClick = { }) {
+                Text(
+                    text = "Not now",
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.button,
+                    fontSize = 16.sp
+                )
+            }
+        }
+    }
+}
+
+
+@Preview
+@Composable
+fun BiometricSetupScreenPreview() {
+    YabaTheme {
+        BiometricSetupScreen()
+    }
+}
