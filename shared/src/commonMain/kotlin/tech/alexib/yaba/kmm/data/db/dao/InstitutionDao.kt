@@ -27,7 +27,6 @@ internal class InstitutionDaoImpl(
 
     init {
         ensureNeverFrozen()
-
     }
     override suspend fun insert(institution: Institution) {
         withContext(backgroundDispatcher) {

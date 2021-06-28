@@ -12,19 +12,21 @@ import kotlinx.coroutines.withContext
 import tech.alexib.yaba.data.db.ItemEntity
 import tech.alexib.yaba.data.db.ItemEntityQueries
 import tech.alexib.yaba.data.db.YabaDb
+import tech.alexib.yaba.kmm.data.db.sqldelight.transactionWithContext
 import tech.alexib.yaba.kmm.model.PlaidInstitutionId
 import tech.alexib.yaba.kmm.model.PlaidItem
 import tech.alexib.yaba.kmm.model.PlaidItemId
 
 internal interface ItemDao {
     suspend fun insert(item: ItemEntity)
-    suspend fun selectAll(): Flow<List<PlaidItem>>
+    suspend fun insert(items: List<ItemEntity>)
+    suspend fun selectAll(userId: Uuid): Flow<List<PlaidItem>>
     suspend fun selectById(id: Uuid): Flow<PlaidItem>
 }
 
 
 internal class ItemDaoImpl(
-    database: YabaDb,
+    private val database: YabaDb,
     private val backgroundDispatcher: CoroutineDispatcher
 ) : ItemDao {
     private val queries: ItemEntityQueries = database.itemEntityQueries
@@ -34,16 +36,24 @@ internal class ItemDaoImpl(
 
     }
 
+    override suspend fun insert(items: List<ItemEntity>) {
+        database.transactionWithContext(backgroundDispatcher) {
+            items.forEach {
+                queries.insert(it)
+            }
+        }
+    }
+
     override suspend fun insert(item: ItemEntity) {
         withContext(backgroundDispatcher) {
             queries.insert(
-               item
+                item
             )
         }
     }
 
-    override suspend fun selectAll(): Flow<List<PlaidItem>> {
-        return queries.selectAll(itemMapper).asFlow().mapToList()
+    override suspend fun selectAll(userId: Uuid): Flow<List<PlaidItem>> {
+        return queries.selectAll(userId, itemMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
@@ -56,6 +66,7 @@ internal class ItemDaoImpl(
         private val itemMapper = {
                 id: Uuid,
                 plaid_institution_id: String,
+                _: Uuid?,
                 name: String,
                 logo: String,
             ->
