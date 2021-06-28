@@ -1,18 +1,14 @@
 package tech.alexib.yaba.kmm.data.db
 
 import com.benasher44.uuid.Uuid
-import com.benasher44.uuid.uuid4
 import com.benasher44.uuid.uuidFrom
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.coroutines.FlowSettings
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 
 
 @ExperimentalSettingsApi
@@ -26,22 +22,27 @@ abstract class AppSettings {
         } else null
     }
 
-    val authToken: Flow<String?> by lazy {
-        flowSettings.getStringOrNullFlow(AUTH_TOKEN)
-    }
-    val showOnBoarding: Flow<Boolean> by lazy {
-        flowSettings.getBooleanFlow(SHOW_ONBOARDING, true)
+
+    fun showOnboarding(): Flow<Boolean> = flowSettings.getBooleanFlow(SHOW_ONBOARDING, true)
+
+    fun shouldPromptForBiometrics() {
+
     }
 
-    fun token(): Flow<String?> = flowSettings.getStringOrNullFlow("AUTH_TOKEN")
+    fun token(): Flow<String?> = flowSettings.getStringOrNullFlow(AUTH_TOKEN)
 
-    suspend fun tokenSync(): String? = token().firstOrNull()
+
+    private val authTokenFlow = MutableStateFlow<String?>(null)
+
+    val authToken: StateFlow<String?>
+        get() = authTokenFlow
 
     suspend fun clearAuthToken() {
         flowSettings.putString(AUTH_TOKEN, "")
+        authTokenFlow.emit(null)
     }
 
-    suspend fun setShowOnBoarding(show: Boolean) {
+    suspend fun setShowOnboarding(show: Boolean) {
         flowSettings.putBoolean(SHOW_ONBOARDING, show)
     }
 
@@ -57,7 +58,8 @@ abstract class AppSettings {
 
     suspend fun setToken(token: String) {
         flowSettings.putString(AUTH_TOKEN, token)
-        setShowOnBoarding(false)
+        authTokenFlow.emit(token)
+        setShowOnboarding(false)
     }
 
 
@@ -78,15 +80,20 @@ abstract class AppSettings {
         clearBioToken()
     }
 
+    private suspend fun setHasPromptedBiometrics() {
+        flowSettings.putBoolean(HAS_PROMPTED_FOR_BIOMETRICS, true)
+    }
+
     fun isBioEnabled(): Flow<Boolean> = flowSettings.getBooleanFlow(IS_BIO_ENABLED, false)
 
     companion object {
-        const val AUTH_TOKEN = "AUTH_TOKEN"
-        const val USER_ID = "USER_ID"
-        const val SHOW_ONBOARDING = "SHOW_ONBOARDING"
+        private const val AUTH_TOKEN = "AUTH_TOKEN"
+        private const val USER_ID = "USER_ID"
+        private const val SHOW_ONBOARDING = "SHOW_ONBOARDING"
         private const val TEST_TOKEN = "TEST_TOKEN"
         private const val BIO_TOKEN = "BIO_TOKEN"
         private const val IS_BIO_ENABLED = "IS_BIO_ENABLED"
+        private const val HAS_PROMPTED_FOR_BIOMETRICS = "HAS_PROMPTED_FOR_BIOMETRICS"
     }
 
 }

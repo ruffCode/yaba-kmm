@@ -17,7 +17,7 @@ interface AuthApi {
     suspend fun verifyToken(): Flow<ApolloResponse<User>>
 }
 
-class AuthApiImpl(
+internal class AuthApiImpl(
     private val apolloApi: ApolloApi
 ) : AuthApi {
     private val client by lazy { apolloApi.client() }

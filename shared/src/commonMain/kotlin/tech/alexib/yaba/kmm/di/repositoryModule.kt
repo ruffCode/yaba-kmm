@@ -13,7 +13,7 @@ import tech.alexib.yaba.kmm.data.repository.UserIdProvider
 
 val repositoryModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get(), getWith("AuthRepository")) }
-    single<Initializer> { InitializerImpl(get()) }
+    single<Initializer> { InitializerImpl() }
     single<AccountRepository> { AccountRepositoryImpl() }
     single<TransactionRepository> { TransactionRepositoryImpl() }
     single { UserIdProvider() }

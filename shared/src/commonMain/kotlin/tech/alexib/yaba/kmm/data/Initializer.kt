@@ -33,9 +33,10 @@ interface Initializer {
 }
 
 class InitializerImpl(
-    apolloApi: ApolloApi
+
 ) : Initializer, KoinComponent {
 
+    private val apolloApi: ApolloApi by inject()
     private val log: Kermit by inject { parametersOf("Initializer") }
     private val accountDao: AccountDao by inject()
     private val institutionDao: InstitutionDao by inject()

@@ -10,7 +10,7 @@ import tech.alexib.yaba.kmm.BiometricSettings
 import tech.alexib.yaba.kmm.YabaAppSettings
 import tech.alexib.yaba.kmm.auth.CipherWrapper
 import tech.alexib.yaba.kmm.auth.EncryptionManager
-import tech.alexib.yaba.kmm.auth.SessionManagerImpl
+import tech.alexib.yaba.kmm.auth.SessionManagerAndroid
 import tech.alexib.yaba.kmm.data.auth.SessionManager
 import tech.alexib.yaba.kmm.data.db.AppSettings
 import tech.alexib.yaba.kmm.data.db.DriverFactory
@@ -22,7 +22,7 @@ actual val platformModule: Module = module {
     single { createIoDispatcher() }
     single { EncryptionManager(getWith("EncryptionManager")) }
     single { CipherWrapper() }
-    single<SessionManager> { SessionManagerImpl(get()) }
+    single<SessionManager> { SessionManagerAndroid(get()) }
     single { AndroidAuthRepository(getWith("AndroidAuthRepository"), get(), get()) }
     single<AppSettings> { YabaAppSettings() }
     single { BiometricSettings() }
