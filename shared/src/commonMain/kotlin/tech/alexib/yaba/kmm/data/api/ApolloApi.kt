@@ -14,6 +14,7 @@ import com.apollographql.apollo.network.ws.ApolloWebSocketNetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import tech.alexib.yaba.kmm.data.auth.SessionManager
+import tech.alexib.yaba.kmm.di.ApolloUrl
 import tech.alexib.yaba.kmm.getSync
 import tech.alexib.yaba.type.CustomType
 

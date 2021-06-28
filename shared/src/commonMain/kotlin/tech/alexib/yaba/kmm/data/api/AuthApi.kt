@@ -5,6 +5,8 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import tech.alexib.yaba.LoginMutation
 import tech.alexib.yaba.RegisterMutation
+import tech.alexib.yaba.VerifyTokenQuery
+import tech.alexib.yaba.kmm.model.User
 import tech.alexib.yaba.kmm.model.response.AuthResponse
 import tech.alexib.yaba.model.request.UserLoginInput
 import tech.alexib.yaba.model.request.UserRegisterInput
@@ -12,6 +14,7 @@ import tech.alexib.yaba.model.request.UserRegisterInput
 interface AuthApi {
     suspend fun login(userLoginInput: UserLoginInput): Flow<ApolloResponse<AuthResponse>>
     suspend fun register(userRegisterInput: UserRegisterInput): Flow<ApolloResponse<AuthResponse>>
+    suspend fun verifyToken(): Flow<ApolloResponse<User>>
 }
 
 class AuthApiImpl(
@@ -44,6 +47,15 @@ class AuthApiImpl(
         }.getOrThrow()
     }
 
+    override suspend fun verifyToken(): Flow<ApolloResponse<User>> {
+        val query = VerifyTokenQuery()
+        return runCatching {
+            client.safeQuery(query) {
+                val data = it.me
+                User(data.id as Uuid, data.email)
+            }
+        }.getOrThrow()
+    }
 
     private fun LoginMutation.Login.toAuthResponse() = AuthResponse(
         id = id as Uuid,

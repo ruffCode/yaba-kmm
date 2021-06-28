@@ -86,6 +86,7 @@ class PlaidLinkViewModel(
                 institutionId = linkSuccess.metadata.institution!!.id,
                 publicToken = linkSuccess.publicToken
             )
+            Log.d("PLAID",request.toString())
 
             when (val response = plaidItemApi.createPlaidItem(request).firstOrNull()) {
                 is Success -> {

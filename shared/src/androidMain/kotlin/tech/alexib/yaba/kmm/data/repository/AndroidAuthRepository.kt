@@ -19,7 +19,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import tech.alexib.yaba.kmm.BiometricSettings
 import tech.alexib.yaba.kmm.data.auth.SessionManager
-import tech.alexib.yaba.kmm.data.db.AppSettings
 import tech.alexib.yaba.kmm.model.response.AuthResponse
 import java.util.concurrent.Executor
 
@@ -28,9 +27,9 @@ lateinit var activityForBio: FragmentActivity
 
 private val promptInfo: BiometricPrompt.PromptInfo = BiometricPrompt.PromptInfo
     .Builder()
-    .setTitle("Biometric login for YABA")
+    .setTitle("Biometric login for yaba")
     .setSubtitle("Log in using your biometric credential")
-    .setNegativeButtonText("Use account password")
+    .setNegativeButtonText("Use account email and password")
     .build()
 
 class AndroidAuthRepository(
@@ -68,28 +67,15 @@ class AndroidAuthRepository(
     private suspend fun handleAuthResponse(authResponse: AuthResponse): AuthResult {
         return if (authResponse.token.isNotEmpty()) {
             sessionManager.setToken(authResponse.token)
+            sessionManager.setUserId(authResponse.id)
             AuthResult.Success
         } else AuthResult.Error("Authentication Error")
     }
 
-//    private suspend fun register(input: UserRegisterInput): DataResult<AuthResponse> {
-//        return when (val result = authApi.register(input).first()) {
-//            is ApolloResponse.Success -> Success(result.data)
-//            is ApolloResponse.Error -> {
-//                result.errors.forEach {
-//                    log.e { it }
-//                }
-//                ErrorResult("User registration error")
-//            }
-//        }
-//    }
 
     suspend fun register(email: String, password: String): AuthResult {
         return runCatching {
-
-
             handleAuthResponse(authRepository.register(email, password).getOrThrow())
-
 
         }.getOrElse {
             AuthResult.Error(it.message ?: "User Registration Error")
@@ -108,11 +94,19 @@ class AndroidAuthRepository(
     }
 
     suspend fun handleBioLogin(): AuthResult {
-        withContext(ioDispatcher) {
+        val tokenIsValid = withContext(ioDispatcher) {
             sessionManager.bioToken()
+            val tokenVerificationResponse = authRepository.verifyToken().get()
+            if (tokenVerificationResponse?.id == null) {
+                sessionManager.handleUnsuccessfulBioLogin()
+                false
+            } else {
+                sessionManager.setUserId(tokenVerificationResponse.id)
+                true
+            }
         }
         return withContext(Dispatchers.Main) {
-            AuthResult.Success
+            if (tokenIsValid) AuthResult.Success else AuthResult.Error("Unauthorized")
         }
     }
 
@@ -144,11 +138,12 @@ class AndroidAuthRepository(
                         override fun onAuthenticationSucceeded(
                             result: BiometricPrompt.AuthenticationResult,
                         ) {
+                            super.onAuthenticationSucceeded(result)
                             coroutineScope.launch {
                                 sessionManager.enableBio()
                                 handleBioLogin()
                             }
-                            super.onAuthenticationSucceeded(result)
+
                             Toast
                                 .makeText(
                                     appContext,
@@ -179,6 +174,4 @@ class AndroidAuthRepository(
             ) ?: setupBiometrics()
         }
     }
-
-
 }

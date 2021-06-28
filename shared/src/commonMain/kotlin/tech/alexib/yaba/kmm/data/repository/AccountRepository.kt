@@ -15,9 +15,10 @@ interface AccountRepository {
 }
 
 
-internal class AccountRepositoryImpl : AccountRepository, KoinComponent {
+internal class AccountRepositoryImpl :UserIdProvider(), AccountRepository, KoinComponent {
 
     private val accountDao: AccountDao by inject()
+
 
     private val log: Kermit by inject { parametersOf("AccountRepository") }
 
@@ -26,10 +27,11 @@ internal class AccountRepositoryImpl : AccountRepository, KoinComponent {
     }
 
     override fun getAll(): Flow<List<Account>> {
-        return accountDao.selectAll()
+        return accountDao.selectAll(userId.value)
     }
 
     override fun cashBalance(): Flow<Double> {
-        return accountDao.availableBalance()
+        return accountDao.availableBalance(userId.value)
     }
+
 }

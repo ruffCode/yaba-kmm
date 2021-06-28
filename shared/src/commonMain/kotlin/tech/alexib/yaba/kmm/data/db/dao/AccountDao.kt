@@ -20,11 +20,10 @@ import tech.alexib.yaba.kmm.model.AccountType
 internal interface AccountDao {
     suspend fun insert(account: Account)
     suspend fun insert(accounts: List<Account>)
-    fun selectAll(): Flow<List<Account>>
+    fun selectAll(userId: Uuid): Flow<List<Account>>
     fun selectById(accountId: Uuid): Flow<Account?>
     fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
-    fun availableBalance(): Flow<Double>
-//    suspend fun selectDetailByItemId(itemId: Uuid):Flow<Account>
+    fun availableBalance(userId: Uuid): Flow<Double>
 }
 
 internal class AccountDaoImpl(
@@ -35,7 +34,6 @@ internal class AccountDaoImpl(
 
     init {
         ensureNeverFrozen()
-
     }
 
     override suspend fun insert(account: Account) {
@@ -54,11 +52,10 @@ internal class AccountDaoImpl(
                 accountQueries.insertAccount(it.toEntity())
             }
         }
-
     }
 
-    override fun selectAll(): Flow<List<Account>> {
-        return accountQueries.selectAll(accountMapper).asFlow().mapToList()
+    override fun selectAll(userId: Uuid): Flow<List<Account>> {
+        return accountQueries.selectAll(userId, accountMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
@@ -73,19 +70,22 @@ internal class AccountDaoImpl(
             .flowOn(backgroundDispatcher)
     }
 
-    override fun availableBalance(): Flow<Double> {
-        return accountQueries.availableBalance { available -> available ?: 0.0 }.asFlow().mapToOne()
+    override fun availableBalance(userId: Uuid): Flow<Double> {
+        return accountQueries.availableBalance(userId) { available -> available ?: 0.0 }.asFlow()
+            .mapToOne()
             .flowOn(backgroundDispatcher)
     }
+
 
     companion object {
         private val accountMapper = {
                 id: Uuid,
+                item_id: Uuid,
+                _: Uuid?,
                 name: String,
                 mask: String,
-                available_balance: Double,
                 current_balance: Double,
-                item_id: Uuid,
+                available_balance: Double,
                 type: AccountType,
                 subtype: AccountSubtype,
                 hidden: Boolean,

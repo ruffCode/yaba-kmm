@@ -3,6 +3,7 @@ package tech.alexib.yaba.kmm.model
 import com.benasher44.uuid.Uuid
 import kotlinx.datetime.LocalDate
 import tech.alexib.yaba.data.db.TransactionEntity
+import tech.alexib.yaba.data.db.UserTransasction
 
 
 interface TransactionValues{
@@ -48,5 +49,18 @@ fun TransactionEntity.toDomain() = Transaction(
     subcategory = subcategory,
     isoCurrencyCode = iso_currency_code,
     pending = pending
+)
 
+fun UserTransasction.toDomain() = Transaction(
+    id =id,
+    name = name,
+    type = type,
+    amount = amount,
+    date =date,
+    accountId =account_id,
+    itemId =item_id,
+    category = category,
+    subcategory = subcategory,
+    isoCurrencyCode = iso_currency_code,
+    pending = pending
 )

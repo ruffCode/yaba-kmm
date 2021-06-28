@@ -16,12 +16,10 @@ import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.auth.EncryptionManager
 import tech.alexib.yaba.kmm.data.db.AppSettings
 
-//val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "yaba-settings")
 
+internal class BiometricSettings : KoinComponent {
 
-class BiometricSettings : KoinComponent {
-
-    private val appSettings: AppSettings by inject<YabaAppSettings>()
+    private val appSettings: AppSettings by inject()
 
     private val encryptionManager: EncryptionManager by inject()
 
@@ -50,6 +48,9 @@ class BiometricSettings : KoinComponent {
     }
 
 
+    suspend fun disableBio(){
+        appSettings.setBioEnabled(false)
+    }
 
     fun cryptoObject(): BiometricPrompt.CryptoObject? = encryptionManager.getCryptoObject()
 }
@@ -67,53 +68,8 @@ class YabaAppSettings : AppSettings(), KoinComponent {
     override val flowSettings = dataStoreSettings
 
     init {
-
         ensureNeverFrozen()
     }
-
-//    fun token(): Flow<String?> = flowSettings.getStringOrNullFlow("AUTH_TOKEN")
-//
-//    suspend fun tokenSync(): String? = token().firstOrNull()
-
-
-//    suspend fun bioToken() {
-//        val token: String = flowSettings.getStringFlow(BIO_TOKEN, "").first()
-//        if (token.isNotEmpty()) {
-//            setAuthToken(token)
-//        }
-//    }
-//
-//    suspend fun setToken(token: String) {
-//        log.d { "settings token $token" }
-//        setAuthToken(token)
-//        if (isBioEnabled().first()) {
-//            setBioToken(token)
-//        }
-//    }
-//
-//
-//    private suspend fun setBioToken(token: String) {
-//        flowSettings.putString(BIO_TOKEN, token)
-//    }
-//
-//    suspend fun clearBioToken() {
-//        flowSettings.putString(BIO_TOKEN, "")
-//    }
-//
-//    suspend fun setBioEnabled(enabled: Boolean) {
-//        flowSettings.putBoolean(IS_BIO_ENABLED, enabled)
-//        if (!enabled) {
-//            clearBioToken()
-//        } else {
-//            authToken.first()?.let {
-//                if (it.isNotBlank()) {
-//                    setBioToken(it)
-//                }
-//            }
-//        }
-//    }
-
-//    fun cryptoObject(): BiometricPrompt.CryptoObject? = encryptionManager.getCryptoObject()
 
 
 }

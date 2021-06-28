@@ -1,0 +1,18 @@
+import com.benasher44.uuid.Uuid;
+CREATE TABLE UserEntity (
+id TEXT AS Uuid PRIMARY KEY NOT NULL,
+email TEXT NOT NULL
+);
+
+insert:
+INSERT OR REPLACE
+INTO UserEntity
+VALUES ?;
+
+selectById:
+SELECT * FROM UserEntity
+WHERE id = ?;
+
+deleteById:
+DELETE FROM UserEntity
+WHERE id = ?;

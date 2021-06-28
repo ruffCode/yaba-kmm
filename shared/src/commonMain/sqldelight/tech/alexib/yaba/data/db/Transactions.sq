@@ -14,10 +14,30 @@ category TEXT,
 subcategory TEXT,
 iso_currency_code TEXT,
 pending INTEGER AS Boolean DEFAULT 1,
-FOREIGN KEY(account_id) REFERENCES AccountEntity(id),
+FOREIGN KEY(account_id) REFERENCES AccountEntity(id)
+ON DELETE CASCADE,
 FOREIGN KEY(item_id) REFERENCES ItemEntity(id)
+ON DELETE CASCADE
 );
 
+CREATE VIEW UserTransasction
+AS
+SELECT
+    t.id,
+    t.account_id,
+    t.item_id,
+    a.user_id,
+    t.category,
+    t.subcategory,
+    t.type,
+    t.name,
+    t.iso_currency_code,
+    t.date,
+    t.amount,
+    t.pending
+FROM
+    TransactionEntity t
+        LEFT JOIN UserAccount a ON t.account_id = a.id;
 
 insert:
 INSERT OR REPLACE INTO TransactionEntity
@@ -25,34 +45,38 @@ VALUES ?;
 
 selectAll:
 SELECT *
-FROM TransactionEntity
+FROM UserTransasction
+WHERE user_id = ?
 ORDER BY date DESC;
+
 
 selectRecent:
 SELECT *
-FROM TransactionEntity
+FROM UserTransasction
+WHERE user_id = ?
 ORDER BY date DESC
 LIMIT 5;
 
 selectById:
 SELECT *
-FROM TransactionEntity
+FROM UserTransasction
 WHERE id = ?;
 
 selectByAccontId:
 SELECT *
-FROM TransactionEntity
+FROM UserTransasction
 WHERE account_id = ?
 ORDER BY date DESC;
 
 selectByItemId:
 SELECT *
-FROM TransactionEntity
+FROM UserTransasction
 WHERE item_id = ?
 ORDER BY date DESC;
 
 count:
-SELECT COUNT(*) FROM TransactionEntity;
+SELECT COUNT(*) FROM UserTransasction
+WHERE user_id = ?;
 
 deleteByItemId:
 DELETE FROM TransactionEntity
