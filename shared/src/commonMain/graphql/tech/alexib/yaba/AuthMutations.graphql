@@ -13,3 +13,10 @@ mutation Register($email:String!,$password:String!){
         token
     }
 }
+
+query VerifyToken{
+    me{
+        id
+        email
+    }
+}
