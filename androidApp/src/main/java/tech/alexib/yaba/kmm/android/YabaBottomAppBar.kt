@@ -22,7 +22,7 @@ fun YabaBottomBar(navController: NavHostController) {
     if (shouldShowBottomBar(navBackStackEntry)) {
         BottomNavigation(backgroundColor = MaterialTheme.colors.surface) {
             BottomNavigationItem(
-                icon = { Icon(Icons.Filled.Home, contentDescription = null) },
+                icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
                 selected = currentRoute?.route == Route.Home.route,
                 label = { Text(text = "Home") },
                 onClick = {
@@ -46,14 +46,14 @@ fun YabaBottomBar(navController: NavHostController) {
 //                        launchSingleTop = true
 //                    }
 //                })
-            BottomNavigationItem(icon = { Icon(Icons.Filled.Settings, contentDescription = null) },
+            BottomNavigationItem(icon = { Icon(Icons.Filled.Settings, contentDescription = "Setting") },
                 selected = currentRoute?.route == Route.Settings.route,
                 label = { Text(text = "Settings") },
                 onClick = {
                     navController.navigate(Route.Settings.route) {
-//                        popUpTo(navController.graph.findStartDestination().id) {
-//                            saveState = true
-//                        }
+                        popUpTo(Route.Settings.route) {
+                            saveState = true
+                        }
                         // Avoid multiple copies of the same destination when
                         // reselecting the same item
                         launchSingleTop = true
