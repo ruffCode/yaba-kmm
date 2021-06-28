@@ -51,7 +51,7 @@ fun YabaBottomBar(navController: NavHostController) {
                 label = { Text(text = "Settings") },
                 onClick = {
                     navController.navigate(Route.Settings.route) {
-                        popUpTo(Route.Settings.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
                         // Avoid multiple copies of the same destination when
