@@ -11,9 +11,11 @@ import tech.alexib.yaba.kmm.model.Transaction
 
 interface TransactionRepository {
     fun recentTransactions(): Flow<List<Transaction>>
+    fun count(): Flow<Long>
+    fun selectAll():Flow<List<Transaction>>
 }
 
-internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent {
+internal class TransactionRepositoryImpl : UserIdProvider(), TransactionRepository, KoinComponent {
     private val log: Kermit by inject { parametersOf("TransactionRepository") }
 
     private val dao: TransactionDao by inject()
@@ -23,6 +25,14 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
     }
 
     override fun recentTransactions(): Flow<List<Transaction>> {
-        return dao.selectRecent()
+        return dao.selectRecent(userId.value)
+    }
+
+    override fun count(): Flow<Long> {
+        return dao.count(userId.value)
+    }
+
+    override fun selectAll(): Flow<List<Transaction>> {
+        return dao.selectAll(userId.value)
     }
 }

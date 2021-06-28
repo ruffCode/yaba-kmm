@@ -17,6 +17,8 @@ import tech.alexib.yaba.kmm.data.db.dao.AccountDao
 import tech.alexib.yaba.kmm.data.db.dao.InstitutionDao
 import tech.alexib.yaba.kmm.data.db.dao.ItemDao
 import tech.alexib.yaba.kmm.data.db.dao.TransactionDao
+import tech.alexib.yaba.kmm.data.db.dao.UserDao
+import tech.alexib.yaba.kmm.data.repository.TransactionRepository
 import tech.alexib.yaba.kmm.model.Account
 import tech.alexib.yaba.kmm.model.AccountSubtype
 import tech.alexib.yaba.kmm.model.AccountType
@@ -24,6 +26,7 @@ import tech.alexib.yaba.kmm.model.Institution
 import tech.alexib.yaba.kmm.model.PlaidInstitutionId
 import tech.alexib.yaba.kmm.model.Transaction
 import tech.alexib.yaba.kmm.model.TransactionType
+import tech.alexib.yaba.kmm.model.User
 
 interface Initializer {
     suspend fun init()
@@ -38,18 +41,22 @@ class InitializerImpl(
     private val institutionDao: InstitutionDao by inject()
     private val itemDao: ItemDao by inject()
     private val transactionDao: TransactionDao by inject()
+    private val userDao: UserDao by inject()
+    private val transactionRepository: TransactionRepository by inject()
 
     init {
         ensureNeverFrozen()
     }
 
     private val client by lazy { apolloApi.client() }
-
     override suspend fun init() {
-        if (transactionDao.count().first() == 0L) {
+        val transactionCount = transactionRepository.count().first()
+        log.d { "transactionCount is $transactionCount" }
+        if (transactionCount == 0L) {
             val response = client.safeQuery(AllUserDataQuery()) {
                 val data = it.me
-
+                val userId = data.id as Uuid
+                val user = User(userId, data.email)
                 val transactions = data.transactions.map { transaction ->
                     with(transaction) {
                         Transaction(
@@ -81,6 +88,7 @@ class InitializerImpl(
                     ItemEntity(
                         id = item.id as Uuid,
                         plaid_institution_id = item.plaidInstitutionId,
+                        user_id = userId
                     )
                 }
 
@@ -100,7 +108,7 @@ class InitializerImpl(
                     }
                 }
                 AllDataMappedResponse(
-                    transactions, items, accounts, institutions
+                    user, transactions, items, accounts, institutions
                 )
             }.first()
 
@@ -121,17 +129,17 @@ class InitializerImpl(
 
         runCatching {
 
+            userDao.insert(data.user)
             data.institutions.forEach {
                 institutionDao.insert(it)
             }
-            data.items.forEach {
-                itemDao.insert(it)
-            }
+
+            itemDao.insert(data.items)
+
             accountDao.insert(data.accounts)
 
-            data.transactions.forEach {
-                transactionDao.insert(it)
-            }
+            transactionDao.insert(data.transactions)
+
         }.getOrElse {
             log.e { "Error inserting user data: ${it.message}" }
         }
@@ -139,6 +147,7 @@ class InitializerImpl(
 }
 
 private data class AllDataMappedResponse(
+    val user: User,
     val transactions: List<Transaction>,
     val items: List<ItemEntity>,
     val accounts: List<Account>,

@@ -5,6 +5,7 @@ import com.squareup.sqldelight.db.SqlDriver
 import tech.alexib.yaba.data.db.AccountEntity
 import tech.alexib.yaba.data.db.ItemEntity
 import tech.alexib.yaba.data.db.TransactionEntity
+import tech.alexib.yaba.data.db.UserEntity
 
 import tech.alexib.yaba.data.db.YabaDb
 
@@ -25,7 +26,8 @@ class YabaDatabase(
                 subtypeAdapter = EnumColumnAdapter()
             ),
             ItemEntityAdapter = ItemEntity.Adapter(
-                idAdapter = UUIDAdapter()
+                idAdapter = UUIDAdapter(),
+                user_idAdapter = UUIDAdapter()
             ),
             TransactionEntityAdapter = TransactionEntity.Adapter(
                 idAdapter = UUIDAdapter(),
@@ -33,8 +35,10 @@ class YabaDatabase(
                 dateAdapter = DateAdapter(),
                 account_idAdapter = UUIDAdapter(),
                 typeAdapter = EnumColumnAdapter()
+            ),
+            UserEntityAdapter = UserEntity.Adapter(
+                idAdapter = UUIDAdapter()
             )
-
         )
     }
 }
