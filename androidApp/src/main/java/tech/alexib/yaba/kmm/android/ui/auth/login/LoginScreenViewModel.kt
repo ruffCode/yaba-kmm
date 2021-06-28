@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Kermit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -23,7 +22,7 @@ class LoginScreenViewModel(
     private val log: Kermit by inject { parametersOf("LoginScreenViewModel") }
 
     private val email = MutableStateFlow("")
-    private val password = MutableStateFlow("passwordpassword")
+    private val password = MutableStateFlow("")
     private val errorMessage = MutableStateFlow<String?>(null)
     private val loggedIn = MutableStateFlow(false)
 
@@ -36,7 +35,6 @@ class LoginScreenViewModel(
                 errorMessage = error,
                 loggedIn = loggedIn
             )
-
         }
 
 
@@ -45,11 +43,21 @@ class LoginScreenViewModel(
             viewModelScope.launch {
                 val result = authRepository.login(email.value, password.value)
                 log.d { result.toString() }
-                when (result) {
-                    is AuthResult.Success -> loggedIn.value = true
-                    is AuthResult.Error -> errorMessage.value = result.message
-                }
+                handleAuthResult(result)
             }
+        }
+    }
+
+    private fun handleAuthResult(result: AuthResult) {
+        when (result) {
+            is AuthResult.Success -> loggedIn.value = true
+            is AuthResult.Error -> errorMessage.value = result.message
+        }
+    }
+
+    fun loginBio() {
+        viewModelScope.launch {
+            handleAuthResult(authRepository.handleBioLogin())
         }
     }
 

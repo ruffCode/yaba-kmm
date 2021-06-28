@@ -13,12 +13,12 @@ import tech.alexib.yaba.kmm.android.ui.home.HomeViewModel
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkResultScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkViewModel
 import tech.alexib.yaba.kmm.android.ui.settings.SettingsScreenViewModel
-import tech.alexib.yaba.kmm.data.api.ApolloUrl
+import tech.alexib.yaba.kmm.di.ApolloUrl
 import tech.alexib.yaba.kmm.di.initKoin
 
 class MainApp : Application() {
 
-    private val apolloUrl: ApolloUrl =ApolloUrl( BuildConfig.APOLLO_URL)
+    private val apolloUrl: ApolloUrl = ApolloUrl( BuildConfig.APOLLO_URL)
 //        if (BuildConfig.DEBUG) ApolloUrl("https://ruffrevival.ngrok.io/graphql")
 //        else ApolloUrl("https://yabasandbox.alexib.dev/graphql")
     private val appModule = module {

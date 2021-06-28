@@ -9,9 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Fingerprint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
@@ -42,6 +46,7 @@ internal sealed class LoginScreenAction {
     object NavigateHome : LoginScreenAction()
     data class SetEmail(val email: String) : LoginScreenAction()
     data class SetPassword(val password: String) : LoginScreenAction()
+    object PromptForBiometrics : LoginScreenAction()
 }
 
 @Immutable
@@ -86,6 +91,7 @@ private fun LoginScreen(
             is LoginScreenAction.SetEmail -> viewModel.setEmail(action.email)
             is LoginScreenAction.SetPassword -> viewModel.setPassword(action.password)
             is LoginScreenAction.NavigateHome -> navigateHome()
+            is LoginScreenAction.PromptForBiometrics -> viewModel.loginBio()
         }
     }
 }
@@ -182,6 +188,11 @@ private fun LoginScreen(
                     .fillMaxWidth()
             ) {
                 Text(text = "Don't have an account?")
+            }
+        }
+        item {
+            IconButton(onClick = { actioner(LoginScreenAction.PromptForBiometrics) }) {
+                Icon(Icons.Outlined.Fingerprint, "fingerprint")
             }
         }
         item { AddSpace(100.dp) }

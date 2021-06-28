@@ -88,28 +88,39 @@ private fun Home(
     ) {
 
         AddSpace()
+        TotalCashBalanceRow(state.cashBalance)
+        AddSpace()
+        RecentTransactions(transactions = state.recentTransactions) {
 
-        if (state.cashBalance == 0.0) {
-            Button(onClick = {
-                actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
-            }) {
-                Text(text = "Link Account")
-            }
-        } else {
-            TotalCashBalanceRow(state.cashBalance)
-            AddSpace()
-            RecentTransactions(transactions = state.recentTransactions) {
-
-
-            }
-            AddSpace()
-            Button(onClick = {
-                actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
-            }) {
-                Text(text = "Link Account")
-            }
 
         }
+        AddSpace()
+        Button(onClick = {
+            actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
+        }) {
+            Text(text = "Link Account")
+        }
+//        if (state.cashBalance == 0.0) {
+//            Button(onClick = {
+//                actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
+//            }) {
+//                Text(text = "Link Account")
+//            }
+//        } else {
+//            TotalCashBalanceRow(state.cashBalance)
+//            AddSpace()
+//            RecentTransactions(transactions = state.recentTransactions) {
+//
+//
+//            }
+//            AddSpace()
+//            Button(onClick = {
+//                actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
+//            }) {
+//                Text(text = "Link Account")
+//            }
+//
+//        }
         AddSpace()
     }
 }
