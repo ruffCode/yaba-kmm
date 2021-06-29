@@ -54,8 +54,8 @@ internal sealed class LoginScreenAction {
 data class LoginScreenState(
     val loggedIn: Boolean = false,
     val errorMessage: String? = null,
-    val email: String = "alexi12345@aol.com",
-    val password: String = "passwordpassword",
+    val email: String = "",
+    val password: String = "",
     val shouldPromptForBiometrics: Boolean = false,
     val shouldSetupBiometrics: Boolean = false
 ) {
