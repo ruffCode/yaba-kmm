@@ -123,20 +123,13 @@ private fun LoginScreen(
     var password by remember { mutableStateOf(TextFieldValue(state.password)) }
     val focusRequester = remember { FocusRequester() }
 
-//    Scaffold(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(LocalWindowInsets.current.ime.toPaddingValues())
-//    ) {
-//
-//    }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colors.surface)
             .padding(
-                start = 8.dp,
-                end = 8.dp,
+                start =16.dp,
+                end = 16.dp,
                 bottom = LocalWindowInsets.current.ime
                     .toPaddingValues()
                     .calculateBottomPadding()

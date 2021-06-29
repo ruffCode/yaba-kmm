@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -102,82 +101,81 @@ private fun RegisterScreen(
     if (state.registrationSuccess) {
         actioner(RegisterScreenAction.NavigateHomeAction)
     }
-    Scaffold(
+    var email by remember { mutableStateOf(TextFieldValue(state.email)) }
+    var password by remember { mutableStateOf(TextFieldValue(state.password)) }
+    val focusRequester = remember { FocusRequester() }
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(LocalWindowInsets.current.systemBars.toPaddingValues())
+            .background(color = MaterialTheme.colors.surface)
+            .padding(
+                start = 16.dp,
+                end = 16.dp,
+                bottom = LocalWindowInsets.current.ime
+                    .toPaddingValues()
+                    .calculateBottomPadding()
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
-        var email by remember { mutableStateOf(TextFieldValue(state.email)) }
-        var password by remember { mutableStateOf(TextFieldValue(state.password)) }
-        val focusRequester = remember { FocusRequester() }
-        Column(
+
+        Text(
+            text = "Welcome To",
+            style = MaterialTheme.typography.h5,
+            color = BlueSlate
+        )
+
+        Image(
             modifier = Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colors.surface)
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+                .height(200.dp),
+            painter = rememberCoilPainter(
+                R.drawable.yaba_y_bl,
+                previewPlaceholder = R.drawable.yaba_y_bl
+            ),
+            contentScale = ContentScale.Fit,
+            contentDescription = "YABA logo",
+        )
+
+        Username(usernameState = email, onValueChange = { value ->
+            email = value
+            actioner(RegisterScreenAction.SetEmail(value.text))
+        }, onImeAction = { focusRequester.requestFocus() })
+
+        AddSpace(8.dp)
+        Password(
+            label = "Password",
+            passwordState = password,
+            onValueChange = { value ->
+                password = value
+                actioner(RegisterScreenAction.SetPassword(value.text))
+            },
+            modifier = Modifier.focusRequester(focusRequester),
+            onImeAction = { actioner(RegisterScreenAction.RegisterAction) }
+        )
+        AddSpace()
+
+        state.errorMessage?.let {
+            Text(text = it, style = TextStyle(color = MaterialTheme.colors.error))
+        }
+
+
+        Button(
+            onClick = { actioner(RegisterScreenAction.RegisterAction) },
+            modifier = Modifier
+                .height(50.dp)
+                .padding(bottom = 8.dp)
+                .fillMaxWidth(),
         ) {
+            Text(text = "Register")
+        }
 
-            Text(
-                text = "Welcome To",
-                style = MaterialTheme.typography.h5,
-                color = BlueSlate
-            )
-
-            Image(
-                modifier = Modifier
-                    .height(200.dp),
-                painter = rememberCoilPainter(
-                    R.drawable.yaba_y_bl,
-                    previewPlaceholder = R.drawable.yaba_y_bl
-                ),
-                contentScale = ContentScale.Fit,
-                contentDescription = "YABA logo",
-            )
-
-            Username(usernameState = email, onValueChange = { value ->
-                email = value
-                actioner(RegisterScreenAction.SetEmail(value.text))
-            }, onImeAction = { focusRequester.requestFocus() })
-
-            AddSpace(8.dp)
-            Password(
-                label = "Password",
-                passwordState = password,
-                onValueChange = { value ->
-                    password = value
-                    actioner(RegisterScreenAction.SetPassword(value.text))
-                },
-                modifier = Modifier.focusRequester(focusRequester),
-                onImeAction = { actioner(RegisterScreenAction.RegisterAction) }
-            )
-            AddSpace()
-
-            state.errorMessage?.let {
-                Text(text = it, style = TextStyle(color = MaterialTheme.colors.error))
-            }
-
-
-            Button(
-                onClick = { actioner(RegisterScreenAction.RegisterAction) },
-                modifier = Modifier
-                    .height(50.dp)
-                    .padding(bottom = 8.dp)
-                    .fillMaxWidth(),
-            ) {
-                Text(text = "Register")
-            }
-
-            TextButton(
-                onClick = { actioner(RegisterScreenAction.NavigateToLoginAction) },
-                modifier = Modifier
-                    .fillMaxWidth(),
-            ) {
-                Text(text = "Already have an account?")
-            }
-
-
+        TextButton(
+            onClick = { actioner(RegisterScreenAction.NavigateToLoginAction) },
+            modifier = Modifier
+                .fillMaxWidth(),
+        ) {
+            Text(text = "Already have an account?")
         }
     }
 }
