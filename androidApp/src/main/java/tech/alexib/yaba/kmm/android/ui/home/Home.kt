@@ -11,6 +11,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -88,40 +89,35 @@ private fun Home(
     ) {
 
         AddSpace()
-        TotalCashBalanceRow(state.cashBalance)
-        AddSpace()
-        RecentTransactions(transactions = state.recentTransactions) {
-
-
-        }
-        AddSpace()
-        Button(onClick = {
-            actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
-        }) {
-            Text(text = "Link Account")
-        }
-//        if (state.cashBalance == 0.0) {
-//            Button(onClick = {
-//                actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
-//            }) {
-//                Text(text = "Link Account")
-//            }
-//        } else {
-//            TotalCashBalanceRow(state.cashBalance)
-//            AddSpace()
-//            RecentTransactions(transactions = state.recentTransactions) {
+//        TotalCashBalanceRow(state.cashBalance)
+//        AddSpace()
+//        RecentTransactions(transactions = state.recentTransactions) {
 //
-//
-//            }
-//            AddSpace()
-//            Button(onClick = {
-//                actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
-//            }) {
-//                Text(text = "Link Account")
-//            }
 //
 //        }
-        AddSpace()
+//        AddSpace()
+//        Button(onClick = {
+//            actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
+//        }) {
+//            Text(text = "Link Account")
+//        }
+        if (state.cashBalance == 0.0) {
+            Button(onClick = {
+                actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
+            }, modifier = Modifier.fillMaxWidth()) {
+                Text(text = "Link your first account", style = MaterialTheme.typography.button)
+            }
+        } else {
+            TotalCashBalanceRow(state.cashBalance)
+            AddSpace()
+            RecentTransactions(transactions = state.recentTransactions) {
+
+
+            }
+
+
+        }
+
     }
 }
 

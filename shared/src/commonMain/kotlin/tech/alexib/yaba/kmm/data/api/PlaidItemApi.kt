@@ -33,10 +33,10 @@ interface PlaidItemApi {
 }
 
 class PlaidItemApiImpl(
-    apolloApi: ApolloApi,
+
 ) : PlaidItemApi, KoinComponent {
 
-
+    private val apolloApi: ApolloApi by inject()
     private val log: Kermit by inject { parametersOf("PlaidItemApi") }
     private val client: ApolloClient by lazy {
         apolloApi.client()
@@ -50,7 +50,7 @@ class PlaidItemApiImpl(
 
     override fun createLinkToken(): Flow<DataResult<CreateLinkTokenResponse>> {
         val mutation = CreateLinkTokenMutation()
-//        sendLinkEvent(mutation)
+
 
         return runCatching {
 
@@ -64,7 +64,6 @@ class PlaidItemApiImpl(
                     is ApolloResponse.Error -> emit(ErrorResult(result.message))
                 }
             }
-
 
         }.getOrElse {
             log.e { "create token error ${it.message}" }

@@ -17,10 +17,10 @@ interface AuthApi {
     suspend fun verifyToken(): Flow<ApolloResponse<User>>
 }
 
-class AuthApiImpl(
+internal class AuthApiImpl(
     private val apolloApi: ApolloApi
 ) : AuthApi {
-    private val client by lazy { apolloApi.client() }
+
 
 
     init {
@@ -31,7 +31,7 @@ class AuthApiImpl(
         val mutation = LoginMutation(userLoginInput.email, userLoginInput.password)
 
         return runCatching {
-            client.safeMutation(mutation) {
+            apolloApi.client().safeMutation(mutation) {
                 it.login.toAuthResponse()
             }
         }.getOrThrow()
@@ -41,7 +41,7 @@ class AuthApiImpl(
     override suspend fun register(userRegisterInput: UserRegisterInput): Flow<ApolloResponse<AuthResponse>> {
         val mutation = RegisterMutation(userRegisterInput.email, userRegisterInput.password)
         return runCatching {
-            client.safeMutation(mutation) {
+            apolloApi.client().safeMutation(mutation) {
                 it.register.toAuthResponse()
             }
         }.getOrThrow()
@@ -50,7 +50,7 @@ class AuthApiImpl(
     override suspend fun verifyToken(): Flow<ApolloResponse<User>> {
         val query = VerifyTokenQuery()
         return runCatching {
-            client.safeQuery(query) {
+            apolloApi.client().safeQuery(query) {
                 val data = it.me
                 User(data.id as Uuid, data.email)
             }

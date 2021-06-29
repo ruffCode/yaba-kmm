@@ -1,7 +1,6 @@
 package tech.alexib.yaba.kmm.android
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
@@ -14,12 +13,12 @@ import androidx.navigation.compose.navArgument
 import androidx.navigation.navigation
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.kmm.android.ui.auth.splash.Splash
+import tech.alexib.yaba.kmm.android.ui.auth.biometric.BiometricSetupScreen
 import tech.alexib.yaba.kmm.android.ui.auth.login.Login
 import tech.alexib.yaba.kmm.android.ui.auth.register.RegistrationScreen
+import tech.alexib.yaba.kmm.android.ui.auth.splash.Splash
 import tech.alexib.yaba.kmm.android.ui.auth.splash.SplashScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.home.Home
-
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidItem
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkResultScreen
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkScreen
@@ -37,6 +36,7 @@ sealed class AuthRoute(val route: String) {
     object Splash : AuthRoute("splash")
     object Login : AuthRoute("login")
     object Registration : AuthRoute("registration")
+    object BiometricSetup : AuthRoute("biometricSetup")
 }
 
 
@@ -91,8 +91,8 @@ fun AppNavigation(
                 }
                 Login({
                     navController.navigate(AuthRoute.Registration.route)
-                }) {
-                    navigateHome()
+                }, navigateHome = { navigateHome() }) {
+                    navController.navigate(AuthRoute.BiometricSetup.route)
                 }
             }
             composable(AuthRoute.Registration.route) {
@@ -100,6 +100,14 @@ fun AppNavigation(
                     finishActivity()
                 }
                 RegistrationScreen({ navController.navigate(AuthRoute.Login.route) }) {
+                    navigateHome()
+                }
+            }
+            composable(AuthRoute.BiometricSetup.route) {
+                BackHandler {
+                    navigateHome()
+                }
+                BiometricSetupScreen {
                     navigateHome()
                 }
             }
@@ -128,7 +136,6 @@ fun AppNavigation(
                 finishActivity()
             }
 
-            Log.d("NAVIGATOR", "navigate home")
             Home {
                 navController.navigate(PlaidLinkRoute.Launcher.route) {
                     launchSingleTop = true
@@ -141,10 +148,9 @@ fun AppNavigation(
             composable(PlaidLinkRoute.Launcher.route) {
 
                 BackHandler {
-                    Log.d("PLAID LINK ROUTE", "handling back")
                     handleBack()
                 }
-                PlaidLinkScreen({ Log.d("PLAID LINK ROUTE", "navigate home") }) { plaidItem ->
+                PlaidLinkScreen({ navigateHome() }) { plaidItem ->
 
                     navController.currentBackStackEntry?.arguments?.putParcelable(
                         "plaidItem",

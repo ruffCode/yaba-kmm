@@ -9,18 +9,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import tech.alexib.yaba.kmm.android.AuthRoute
 import tech.alexib.yaba.kmm.android.Route
-import tech.alexib.yaba.kmm.data.repository.AndroidAuthRepository
+import tech.alexib.yaba.kmm.auth.SessionManagerAndroid
 
 
 class SplashScreenViewModel(
     private val navHostController: NavHostController,
-    private val authRepository: AndroidAuthRepository
+    private val sessionManager: SessionManagerAndroid
 ) : ViewModel() {
 
     private fun isLoggedIn(): Flow<Boolean> =
-        authRepository.sessionManager.isLoggedIn()
+        sessionManager.isLoggedIn()
 
-    private fun showOnBoarding(): Flow<Boolean> = authRepository.sessionManager.isShowOnBoarding()
+    private fun showOnBoarding(): Flow<Boolean> = sessionManager.isShowOnBoarding()
 
 
     fun splashScreenNavigation() = viewModelScope.launch {

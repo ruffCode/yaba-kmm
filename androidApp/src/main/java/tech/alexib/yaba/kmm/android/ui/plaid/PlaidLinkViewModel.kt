@@ -56,7 +56,6 @@ class PlaidLinkViewModel(
                 } else {
                     Log.d("PLAID EXIT", linkResult.metadata.toString())
                 }
-//                resultFlow.value = ErrorResult("exit")
             }
 
         }
@@ -86,11 +85,9 @@ class PlaidLinkViewModel(
                 institutionId = linkSuccess.metadata.institution!!.id,
                 publicToken = linkSuccess.publicToken
             )
-            Log.d("PLAID",request.toString())
 
             when (val response = plaidItemApi.createPlaidItem(request).firstOrNull()) {
                 is Success -> {
-                    Log.d("PLAID", response.data.name)
                     resultFlow.value = PlaidLinkResult.Success(response.data)
                 }
                 is ErrorResult -> {
@@ -98,7 +95,6 @@ class PlaidLinkViewModel(
                     resultFlow.value = PlaidLinkResult.Error(response.error)
                 }
                 null -> {
-//                    resultFlow.value = ErrorResult("Null response")
                 }
             }
         }

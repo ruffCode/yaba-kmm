@@ -6,6 +6,7 @@ import android.util.Log
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import tech.alexib.yaba.kmm.AppInfo
+import tech.alexib.yaba.kmm.android.ui.auth.biometric.BiometricSetupScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.auth.login.LoginScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.auth.register.RegisterScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.auth.splash.SplashScreenViewModel
@@ -18,9 +19,8 @@ import tech.alexib.yaba.kmm.di.initKoin
 
 class MainApp : Application() {
 
-    private val apolloUrl: ApolloUrl = ApolloUrl( BuildConfig.APOLLO_URL)
-//        if (BuildConfig.DEBUG) ApolloUrl("https://ruffrevival.ngrok.io/graphql")
-//        else ApolloUrl("https://yabasandbox.alexib.dev/graphql")
+    private val apolloUrl: ApolloUrl = ApolloUrl(BuildConfig.APOLLO_URL)
+
     private val appModule = module {
         single<Context> { this@MainApp }
         single<AppInfo> { AndroidAppInfo }
@@ -35,6 +35,7 @@ class MainApp : Application() {
         viewModel { SettingsScreenViewModel() }
         viewModel { PlaidLinkViewModel(get()) }
         viewModel { PlaidLinkResultScreenViewModel() }
+        viewModel { BiometricSetupScreenViewModel() }
         viewModel { HomeViewModel(get()) }
 
     }

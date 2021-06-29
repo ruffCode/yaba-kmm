@@ -11,41 +11,53 @@ import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.network.http.ApolloHttpNetworkTransport
 import com.apollographql.apollo.network.ws.ApolloWebSocketFactory
 import com.apollographql.apollo.network.ws.ApolloWebSocketNetworkTransport
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import tech.alexib.yaba.kmm.data.auth.SessionManager
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import tech.alexib.yaba.kmm.data.db.AppSettings
 import tech.alexib.yaba.kmm.di.ApolloUrl
-import tech.alexib.yaba.kmm.getSync
 import tech.alexib.yaba.type.CustomType
 
 
-class ApolloApi(
+internal class ApolloApi(
     private val serverUrl: ApolloUrl,
-    private val sessionManager: SessionManager,
     log: Kermit
-) {
+) : KoinComponent {
+
+    private val appSettings: AppSettings by inject()
+    private val ioDispatcher: CoroutineDispatcher by inject()
+    private val authToken = MutableStateFlow<String?>(null)
 
     @Suppress("CanBePrimaryConstructorProperty")
     private val log = log
 
     init {
         ensureNeverFrozen()
+
+        CoroutineScope(ioDispatcher).launch {
+            appSettings.token().collect {
+                authToken.value = it
+            }
+        }
     }
 
-    fun token(): String? = getSync { sessionManager.getToken() }
 
     fun client(): ApolloClient {
-
-        val token = token()
-        log.d { "TOKEN $token" }
+        val token = authToken.value
         val headers = mutableMapOf(
             "Accept" to "application/json",
             "Content-Type" to "application/json",
 
             )
 
-        if(token!=null){
-            headers["Authorization"] = "Bearer $token"
+        token?.let {
+            headers["Authorization"] = "Bearer $it"
         }
 
         return ApolloClient(

@@ -59,7 +59,6 @@ internal class TransactionDaoImpl(
                 transaction.toEntity()
             )
         }
-        log.d { "Inserted ${transaction.id}" }
     }
 
     override fun selectAll(userId: Uuid): Flow<List<Transaction>> {

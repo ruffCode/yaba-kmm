@@ -11,6 +11,16 @@ The backend is using Plaid's sandbox api so you can only get fake data.
 
 ## Usage
 
+There are two flavors, prod and dev. Dev requires you to run the server locally (link below), prod does not.
+
+Install your preferred flavor
+````shell script
+./gradlew installProdDebug
+./gradlew installProdRelease
+./gradlew installDevDebug
+./gradlew installDevRelease 
+````
+
 Register with any email address you'd like, it just has to be a valid format.
 
 When linking an account, when prompted for a username and password for the financial institution, the credentials are:
@@ -18,7 +28,10 @@ When linking an account, when prompted for a username and password for the finan
 ```
 username: user_good
 password: pass_good
+pin: credential_good (when required)
 ```
+Please see [Plaid sandbox test credentials](https://plaid.com/docs/sandbox/test-credentials/) for MFA credentials if the institution you are attempting to link requires them.
+
 
 [The backend is at https://github.com/ruffCode/yaba-server](https://github.com/ruffCode/yaba-server)
 

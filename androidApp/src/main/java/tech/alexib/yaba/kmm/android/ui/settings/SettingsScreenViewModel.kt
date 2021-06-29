@@ -6,15 +6,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import tech.alexib.yaba.kmm.data.repository.AndroidAuthRepository
+import tech.alexib.yaba.kmm.auth.SessionManagerAndroid
 
 class SettingsScreenViewModel : ViewModel(), KoinComponent {
 
-    private val authRepository: AndroidAuthRepository by inject()
+    private val sessionManager: SessionManagerAndroid by inject()
 
     fun logout() {
         viewModelScope.launch {
-            authRepository.sessionManager.logout()
+            sessionManager.logout()
             delay(300)
         }
     }

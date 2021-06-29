@@ -4,7 +4,6 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.biometric.BiometricPrompt
 import co.touchlab.kermit.Kermit
-import co.touchlab.kermit.Logger
 import co.touchlab.stately.ensureNeverFrozen
 import java.security.KeyStore
 import java.security.UnrecoverableKeyException
@@ -12,14 +11,13 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
-internal class EncryptionManager(
-    private val log: Kermit
-) {
 
-    companion object{
-        private const val KEY_NAME = "yaba_key"
-        private const val PROVIDER = "AndroidKeyStore"
-    }
+private val log = Kermit()
+
+internal object EncryptionManager {
+
+    private const val KEY_NAME = "yaba_kmm_key"
+    private const val PROVIDER = "AndroidKeyStore"
 
     @Synchronized
     fun encrypt(data: String): String {
@@ -55,7 +53,7 @@ internal class EncryptionManager(
                     return it as SecretKey
                 }
         } catch (e: UnrecoverableKeyException) {
-            log.e{e.localizedMessage ?: "Could not get key"}
+            log.e { e.localizedMessage ?: "Could not get key" }
             throw e
         }
         return createKey()

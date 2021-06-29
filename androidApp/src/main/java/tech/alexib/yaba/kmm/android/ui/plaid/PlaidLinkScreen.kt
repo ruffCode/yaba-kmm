@@ -22,29 +22,11 @@ import tech.alexib.yaba.kmm.model.response.PlaidItemCreateResponse
 fun PlaidLinkScreen(
     navigateHome: () -> Unit,
     handleResult: (PlaidItem) -> Unit,
-
     ) {
-
     val viewModel: PlaidLinkViewModel = getViewModel()
-//    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//        Button(onClick = { handleResult(plaidItemStub) }) {
-//            Text(text = "send")
-//        }
-//    }
 
     PlaidLinkScreen(viewModel, navigateHome = navigateHome, handleResult = handleResult)
 }
-
-
-//@Composable
-//fun PlaidLinkScreen(
-//    handleBack: () -> Unit
-//) {
-//    val viewModel: PlaidLinkViewModel = getViewModel()
-//
-//    PlaidLinkScreen(viewModel = viewModel)
-//
-//}
 
 
 sealed class PlaidLinkScreenAction {
@@ -52,7 +34,6 @@ sealed class PlaidLinkScreenAction {
     data class ShowError(val error: String) : PlaidLinkScreenAction()
     data class HandleSuccess(val data: PlaidItem) : PlaidLinkScreenAction()
     data class HandleLinkResult(val data: LinkResult) : PlaidLinkScreenAction()
-
 }
 
 
