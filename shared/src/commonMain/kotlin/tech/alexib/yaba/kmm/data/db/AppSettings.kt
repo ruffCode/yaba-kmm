@@ -1,5 +1,6 @@
 package tech.alexib.yaba.kmm.data.db
 
+import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 import com.russhwolf.settings.ExperimentalSettingsApi
@@ -7,7 +8,6 @@ import com.russhwolf.settings.coroutines.FlowSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 
@@ -22,6 +22,9 @@ abstract class AppSettings {
         } else null
     }
 
+    init {
+        ensureNeverFrozen()
+    }
 
     fun showOnboarding(): Flow<Boolean> = flowSettings.getBooleanFlow(SHOW_ONBOARDING, true)
     fun isLoggedIn(): Flow<Boolean> = token().map { !it.isNullOrEmpty() }
@@ -52,8 +55,8 @@ abstract class AppSettings {
     }
 
     suspend fun setToken(token: String) {
+        authTokenFlow.value = token
         flowSettings.putString(AUTH_TOKEN, token)
-        authTokenFlow.emit(token)
         setShowOnboarding(false)
     }
 

@@ -9,7 +9,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsHeight
+import com.google.accompanist.insets.toPaddingValues
 import tech.alexib.yaba.kmm.android.AppNavigation
 import tech.alexib.yaba.kmm.android.YabaBottomBar
 
@@ -21,9 +23,9 @@ finishActivity:() -> Unit
 
     Scaffold(
         bottomBar = {
-            YabaBottomBar(navController)
-            Spacer(Modifier.navigationBarsHeight().fillMaxWidth())
-        }
+            YabaBottomBar(navController, modifier = Modifier.padding(LocalWindowInsets.current.systemBars.toPaddingValues()))
+        },
+
     ) {contentPadding->
         Box(modifier = Modifier.padding(contentPadding).fillMaxSize()) {
             AppNavigation(navController = navController,finishActivity)

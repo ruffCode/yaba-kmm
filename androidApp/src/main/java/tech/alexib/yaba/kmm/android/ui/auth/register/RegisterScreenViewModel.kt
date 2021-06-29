@@ -60,11 +60,10 @@ class RegisterScreenViewModel : ViewModel(), KoinComponent {
 
                 when (val result = sessionManager.register(email.value, password.value)) {
                     AuthResult.Success -> {
-                        log.d { "registration success" }
                         registrationSuccess.value = true
                     }
                     is AuthResult.Error -> {
-                        log.d { "registration error ${result.message}" }
+                        log.e { "registration error ${result.message}" }
                         registrationSuccess.value = false
                         errorMessage.value = result.message
                     }

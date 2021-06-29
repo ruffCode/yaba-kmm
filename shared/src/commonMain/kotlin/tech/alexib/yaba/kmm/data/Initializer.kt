@@ -32,9 +32,7 @@ interface Initializer {
     suspend fun init()
 }
 
-class InitializerImpl(
-
-) : Initializer, KoinComponent {
+class InitializerImpl : Initializer, KoinComponent {
 
     private val apolloApi: ApolloApi by inject()
     private val log: Kermit by inject { parametersOf("Initializer") }
@@ -52,7 +50,6 @@ class InitializerImpl(
     private val client by lazy { apolloApi.client() }
     override suspend fun init() {
         val transactionCount = transactionRepository.count().first()
-        log.d { "transactionCount is $transactionCount" }
         if (transactionCount == 0L) {
             val response = client.safeQuery(AllUserDataQuery()) {
                 val data = it.me

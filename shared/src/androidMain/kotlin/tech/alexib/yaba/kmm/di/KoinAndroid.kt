@@ -10,17 +10,16 @@ import tech.alexib.yaba.kmm.BiometricSettings
 import tech.alexib.yaba.kmm.YabaAppSettings
 import tech.alexib.yaba.kmm.auth.BiometricsManagerAndroid
 import tech.alexib.yaba.kmm.auth.CipherWrapper
-import tech.alexib.yaba.kmm.auth.EncryptionManager
 import tech.alexib.yaba.kmm.auth.SessionManagerAndroid
 import tech.alexib.yaba.kmm.data.db.AppSettings
 import tech.alexib.yaba.kmm.data.db.DriverFactory
-import tech.alexib.yaba.kmm.data.auth.BiometricsManager
+import tech.alexib.yaba.kmm.auth.BiometricsManager
 
 
 actual val platformModule: Module = module {
 //    single<DataStore<Preferences>> { get<Context>().dataStore }
     single { createIoDispatcher() }
-    single { EncryptionManager(getWith("EncryptionManager")) }
+//    single { EncryptionManager(getWith("EncryptionManager")) }
     single { CipherWrapper() }
     single { SessionManagerAndroid(get(), get()) }
 //    single { AndroidAuthManager(getWith("AndroidAuthRepository"), get(), get()) }

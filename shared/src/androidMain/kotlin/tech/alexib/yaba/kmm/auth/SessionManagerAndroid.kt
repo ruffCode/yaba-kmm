@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.kmm.data.auth.BiometricsManager
 import tech.alexib.yaba.kmm.data.auth.SessionManager
 import tech.alexib.yaba.kmm.data.db.AppSettings
 import tech.alexib.yaba.kmm.data.repository.AuthApiRepository

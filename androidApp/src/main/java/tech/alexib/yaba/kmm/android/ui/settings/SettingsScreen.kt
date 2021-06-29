@@ -62,7 +62,6 @@ private fun Settings(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
-
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
@@ -96,7 +95,7 @@ private fun Settings(
             onClick = { actioner(SettingsScreenAction.Logout) },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 20.dp)
+                .padding(horizontal = 16.dp)
                 .height(50.dp)
                 .fillMaxWidth()
         ) {

@@ -3,19 +3,15 @@ package tech.alexib.yaba.kmm.android.ui.auth.login
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Fingerprint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
@@ -30,20 +26,25 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.toPaddingValues
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.R
 import tech.alexib.yaba.kmm.android.ui.AddSpace
 import tech.alexib.yaba.kmm.android.ui.auth.components.Password
 import tech.alexib.yaba.kmm.android.ui.auth.components.Username
 import tech.alexib.yaba.kmm.android.ui.theme.BlueSlate
+import tech.alexib.yaba.kmm.android.ui.theme.YabaTheme
 import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
 
 internal sealed class LoginScreenAction {
     object Login : LoginScreenAction()
     object Register : LoginScreenAction()
     object NavigateHome : LoginScreenAction()
+    object NavigateBiometricSetup : LoginScreenAction()
     data class SetEmail(val email: String) : LoginScreenAction()
     data class SetPassword(val password: String) : LoginScreenAction()
     object PromptForBiometrics : LoginScreenAction()
@@ -53,9 +54,10 @@ internal sealed class LoginScreenAction {
 data class LoginScreenState(
     val loggedIn: Boolean = false,
     val errorMessage: String? = null,
-    val email: String = "",
-    val password: String = "",
-    val shouldPromptForBiometrics:Boolean = false
+    val email: String = "alexi12345@aol.com",
+    val password: String = "passwordpassword",
+    val shouldPromptForBiometrics: Boolean = false,
+    val shouldSetupBiometrics: Boolean = false
 ) {
     companion object {
         val Empty = LoginScreenState()
@@ -65,13 +67,15 @@ data class LoginScreenState(
 @Composable
 fun Login(
     navigateToRegister: () -> Unit,
-    navigateHome: () -> Unit
+    navigateHome: () -> Unit,
+    navigateToBiometricSetup: () -> Unit
 ) {
     val viewModel: LoginScreenViewModel = getViewModel()
 
     LoginScreen(
         navigateToRegister = navigateToRegister,
         navigateHome = navigateHome,
+        navigateToBiometricSetup = navigateToBiometricSetup,
         viewModel = viewModel
     )
 }
@@ -80,6 +84,7 @@ fun Login(
 private fun LoginScreen(
     navigateToRegister: () -> Unit,
     navigateHome: () -> Unit,
+    navigateToBiometricSetup: () -> Unit,
     viewModel: LoginScreenViewModel
 ) {
 
@@ -93,6 +98,7 @@ private fun LoginScreen(
             is LoginScreenAction.SetPassword -> viewModel.setPassword(action.password)
             is LoginScreenAction.NavigateHome -> navigateHome()
             is LoginScreenAction.PromptForBiometrics -> viewModel.loginBio()
+            is LoginScreenAction.NavigateBiometricSetup -> navigateToBiometricSetup()
         }
     }
 }
@@ -104,186 +110,108 @@ private fun LoginScreen(
 ) {
 
     if (state.loggedIn) {
-        actioner(LoginScreenAction.NavigateHome)
+        when (state.shouldSetupBiometrics) {
+            true -> actioner(LoginScreenAction.NavigateBiometricSetup)
+            false -> actioner(LoginScreenAction.NavigateHome)
+        }
+    }
+    if (state.shouldPromptForBiometrics && !state.loggedIn) {
+        actioner(LoginScreenAction.PromptForBiometrics)
     }
 
     var email by remember { mutableStateOf(TextFieldValue(state.email)) }
     var password by remember { mutableStateOf(TextFieldValue(state.password)) }
     val focusRequester = remember { FocusRequester() }
 
-    LazyColumn(
+//    Scaffold(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(LocalWindowInsets.current.ime.toPaddingValues())
+//    ) {
+//
+//    }
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colors.surface)
-            .padding(16.dp),
+            .padding(
+                start = 8.dp,
+                end = 8.dp,
+                bottom = LocalWindowInsets.current.ime
+                    .toPaddingValues()
+                    .calculateBottomPadding()
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        item {
-            Text(
-                text = "Welcome To",
-                style = MaterialTheme.typography.h5,
-                color = BlueSlate
-            )
-        }
-        item {
-            Image(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .height(200.dp),
-                painter = rememberCoilPainter(
-                    R.drawable.yaba_y_bl,
-                    previewPlaceholder = R.drawable.yaba_y_bl
-                ),
-                contentScale = ContentScale.Fit,
-                contentDescription = "$",
-            )
-        }
+        verticalArrangement = Arrangement.Center,
 
+        ) {
+        Text(
+            text = "Welcome To",
+            style = MaterialTheme.typography.h5,
+            color = BlueSlate
+        )
 
-        item {
-            Username(usernameState = email, onValueChange = { value ->
-                email = value
-                actioner(LoginScreenAction.SetEmail(value.text))
-            }, onImeAction = { focusRequester.requestFocus() })
-        }
-        item { AddSpace() }
-        item {
-            Password(
-                label = "Password",
-                passwordState = password,
-                onValueChange = { value ->
-                    password = value
-                    actioner(LoginScreenAction.SetPassword(value.text))
-                },
-                modifier = Modifier.focusRequester(focusRequester),
-                onImeAction = { actioner(LoginScreenAction.Login) }
-            )
-        }
+        Image(
+            modifier = Modifier
+                .height(200.dp),
+            painter = rememberCoilPainter(
+                R.drawable.yaba_y_bl,
+                previewPlaceholder = R.drawable.yaba_y_bl
+            ),
+            contentScale = ContentScale.Fit,
+            contentDescription = "YABA logo",
+        )
 
+        Username(usernameState = email, onValueChange = { value ->
+            email = value
+            actioner(LoginScreenAction.SetEmail(value.text))
+        }, onImeAction = { focusRequester.requestFocus() })
+        AddSpace(8.dp)
 
-        item { AddSpace() }
-        item {
-            Button(
-                onClick = { actioner(LoginScreenAction.Login) },
-                modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(text = "Login")
-            }
-        }
+        Password(
+            label = "Password",
+            passwordState = password,
+            onValueChange = { value ->
+                password = value
+                actioner(LoginScreenAction.SetPassword(value.text))
+            },
+            modifier = Modifier.focusRequester(focusRequester),
+            onImeAction = { actioner(LoginScreenAction.Login) }
+        )
+        AddSpace()
         state.errorMessage?.let {
-            item {
-                Text(
-                    text = state.errorMessage,
-                    style = TextStyle(color = MaterialTheme.colors.error)
-                )
-            }
+            Text(
+                text = state.errorMessage,
+                style = TextStyle(color = MaterialTheme.colors.error)
+            )
         }
-        item { AddSpace() }
-        item {
-            TextButton(
-                onClick = { actioner(LoginScreenAction.Register) },
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text(text = "Don't have an account?")
-            }
+        Button(
+            onClick = { actioner(LoginScreenAction.Login) },
+            modifier = Modifier
+                .height(50.dp)
+                .padding(bottom = 8.dp)
+                .fillMaxWidth()
+        ) {
+            Text(text = "Login")
         }
-        item {
-            IconButton(onClick = { actioner(LoginScreenAction.PromptForBiometrics) }) {
-                Icon(Icons.Outlined.Fingerprint, "fingerprint")
-            }
+
+
+        TextButton(
+            onClick = { actioner(LoginScreenAction.Register) },
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(text = "Don't have an account?")
         }
-        item { AddSpace(100.dp) }
     }
 }
 
+@Preview
+@Composable
+fun LoginScreenPreview() {
+    YabaTheme {
+        LoginScreen(state = LoginScreenState.Empty) {
 
-//@Composable
-//private fun LoginScreen(
-//    modifier: Modifier = Modifier,
-//    errorMessage: String? = null,
-//    login: (email: String, password: String) -> Unit,
-//    register: () -> Unit
-//) {
-//    val username = remember { mutableStateOf(TextFieldValue("alexi2@aol.com")) }
-//    val password = remember { mutableStateOf(TextFieldValue("password1234")) }
-//    val focusRequester = remember { FocusRequester() }
-//    LazyColumn(
-//        modifier = modifier
-//            .fillMaxSize()
-//
-//            .background(color = MaterialTheme.colors.surface)
-//            .padding(16.dp),
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.Bottom
-//    ) {
-//
-//        item {
-//            Text(
-//                text = "Welcome To",
-//                style = MaterialTheme.typography.h5,
-//                color = BlueSlate
-//            )
-//        }
-//        item {
-//            Image(
-//                modifier = Modifier
-//                    .padding(16.dp)
-//                    .height(200.dp),
-//                painter = rememberCoilPainter(
-//                    R.drawable.yaba_y_bl,
-//                    previewPlaceholder = R.drawable.yaba_y_bl
-//                ),
-//                contentScale = ContentScale.Fit,
-//                contentDescription = "$",
-//            )
-//        }
-//
-//
-//        item { Username(usernameState = username, onImeAction = { focusRequester.requestFocus() }) }
-//        item { AddSpace() }
-//        item {
-//            Password(
-//                label = "Password",
-//                passwordState = password.value,
-//                onValueChange = {}
-//                modifier = Modifier.focusRequester(focusRequester),
-//                onImeAction = { login(username.value.text, password.value.text) }
-//            )
-//        }
-//
-//
-//        item { AddSpace() }
-//        item {
-//            Button(
-//                onClick = { login(username.value.text, password.value.text) },
-//                modifier = Modifier
-//                    .height(50.dp)
-//                    .fillMaxWidth()
-//            ) {
-//                Text(text = "Login")
-//            }
-//        }
-//        errorMessage?.let {
-//            item {
-//                Text(text = errorMessage, style = TextStyle(color = MaterialTheme.colors.error))
-//            }
-//        }
-//        item { AddSpace() }
-//        item {
-//            TextButton(
-//                onClick = register,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//            ) {
-//                Text(text = "Don't have an account?")
-//            }
-//        }
-//        item { AddSpace(100.dp) }
-//
-//
-//    }
-//}
+        }
+    }
+}

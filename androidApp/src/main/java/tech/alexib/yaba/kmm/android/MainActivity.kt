@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         activityForBio = this
-        WindowCompat.setDecorFitsSystemWindows(window, true)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             ProvideWindowInsets(consumeWindowInsets = false) {
                 val systemUiController = remember { SystemUiController(window) }

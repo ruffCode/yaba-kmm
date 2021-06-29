@@ -10,6 +10,8 @@ internal open class AuthTokenProvider : KoinComponent {
 
     val authToken = appSettings.authToken
 
+
+
     init {
         ensureNeverFrozen()
     }

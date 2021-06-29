@@ -1,5 +1,6 @@
 package tech.alexib.yaba.kmm.android.ui.auth.biometric
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,18 +19,85 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Fingerprint
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.ui.theme.YabaTheme
+import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
+
+sealed class BiometricSetupScreenAction {
+    object PromptSetup : BiometricSetupScreenAction()
+    object Decline : BiometricSetupScreenAction()
+    object NavigateHome : BiometricSetupScreenAction()
+}
+
+@Immutable
+data class BiometricSetupScreenState(
+    val setupSuccessful: Boolean = false,
+    val errorMessage: String? = null,
+    val declined: Boolean = false
+) {
+    companion object {
+        val Empty = BiometricSetupScreenState()
+    }
+}
 
 @Composable
-fun BiometricSetupScreen() {
+fun BiometricSetupScreen(
+    navigateHome: () -> Unit
+) {
+    val viewModel: BiometricSetupScreenViewModel = getViewModel()
+    BiometricSetupScreen(viewModel = viewModel) {
+        navigateHome()
+    }
+}
+
+@Composable
+private fun BiometricSetupScreen(
+    viewModel: BiometricSetupScreenViewModel,
+    navigateHome: () -> Unit
+) {
+    val state by
+    rememberFlowWithLifecycle(flow = viewModel.state).collectAsState(initial = BiometricSetupScreenState.Empty)
+
+    BiometricSetupScreen(state) { action ->
+        when (action) {
+            is BiometricSetupScreenAction.NavigateHome -> navigateHome()
+            is BiometricSetupScreenAction.PromptSetup -> viewModel.setupBiometrics()
+            is BiometricSetupScreenAction.Decline -> navigateHome()
+        }
+    }
+}
+
+@Composable
+private fun BiometricSetupScreen(
+    state: BiometricSetupScreenState,
+    actioner: (BiometricSetupScreenAction) -> Unit
+) {
+    val context = LocalContext.current
+    if (state.setupSuccessful || state.declined) {
+        actioner(BiometricSetupScreenAction.NavigateHome)
+    }
+
+    if (state.errorMessage != null) {
+        Toast
+            .makeText(
+                context,
+                state.errorMessage,
+                Toast.LENGTH_SHORT
+            )
+            .show()
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -55,8 +123,7 @@ fun BiometricSetupScreen() {
             "fingerprint",
             modifier = Modifier
                 .size(75.dp)
-                .align(Alignment.Center)
-,
+                .align(Alignment.Center),
             tint = MaterialTheme.colors.onPrimary
         )
         Column(
@@ -69,7 +136,7 @@ fun BiometricSetupScreen() {
 
 
             OutlinedButton(
-                onClick = {},
+                onClick = { actioner(BiometricSetupScreenAction.PromptSetup) },
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
                 border = BorderStroke(2.dp, Color.White),
                 modifier = Modifier
@@ -84,7 +151,7 @@ fun BiometricSetupScreen() {
                     fontSize = 16.sp
                 )
             }
-            TextButton(onClick = { }) {
+            TextButton(onClick = { actioner(BiometricSetupScreenAction.Decline) }) {
                 Text(
                     text = "Not now",
                     color = Color.White,
@@ -102,6 +169,7 @@ fun BiometricSetupScreen() {
 @Composable
 fun BiometricSetupScreenPreview() {
     YabaTheme {
-        BiometricSetupScreen()
+        BiometricSetupScreen(BiometricSetupScreenState.Empty) {
+        }
     }
 }
