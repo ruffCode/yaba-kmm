@@ -13,7 +13,6 @@ import tech.alexib.yaba.data.db.ItemEntity
 import tech.alexib.yaba.data.db.ItemEntityQueries
 import tech.alexib.yaba.data.db.YabaDb
 import tech.alexib.yaba.kmm.data.db.sqldelight.transactionWithContext
-import tech.alexib.yaba.kmm.model.PlaidInstitutionId
 import tech.alexib.yaba.kmm.model.PlaidItem
 import tech.alexib.yaba.kmm.model.PlaidItemId
 
@@ -72,7 +71,7 @@ internal class ItemDaoImpl(
             ->
             PlaidItem(
                 id = PlaidItemId(id),
-                plaidInstitutionId = PlaidInstitutionId(plaid_institution_id),
+                plaidInstitutionId = plaid_institution_id,
                 name = name,
                 base64Logo = logo
             )

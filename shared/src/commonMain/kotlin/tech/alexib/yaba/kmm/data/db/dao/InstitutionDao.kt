@@ -11,7 +11,6 @@ import tech.alexib.yaba.data.db.InstitutionEntity
 import tech.alexib.yaba.data.db.InstitutionEntityQueries
 import tech.alexib.yaba.data.db.YabaDb
 import tech.alexib.yaba.kmm.model.Institution
-import tech.alexib.yaba.kmm.model.PlaidInstitutionId
 
 internal interface InstitutionDao {
     suspend fun insert(institution: Institution)
@@ -32,7 +31,7 @@ internal class InstitutionDaoImpl(
         withContext(backgroundDispatcher) {
             queries.insertInstitution(
                 InstitutionEntity(
-                    id = institution.institutionId.value,
+                    id = institution.institutionId,
                     logo = institution.logo,
                     name = institution.name,
                     primary_color = institution.primaryColor
@@ -55,7 +54,7 @@ internal class InstitutionDaoImpl(
                 primary_color: String,
             ->
             Institution(
-                institutionId = PlaidInstitutionId(id),
+                institutionId = id,
                 logo = logo,
                 name = name,
                 primaryColor = primary_color

@@ -23,7 +23,6 @@ import tech.alexib.yaba.kmm.model.Account
 import tech.alexib.yaba.kmm.model.AccountSubtype
 import tech.alexib.yaba.kmm.model.AccountType
 import tech.alexib.yaba.kmm.model.Institution
-import tech.alexib.yaba.kmm.model.PlaidInstitutionId
 import tech.alexib.yaba.kmm.model.Transaction
 import tech.alexib.yaba.kmm.model.TransactionType
 import tech.alexib.yaba.kmm.model.User
@@ -75,7 +74,7 @@ class InitializerImpl : Initializer, KoinComponent {
                 val institutions = data.items.map { item ->
                     with(item.institution) {
                         Institution(
-                            institutionId = PlaidInstitutionId(institutionId),
+                            institutionId = institutionId,
                             name = name,
                             logo = logo,
                             primaryColor = primaryColor ?: "#095aa6"
