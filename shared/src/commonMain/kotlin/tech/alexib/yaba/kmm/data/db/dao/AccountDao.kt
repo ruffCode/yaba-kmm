@@ -24,11 +24,13 @@ internal interface AccountDao {
     fun selectById(accountId: Uuid): Flow<Account?>
     fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
     fun availableBalance(userId: Uuid): Flow<Double>
+    fun currentBalance(userId: Uuid): Flow<Double>
+    suspend fun setHidden(id: Uuid, hidden: Boolean)
 }
 
 internal class AccountDaoImpl(
     private val database: YabaDb,
-    private val backgroundDispatcher: CoroutineDispatcher
+    private val backgroundDispatcher: CoroutineDispatcher,
 ) : AccountDao {
     private val accountQueries = database.accountsQueries
 
@@ -76,6 +78,15 @@ internal class AccountDaoImpl(
             .flowOn(backgroundDispatcher)
     }
 
+    override suspend fun setHidden(id: Uuid, hidden: Boolean) {
+        withContext(backgroundDispatcher) {
+            accountQueries.setHidden(hidden, id)
+        }
+    }
+
+    override fun currentBalance(userId: Uuid): Flow<Double> =
+        accountQueries.currentBalance(userId) { current -> current ?: 0.0 }.asFlow().mapToOne()
+            .flowOn(backgroundDispatcher)
 
     companion object {
         private val accountMapper = {

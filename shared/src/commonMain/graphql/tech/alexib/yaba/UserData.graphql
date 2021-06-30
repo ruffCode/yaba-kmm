@@ -75,6 +75,3 @@ query AllUserData{
 
 }
 
-mutation DeleteItem($id:UUID!){
-    itemDelete(itemId:$id)
-}
