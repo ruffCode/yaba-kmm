@@ -12,6 +12,7 @@ import tech.alexib.yaba.kmm.data.auth.SessionManager
 import tech.alexib.yaba.kmm.data.db.AppSettings
 import tech.alexib.yaba.kmm.data.repository.AuthApiRepository
 import tech.alexib.yaba.kmm.data.repository.AuthResult
+import tech.alexib.yaba.kmm.data.repository.UserRepository
 import tech.alexib.yaba.kmm.model.response.AuthResponse
 
 
@@ -22,6 +23,7 @@ class SessionManagerAndroid(
 
     private val log: Kermit by inject { parametersOf("SessionManagerImpl") }
     private val authApiRepository: AuthApiRepository by inject()
+    private val userRepository: UserRepository by inject()
 
     init {
         ensureNeverFrozen()
@@ -70,6 +72,12 @@ class SessionManagerAndroid(
         TODO("Not yet implemented")
     }
 
+
+    suspend fun clearAppData() {
+        yabaAppSettings.clearAppSettings()
+        biometricsManager.clear()
+        userRepository.deleteCurrentUser()
+    }
 
     override suspend fun setUserId(userId: Uuid) {
         yabaAppSettings.setUserId(userId)

@@ -14,15 +14,15 @@ class PlaidLinkResultScreenViewModel : ViewModel(), KoinComponent {
 
     lateinit var itemId: Uuid
 
-    private val accountsFlow = MutableStateFlow<List<PlaidItem.Account>>(emptyList())
+    private val accountsFlow = MutableStateFlow<List<PlaidLinkScreenResult.Account>>(emptyList())
 
-    val accounts: StateFlow<List<PlaidItem.Account>>
+    val accounts: StateFlow<List<PlaidLinkScreenResult.Account>>
         get() = accountsFlow
 
 
-    fun init(plaidItem: PlaidItem) {
-        itemId = plaidItem.id
-        accountsFlow.value = plaidItem.accounts
+    fun init(plaidLinkScreenResult: PlaidLinkScreenResult) {
+        itemId = plaidLinkScreenResult.id
+        accountsFlow.value = plaidLinkScreenResult.accounts
     }
 
     fun setAccountShown(plaidAccountId: String, show: Boolean) {

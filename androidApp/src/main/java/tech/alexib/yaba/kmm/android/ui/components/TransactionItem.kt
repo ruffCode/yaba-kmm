@@ -32,13 +32,11 @@ import tech.alexib.yaba.kmm.android.ui.theme.YabaTheme
 import tech.alexib.yaba.kmm.model.Transaction
 import tech.alexib.yaba.kmm.model.TransactionType
 
-import java.util.*
-
 private val transactionStub = Transaction(
     name = "ACH Electronic CreditGUSTO PAY 123456",
     id = uuidFrom("c8833368-75f7-4019-98d0-83b680b5dd8d"),
     type = TransactionType.SPECIAL,
-    amount = 500.0,
+    amount = 50000.0,
     date = LocalDate.parse("2021-04-25"),
     accountId = uuidFrom("6e49eb05-af5f-4f2e-9d9d-6d98117a602f"),
     itemId = uuidFrom("99dd6382-0b02-46c5-aaa4-ada87c505443"),
@@ -51,7 +49,7 @@ private val transactionStub = Transaction(
 
 @Composable
 fun TransactionListItem(
-    transaction: Transaction
+    transaction: Transaction,
 ) {
     ListItem(modifier = Modifier.fillMaxWidth(),
 
@@ -91,7 +89,7 @@ fun TransactionListItem(
 @Composable
 fun TransactionItem(
     transaction: Transaction,
-    isLast: Boolean = false
+    isLast: Boolean = false,
 ) {
     Box(
         modifier = Modifier
@@ -127,7 +125,7 @@ fun TransactionItem(
                     style = MaterialTheme.typography.body2,
                     modifier = Modifier
                         .padding(4.dp)
-                        .fillMaxWidth(0.65f)
+                        .fillMaxWidth(0.62f)
                         .constrainAs(nameRef) {
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
@@ -151,7 +149,6 @@ fun TransactionItem(
             }
 
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-
                 Text(
                     text = "$${moneyFormat.format(transaction.amount)}",
                     style = MaterialTheme.typography.body2,
@@ -165,7 +162,8 @@ fun TransactionItem(
                             bottom.linkTo(parent.bottom)
 
                         },
-                    textAlign = TextAlign.End
+                    textAlign = TextAlign.End,
+                    maxLines = 1
                 )
             }
         }

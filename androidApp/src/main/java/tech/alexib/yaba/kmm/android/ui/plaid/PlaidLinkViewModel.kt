@@ -3,6 +3,7 @@ package tech.alexib.yaba.kmm.android.ui.plaid
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Kermit
 import com.plaid.link.configuration.LinkLogLevel
 import com.plaid.link.configuration.LinkTokenConfiguration
 import com.plaid.link.linkTokenConfiguration
@@ -10,12 +11,17 @@ import com.plaid.link.result.LinkExit
 import com.plaid.link.result.LinkResult
 import com.plaid.link.result.LinkSuccess
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.android.BuildConfig
 import tech.alexib.yaba.kmm.data.api.PlaidItemApi
 import tech.alexib.yaba.kmm.data.repository.ErrorResult
@@ -26,12 +32,11 @@ import java.util.*
 
 class PlaidLinkViewModel(
     private val plaidItemApi: PlaidItemApi
-) : ViewModel() {
+) : ViewModel() ,KoinComponent{
 
     private val resultFlow = MutableStateFlow<PlaidLinkResult>(PlaidLinkResult.Empty)
     val result: StateFlow<PlaidLinkResult> = resultFlow
-
-
+    private val log: Kermit by inject { parametersOf("PlaidLinkViewModel") }
 
     fun handleResult(linkResult: LinkResult) {
         when (linkResult) {
