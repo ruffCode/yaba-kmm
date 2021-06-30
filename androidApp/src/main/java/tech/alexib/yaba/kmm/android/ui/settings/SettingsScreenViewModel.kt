@@ -18,4 +18,12 @@ class SettingsScreenViewModel : ViewModel(), KoinComponent {
             delay(300)
         }
     }
+
+    fun clearAppData() {
+        viewModelScope.launch {
+            sessionManager.clearAppData()
+            sessionManager.logout()
+            delay(100)
+        }
+    }
 }

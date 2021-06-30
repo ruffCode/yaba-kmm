@@ -16,7 +16,9 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.CreateItemMutation
 import tech.alexib.yaba.CreateLinkTokenMutation
+
 import tech.alexib.yaba.SetAccountsToHideMutation
+import tech.alexib.yaba.UnlinkItemMutation
 import tech.alexib.yaba.kmm.data.repository.DataResult
 import tech.alexib.yaba.kmm.data.repository.ErrorResult
 import tech.alexib.yaba.kmm.data.repository.Success
@@ -30,18 +32,13 @@ interface PlaidItemApi {
     fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<PlaidItemCreateResponse>>
     fun sendLinkEvent(request: PlaidLinkEventCreateRequest)
     fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>)
+    suspend fun unlink(itemId: Uuid)
 }
 
-class PlaidItemApiImpl(
-
-) : PlaidItemApi, KoinComponent {
+class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
 
     private val apolloApi: ApolloApi by inject()
     private val log: Kermit by inject { parametersOf("PlaidItemApi") }
-    private val client: ApolloClient by lazy {
-        apolloApi.client()
-    }
-
 
     init {
         ensureNeverFrozen()
@@ -57,7 +54,7 @@ class PlaidItemApiImpl(
             flow<DataResult<CreateLinkTokenResponse>> {
 
                 when (val result =
-                    client.safeMutation(mutation) { result -> CreateLinkTokenResponse(result.createLinkToken.linkToken) }
+                    apolloApi.client().safeMutation(mutation) { result -> CreateLinkTokenResponse(result.createLinkToken.linkToken) }
                         .first()) {
                     is ApolloResponse.Success -> emit(Success(result.data))
 
@@ -79,7 +76,7 @@ class PlaidItemApiImpl(
         return runCatching {
 
             flow<DataResult<PlaidItemCreateResponse>> {
-                val result = client.safeMutation(mutation) { result ->
+                val result =  apolloApi.client().safeMutation(mutation) { result ->
                     result.itemCreate.let {
                         PlaidItemCreateResponse(
                             id = it.itemId as Uuid,
@@ -115,7 +112,7 @@ class PlaidItemApiImpl(
 
         CoroutineScope(Dispatchers.Default).launch {
             runCatching {
-                client.mutate(request.toMutation()).execute().firstOrNull()
+                apolloApi.client().mutate(request.toMutation()).execute().firstOrNull()
             }.getOrElse {
                 log.e { "error sending link event ${it.message}" }
             }
@@ -127,12 +124,22 @@ class PlaidItemApiImpl(
 
         CoroutineScope(Dispatchers.Default).launch {
             runCatching {
-                client.mutate(mutation).execute().firstOrNull()
+                apolloApi.client().mutate(mutation).execute().firstOrNull()
             }.getOrElse {
                 log.e { "error setting accounts to hide ${it.message}" }
             }
         }
+    }
 
+    override suspend fun unlink(itemId: Uuid) {
+        val mutation = UnlinkItemMutation(itemId)
+        CoroutineScope(Dispatchers.Default).launch {
+            runCatching {
+                apolloApi.client().mutate(mutation).execute().firstOrNull()
+            }.getOrElse {
+                log.e { "error unlinking item ${it.message}" }
+            }
+        }
     }
 }
 

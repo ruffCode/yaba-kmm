@@ -54,7 +54,7 @@ fun BankLogo(modifier: Modifier = Modifier, logoBitmap: Bitmap) {
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .padding(16.dp)
-                .size(20.dp),
+                .size(25.dp),
         )
     }
 }

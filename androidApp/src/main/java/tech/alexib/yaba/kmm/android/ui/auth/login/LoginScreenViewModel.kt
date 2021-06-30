@@ -14,7 +14,6 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.android.ui.auth.register.Email
 import tech.alexib.yaba.kmm.android.ui.auth.register.isValid
-import tech.alexib.yaba.kmm.auth.BiometricAuthResult
 import tech.alexib.yaba.kmm.auth.SessionManagerAndroid
 import tech.alexib.yaba.kmm.data.repository.AuthResult
 
@@ -24,11 +23,18 @@ class LoginScreenViewModel(
 
     private val log: Kermit by inject { parametersOf("LoginScreenViewModel") }
 
+
     private val isBioEnabledFlow = MutableStateFlow(false)
+    private val hasCancelledBiometricLogin = MutableStateFlow(false)
     private val email = MutableStateFlow("")
     private val password = MutableStateFlow("")
     private val errorMessage = MutableStateFlow<String?>(null)
     private val loggedIn = MutableStateFlow(false)
+
+    private val shouldPromptForBiometrics: Flow<Boolean> =
+        combine(isBioEnabledFlow, hasCancelledBiometricLogin) { isEnabled, hasCancelled ->
+            isEnabled && !hasCancelled
+        }
 
     val state: Flow<LoginScreenState> =
         combine(
@@ -36,16 +42,17 @@ class LoginScreenViewModel(
             password,
             errorMessage,
             loggedIn,
-            sessionManager.shouldPromptSetupBiometrics()
-        ) { email, password, error, loggedIn, shouldSetupBiometrics ->
+            shouldPromptForBiometrics
+        ) { email, password, error, loggedIn, shouldPromptForBiometrics ->
 
             LoginScreenState(
                 email = email,
                 password = password,
                 errorMessage = error,
                 loggedIn = loggedIn,
-                shouldPromptForBiometrics = isBioEnabledFlow.value,
-                shouldSetupBiometrics = shouldSetupBiometrics
+                isBiometricAuthEnabled = isBioEnabledFlow.value,
+                shouldPromptForBiometrics = shouldPromptForBiometrics,
+                shouldSetupBiometrics = sessionManager.shouldPromptSetupBiometrics().first()
             )
         }
 
@@ -85,7 +92,7 @@ class LoginScreenViewModel(
                     }, onError = {
                         errorMessage.value = "Authentication Failed"
                     }, onCancel = {
-
+                        hasCancelledBiometricLogin.value = true
                     })
 //                when (it) {
 //                    is BiometricAuthResult.Success -> handleAuthResult(sessionManager.handleBioLogin())

@@ -63,6 +63,10 @@ class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
         return manager.canAuthenticate(BIOMETRIC_STRONG) == BIOMETRIC_SUCCESS
     }
 
+    override suspend fun clear() {
+        biometricSettings.clear()
+    }
+
     override fun shouldPromptSetupBiometrics(): Flow<Boolean> {
         return combine(
             biometricSettings.isBioEnabled(),
@@ -173,7 +177,7 @@ class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
         .setTitle("Biometric login for yaba")
         .setSubtitle("Log in using your biometric credential")
         .setNegativeButtonText("Use account email and password")
-        .setConfirmationRequired(false)
+        .setConfirmationRequired(true)
         .build()
 }
 

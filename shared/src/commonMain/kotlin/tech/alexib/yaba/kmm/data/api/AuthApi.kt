@@ -22,7 +22,6 @@ internal class AuthApiImpl(
 ) : AuthApi {
 
 
-
     init {
         ensureNeverFrozen()
     }

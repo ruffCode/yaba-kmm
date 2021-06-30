@@ -4,6 +4,7 @@ import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToOne
+import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -14,7 +15,7 @@ import tech.alexib.yaba.kmm.model.User
 
 internal interface UserDao {
     suspend fun insert(user: User)
-    fun selectById(userId: Uuid): Flow<User>
+    fun selectById(userId: Uuid): Flow<User?>
     suspend fun deleteById(userId: Uuid)
 }
 
@@ -35,9 +36,9 @@ internal class UserDaoImpl(
         }
     }
 
-    override fun selectById(userId: Uuid): Flow<User> =
+    override fun selectById(userId: Uuid): Flow<User?> =
         queries.selectById(userId) { id: Uuid, email: String -> User(id, email) }.asFlow()
-            .mapToOne().flowOn(backgroundDispatcher)
+            .mapToOneOrNull().flowOn(backgroundDispatcher)
 
     override suspend fun deleteById(userId: Uuid) {
         queries.deleteById(userId)

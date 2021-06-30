@@ -4,6 +4,7 @@ import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.LocalDate
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -19,11 +20,11 @@ import tech.alexib.yaba.kmm.data.db.dao.ItemDao
 import tech.alexib.yaba.kmm.data.db.dao.TransactionDao
 import tech.alexib.yaba.kmm.data.db.dao.UserDao
 import tech.alexib.yaba.kmm.data.repository.TransactionRepository
+import tech.alexib.yaba.kmm.data.repository.UserRepository
 import tech.alexib.yaba.kmm.model.Account
 import tech.alexib.yaba.kmm.model.AccountSubtype
 import tech.alexib.yaba.kmm.model.AccountType
 import tech.alexib.yaba.kmm.model.Institution
-import tech.alexib.yaba.kmm.model.PlaidInstitutionId
 import tech.alexib.yaba.kmm.model.Transaction
 import tech.alexib.yaba.kmm.model.TransactionType
 import tech.alexib.yaba.kmm.model.User
@@ -41,17 +42,19 @@ class InitializerImpl : Initializer, KoinComponent {
     private val itemDao: ItemDao by inject()
     private val transactionDao: TransactionDao by inject()
     private val userDao: UserDao by inject()
+    private val userRepository:UserRepository by inject()
     private val transactionRepository: TransactionRepository by inject()
 
     init {
         ensureNeverFrozen()
     }
 
-    private val client by lazy { apolloApi.client() }
+
     override suspend fun init() {
-        val transactionCount = transactionRepository.count().first()
-        if (transactionCount == 0L) {
-            val response = client.safeQuery(AllUserDataQuery()) {
+//        val transactionCount = transactionRepository.count().first()
+//        val currentUser = userRepository.currentUser().firstOrNull()
+        if ( userRepository.currentUser().firstOrNull() == null) {
+            val response =  apolloApi.client().safeQuery(AllUserDataQuery()) {
                 val data = it.me
                 val userId = data.id as Uuid
                 val user = User(userId, data.email)
@@ -75,7 +78,7 @@ class InitializerImpl : Initializer, KoinComponent {
                 val institutions = data.items.map { item ->
                     with(item.institution) {
                         Institution(
-                            institutionId = PlaidInstitutionId(institutionId),
+                            institutionId = institutionId,
                             name = name,
                             logo = logo,
                             primaryColor = primaryColor ?: "#095aa6"

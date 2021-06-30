@@ -13,21 +13,21 @@ import tech.alexib.yaba.data.db.ItemEntity
 import tech.alexib.yaba.data.db.ItemEntityQueries
 import tech.alexib.yaba.data.db.YabaDb
 import tech.alexib.yaba.kmm.data.db.sqldelight.transactionWithContext
-import tech.alexib.yaba.kmm.model.PlaidInstitutionId
 import tech.alexib.yaba.kmm.model.PlaidItem
-import tech.alexib.yaba.kmm.model.PlaidItemId
+
 
 internal interface ItemDao {
     suspend fun insert(item: ItemEntity)
     suspend fun insert(items: List<ItemEntity>)
-    suspend fun selectAll(userId: Uuid): Flow<List<PlaidItem>>
-    suspend fun selectById(id: Uuid): Flow<PlaidItem>
+    fun selectAll(userId: Uuid): Flow<List<PlaidItem>>
+    fun selectById(id: Uuid): Flow<PlaidItem>
+    suspend fun deleteById(id: Uuid)
 }
 
 
 internal class ItemDaoImpl(
     private val database: YabaDb,
-    private val backgroundDispatcher: CoroutineDispatcher
+    private val backgroundDispatcher: CoroutineDispatcher,
 ) : ItemDao {
     private val queries: ItemEntityQueries = database.itemEntityQueries
 
@@ -52,14 +52,20 @@ internal class ItemDaoImpl(
         }
     }
 
-    override suspend fun selectAll(userId: Uuid): Flow<List<PlaidItem>> {
+    override fun selectAll(userId: Uuid): Flow<List<PlaidItem>> {
         return queries.selectAll(userId, itemMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
-    override suspend fun selectById(id: Uuid): Flow<PlaidItem> {
+    override fun selectById(id: Uuid): Flow<PlaidItem> {
         return queries.selectById(id, itemMapper).asFlow().mapToOne()
             .flowOn(backgroundDispatcher)
+    }
+
+    override suspend fun deleteById(id: Uuid) {
+        withContext(backgroundDispatcher) {
+            queries.deleteById(id)
+        }
     }
 
     companion object {
@@ -67,12 +73,12 @@ internal class ItemDaoImpl(
                 id: Uuid,
                 plaid_institution_id: String,
                 _: Uuid?,
-                name: String,
                 logo: String,
+                name: String,
             ->
             PlaidItem(
-                id = PlaidItemId(id),
-                plaidInstitutionId = PlaidInstitutionId(plaid_institution_id),
+                id = id,
+                plaidInstitutionId = plaid_institution_id,
                 name = name,
                 base64Logo = logo
             )

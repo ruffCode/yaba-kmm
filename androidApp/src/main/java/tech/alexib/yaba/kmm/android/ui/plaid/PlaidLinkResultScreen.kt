@@ -29,7 +29,7 @@ import tech.alexib.yaba.kmm.android.util.base64ToBitmap
 
 @Composable
 fun PlaidLinkResultScreen(
-    result: PlaidItem,
+    result: PlaidLinkScreenResult,
     navigateHome: () -> Unit
 ) {
 
@@ -49,7 +49,7 @@ fun PlaidLinkResultScreen(
 @Composable
 fun PlaidLinkResultScreen(
     logo: Bitmap,
-    accounts: State<List<PlaidItem.Account>>,
+    accounts: State<List<PlaidLinkScreenResult.Account>>,
     handleSubmit: () -> Unit,
     setShowHide: (String, Boolean) -> Unit,
 
@@ -61,7 +61,7 @@ fun PlaidLinkResultScreen(
 @Composable
 fun PlaidLinkResultScreen(
     logo: Bitmap,
-    accounts: List<PlaidItem.Account>,
+    accounts: List<PlaidLinkScreenResult.Account>,
     handleSubmit: () -> Unit,
     setShowHide: (String, Boolean) -> Unit
 ) {

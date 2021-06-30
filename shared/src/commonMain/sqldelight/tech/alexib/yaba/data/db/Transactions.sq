@@ -81,3 +81,7 @@ WHERE user_id = ?;
 deleteByItemId:
 DELETE FROM TransactionEntity
 WHERE item_id = ?;
+
+deleteByAccontId:
+DELETE FROM TransactionEntity
+WHERE account_id = ?;

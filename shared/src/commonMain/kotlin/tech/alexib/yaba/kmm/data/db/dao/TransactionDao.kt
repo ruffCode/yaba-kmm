@@ -29,17 +29,19 @@ internal interface TransactionDao {
     fun selectByAccountId(accountId: Uuid): Flow<List<Transaction>>
     fun selectByItemId(itemId: Uuid): Flow<List<Transaction>>
     suspend fun deleteByItemId(itemId: Uuid)
+    suspend fun deleteByAccountId(accountId: Uuid)
     fun count(userId: Uuid): Flow<Long>
     fun selectRecent(userId: Uuid): Flow<List<Transaction>>
 }
 
 internal class TransactionDaoImpl(
     private val database: YabaDb,
-    private val backgroundDispatcher: CoroutineDispatcher
-) : TransactionDao ,KoinComponent{
+    private val backgroundDispatcher: CoroutineDispatcher,
+) : TransactionDao, KoinComponent {
     private val queries: TransactionsQueries = database.transactionsQueries
 
     private val log: Kermit by inject { parametersOf("TransactionDao") }
+
     init {
         ensureNeverFrozen()
 
@@ -96,6 +98,11 @@ internal class TransactionDaoImpl(
         return queries.count(userId).asFlow().mapToOne().flowOn(backgroundDispatcher)
     }
 
+    override suspend fun deleteByAccountId(accountId: Uuid) {
+        withContext(backgroundDispatcher) {
+            queries.deleteByAccontId(accountId)
+        }
+    }
 
     companion object {
         private val transactionMapper = {

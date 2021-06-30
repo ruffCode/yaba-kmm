@@ -28,7 +28,7 @@ class HomeViewModel(
         combine(
             loading,
             error,
-            accountRepository.cashBalance(),
+            accountRepository.availableCashBalance(),
             transactionRepository.recentTransactions()
         ) { loading, error, cashBalance, recentTransactions ->
             HomeScreenState(loading, error, cashBalance, recentTransactions)

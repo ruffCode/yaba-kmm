@@ -8,10 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Fingerprint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
@@ -56,6 +61,7 @@ data class LoginScreenState(
     val errorMessage: String? = null,
     val email: String = "",
     val password: String = "",
+    val isBiometricAuthEnabled: Boolean = false,
     val shouldPromptForBiometrics: Boolean = false,
     val shouldSetupBiometrics: Boolean = false
 ) {
@@ -123,20 +129,13 @@ private fun LoginScreen(
     var password by remember { mutableStateOf(TextFieldValue(state.password)) }
     val focusRequester = remember { FocusRequester() }
 
-//    Scaffold(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(LocalWindowInsets.current.ime.toPaddingValues())
-//    ) {
-//
-//    }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colors.surface)
             .padding(
-                start = 8.dp,
-                end = 8.dp,
+                start = 16.dp,
+                end = 16.dp,
                 bottom = LocalWindowInsets.current.ime
                     .toPaddingValues()
                     .calculateBottomPadding()
@@ -185,6 +184,18 @@ private fun LoginScreen(
                 style = TextStyle(color = MaterialTheme.colors.error)
             )
         }
+        if (state.isBiometricAuthEnabled) {
+            IconButton(onClick = { actioner(LoginScreenAction.PromptForBiometrics) }) {
+                Icon(
+                    Icons.Outlined.Fingerprint,
+                    "fingerprint",
+                    modifier = Modifier
+                        .size(30.dp).padding(bottom = 4.dp),
+
+                    tint = MaterialTheme.colors.primary
+                )
+            }
+        }
         Button(
             onClick = { actioner(LoginScreenAction.Login) },
             modifier = Modifier
@@ -194,7 +205,6 @@ private fun LoginScreen(
         ) {
             Text(text = "Login")
         }
-
 
         TextButton(
             onClick = { actioner(LoginScreenAction.Register) },

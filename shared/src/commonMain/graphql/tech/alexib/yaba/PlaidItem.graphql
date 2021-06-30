@@ -18,3 +18,7 @@ mutation CreateItem($institutionId:String!,$publicToken:String!){
 mutation SetAccountsToHide($itemId:UUID!,$plaidAccountIds:[String!]!){
     setAccountsToHide(itemId:$itemId,plaidAccountIds: $plaidAccountIds)
 }
+
+mutation UnlinkItem($itemId:UUID!){
+    itemUnlink(itemId: $itemId)
+}

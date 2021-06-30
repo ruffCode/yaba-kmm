@@ -16,7 +16,8 @@ val Red700 = Color(0xFFd32f2f)
 val PinkLight = Color(0xFFff79b0)
 val BlueSlate = Color(0xFF4f83cc)
 val MoneyGreen = Color(0xFF529c64)
-
+val ErrorDark = Color(0xFFB00020)
+val ErrorLight = Color(0xFFEF5350)
 /**
  * Return the fully opaque color that results from compositing [onSurface] atop [surface] with the
  * given [alpha]. Useful for situations where semi-transparent colors are undesirable.

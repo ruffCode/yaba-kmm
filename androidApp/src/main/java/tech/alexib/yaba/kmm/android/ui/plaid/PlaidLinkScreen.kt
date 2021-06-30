@@ -2,18 +2,24 @@ package tech.alexib.yaba.kmm.android.ui.plaid
 
 import android.os.Parcelable
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.benasher44.uuid.Uuid
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import com.plaid.link.PlaidActivityResultContract
 import com.plaid.link.result.LinkResult
 import kotlinx.parcelize.Parcelize
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.ui.components.defaultLogoBase64
+import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
 
 import tech.alexib.yaba.kmm.model.response.PlaidItemCreateResponse
 
@@ -21,7 +27,7 @@ import tech.alexib.yaba.kmm.model.response.PlaidItemCreateResponse
 @Composable
 fun PlaidLinkScreen(
     navigateHome: () -> Unit,
-    handleResult: (PlaidItem) -> Unit,
+    handleResult: (PlaidLinkScreenResult) -> Unit,
     ) {
     val viewModel: PlaidLinkViewModel = getViewModel()
 
@@ -32,7 +38,7 @@ fun PlaidLinkScreen(
 sealed class PlaidLinkScreenAction {
     object NavigateHome : PlaidLinkScreenAction()
     data class ShowError(val error: String) : PlaidLinkScreenAction()
-    data class HandleSuccess(val data: PlaidItem) : PlaidLinkScreenAction()
+    data class HandleSuccess(val data: PlaidLinkScreenResult) : PlaidLinkScreenAction()
     data class HandleLinkResult(val data: LinkResult) : PlaidLinkScreenAction()
 }
 
@@ -50,10 +56,11 @@ sealed class PlaidLinkResult {
 fun PlaidLinkScreen(
     viewModel: PlaidLinkViewModel,
     navigateHome: () -> Unit,
-    handleResult: (PlaidItem) -> Unit,
+    handleResult: (PlaidLinkScreenResult) -> Unit,
 ) {
 
-    val state: State<PlaidLinkResult> = viewModel.result.collectAsState()
+//    val state: State<PlaidLinkResult> = viewModel.result.collectAsState(PlaidLinkResult.Empty)
+    val state = rememberFlowWithLifecycle(flow = viewModel.result).collectAsState(initial = PlaidLinkResult.Empty)
 
 
     PlaidLinkScreen(state = state.value, viewModel) { action ->
@@ -82,8 +89,7 @@ private fun PlaidLinkScreen(
         actioner(PlaidLinkScreenAction.HandleSuccess(state.data.toPlaidItem()))
     }
 
-
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box {
         when (state) {
             PlaidLinkResult.Empty -> PlaidLinkHandler(
                 onResult = { linkResult ->
@@ -109,7 +115,7 @@ private fun PlaidLinkScreen(
 
 
 @Parcelize
-data class PlaidItem(
+data class PlaidLinkScreenResult(
     val id: Uuid,
     val name: String,
     val logo: String = defaultLogoBase64,
@@ -124,13 +130,13 @@ data class PlaidItem(
     ) : Parcelable
 }
 
-private fun PlaidItemCreateResponse.toPlaidItem(): PlaidItem =
-    PlaidItem(
+private fun PlaidItemCreateResponse.toPlaidItem(): PlaidLinkScreenResult =
+    PlaidLinkScreenResult(
         id = id,
         name = name,
         logo = logo,
         accounts = accounts.map { account ->
-            PlaidItem.Account(
+            PlaidLinkScreenResult.Account(
                 mask = account.mask,
                 name = account.name,
                 plaidAccountId = account.plaidAccountId,

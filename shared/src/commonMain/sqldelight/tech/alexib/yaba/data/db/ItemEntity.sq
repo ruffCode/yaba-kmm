@@ -12,8 +12,8 @@ SELECT
     i.id,
     i.plaid_institution_id,
     i.user_id,
-    inst.logo,
-    inst.name
+    inst.name,
+    inst.logo
 FROM ItemEntity i
 JOIN InstitutionEntity inst ON i.plaid_institution_id = inst.id;
 
@@ -39,4 +39,3 @@ WHERE itemWithLogo.id = ?;
 deleteById:
 DELETE FROM ItemEntity
 WHERE id = ?;
-

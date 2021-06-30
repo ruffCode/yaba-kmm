@@ -36,7 +36,7 @@ import java.text.DecimalFormat
 data class HomeScreenState(
     val loading: Boolean = false,
     val error: String? = null,
-    val cashBalance: Double = 0.0,
+    val currentCashBalance: Double = 0.0,
     val recentTransactions: List<Transaction> = emptyList()
 ) {
     companion object {
@@ -89,33 +89,19 @@ private fun Home(
     ) {
 
         AddSpace()
-//        TotalCashBalanceRow(state.cashBalance)
-//        AddSpace()
-//        RecentTransactions(transactions = state.recentTransactions) {
-//
-//
-//        }
-//        AddSpace()
-//        Button(onClick = {
-//            actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
-//        }) {
-//            Text(text = "Link Account")
-//        }
-        if (state.cashBalance == 0.0) {
+
+        if (state.currentCashBalance == 0.0) {
             Button(onClick = {
                 actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
             }, modifier = Modifier.fillMaxWidth()) {
                 Text(text = "Link your first account", style = MaterialTheme.typography.button)
             }
         } else {
-            TotalCashBalanceRow(state.cashBalance)
+            TotalCashBalanceRow(state.currentCashBalance)
             AddSpace()
             RecentTransactions(transactions = state.recentTransactions) {
 
-
             }
-
-
         }
 
     }
@@ -123,9 +109,9 @@ private fun Home(
 
 @Composable
 fun TotalCashBalanceRow(
-    availableBalance: Double
+    balance: Double
 ) {
-    val isPositive = availableBalance > 0
+    val isPositive = balance > 0
     Card(
         modifier = Modifier
             .wrapContentHeight(Alignment.CenterVertically),
@@ -140,9 +126,9 @@ fun TotalCashBalanceRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-                Text(text = "Available cash balance")
+                Text(text = "Current cash balance")
                 Text(
-                    text = "$${moneyFormat.format(availableBalance)}",
+                    text = "$${moneyFormat.format(balance)}",
                     color = if (isPositive) MoneyGreen else Color.Red,
                     textAlign = TextAlign.End
                 )

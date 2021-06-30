@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,11 +20,14 @@ import tech.alexib.yaba.kmm.android.ui.auth.register.RegistrationScreen
 import tech.alexib.yaba.kmm.android.ui.auth.splash.Splash
 import tech.alexib.yaba.kmm.android.ui.auth.splash.SplashScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.home.Home
-import tech.alexib.yaba.kmm.android.ui.plaid.PlaidItem
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkResultScreen
 import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkScreen
+import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkScreenResult
 import tech.alexib.yaba.kmm.android.ui.settings.SettingsScreen
 import tech.alexib.yaba.kmm.android.ui.settings.SettingsScreenAction
+import tech.alexib.yaba.kmm.android.ui.settings.plaid_items.PlaidItemDetail
+import tech.alexib.yaba.kmm.android.ui.settings.plaid_items.PlaidItemDetailScreen
+import tech.alexib.yaba.kmm.android.ui.settings.plaid_items.PlaidItemsScreen
 
 sealed class Route(val route: String) {
     object Auth : Route("auth")
@@ -42,6 +46,8 @@ sealed class AuthRoute(val route: String) {
 
 sealed class SettingsRoute(val route: String) {
     object Main : SettingsRoute("settingsMain")
+    object LinkedInstitutions : SettingsRoute("linkedInstitutions")
+    object InstitutionDetail : SettingsRoute("institutionDetail")
 }
 
 sealed class PlaidLinkRoute(val route: String) {
@@ -63,7 +69,7 @@ fun shouldShowBottomBar(navBackStackEntry: NavBackStackEntry?): Boolean {
 @Composable
 fun AppNavigation(
     navController: NavHostController,
-    finishActivity: () -> Unit
+    finishActivity: () -> Unit,
 ) {
 
     val authViewModel = getViewModel<SplashScreenViewModel>() { parametersOf(navController) }
@@ -125,8 +131,49 @@ fun AppNavigation(
                         ) {
                             launchSingleTop = true
                         }
+                        is SettingsScreenAction.NavDestination.LinkedInstitutions -> navController.navigate(
+                            SettingsRoute.LinkedInstitutions.route
+                        ){
+
+                        }
                     }
 
+                }
+            }
+            composable(SettingsRoute.LinkedInstitutions.route) {
+                BackHandler {
+                    handleBack()
+                }
+                PlaidItemsScreen(onItemSelected = {
+                    val item = PlaidItemDetail(it)
+
+                    navController.currentBackStackEntry?.arguments?.putParcelable(
+                        "plaidItemDetail",
+                        item
+                    )
+                    navController.navigate(SettingsRoute.InstitutionDetail.route)
+
+                }) {
+                    navController.navigate(PlaidLinkRoute.Launcher.route) {
+                        launchSingleTop = true
+                    }
+                }
+            }
+            composable(SettingsRoute.InstitutionDetail.route,
+                arguments =
+                listOf(navArgument("itemId") {
+                    NavType.ParcelableType(PlaidItemDetail::class.java)
+
+                })
+            ) {
+                val result =
+                    navController.previousBackStackEntry?.arguments?.getParcelable<PlaidItemDetail>(
+                        "plaidItemDetail")
+                        ?: throw
+                        IllegalArgumentException("plaidItemDetail  was null")
+
+                PlaidItemDetailScreen(result){
+                    handleBack()
                 }
             }
         }
@@ -171,7 +218,7 @@ fun AppNavigation(
                 PlaidLinkRoute.PlaidLinkResult.route,
                 arguments = listOf(navArgument("plaidItem") {
 
-                    NavType.ParcelableType(PlaidItem::class.java)
+                    NavType.ParcelableType(PlaidLinkScreenResult::class.java)
                 })
             ) {
 
@@ -179,7 +226,8 @@ fun AppNavigation(
                     navigateHome()
                 }
                 val result =
-                    navController.previousBackStackEntry?.arguments?.getParcelable<PlaidItem>("plaidItem")
+                    navController.previousBackStackEntry?.arguments?.getParcelable<PlaidLinkScreenResult>(
+                        "plaidItem")
                         ?: throw
                         IllegalArgumentException("plaid item was null")
 

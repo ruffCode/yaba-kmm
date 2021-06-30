@@ -24,7 +24,7 @@ class SplashScreenViewModel(
 
 
     fun splashScreenNavigation() = viewModelScope.launch {
-        delay(1000)
+        delay(500)
         when (isLoggedIn().first()) {
 
             true -> navHostController.navigate(Route.Home.route) { launchSingleTop = true }

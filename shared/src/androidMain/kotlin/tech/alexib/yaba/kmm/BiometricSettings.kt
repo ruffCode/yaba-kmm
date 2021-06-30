@@ -82,6 +82,9 @@ internal class BiometricSettings : KoinComponent {
     suspend fun handleUnsuccessfulBioLogin() {
         disableBio()
     }
+    suspend fun clear(){
+        flowSettings.clear()
+    }
 
     fun cryptoObject(): BiometricPrompt.CryptoObject = encryptionManager.getCryptoObject()
 
