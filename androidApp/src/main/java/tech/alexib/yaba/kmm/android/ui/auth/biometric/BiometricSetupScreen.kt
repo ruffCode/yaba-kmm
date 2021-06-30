@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.insets.navigationBarsPadding
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.ui.theme.YabaTheme
 import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
@@ -102,7 +103,7 @@ private fun BiometricSetupScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.primary)
-            .padding(16.dp)
+            .padding(16.dp).navigationBarsPadding()
     ) {
 
         Text(
