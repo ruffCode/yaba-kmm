@@ -1,12 +1,13 @@
 package tech.alexib.yaba.kmm.di
 
 import org.koin.dsl.module
+import tech.alexib.yaba.kmm.data.api.AccountApi
+import tech.alexib.yaba.kmm.data.api.AccountApiImpl
 import tech.alexib.yaba.kmm.data.api.ApolloApi
 import tech.alexib.yaba.kmm.data.api.AuthApi
 import tech.alexib.yaba.kmm.data.api.AuthApiImpl
 import tech.alexib.yaba.kmm.data.api.PlaidItemApi
 import tech.alexib.yaba.kmm.data.api.PlaidItemApiImpl
-import tech.alexib.yaba.kmm.data.auth.AuthTokenProvider
 import kotlin.jvm.JvmInline
 
 @JvmInline
@@ -20,7 +21,7 @@ internal val apiModule = module {
     single<AuthApi> {
         AuthApiImpl(get())
     }
-    single { AuthTokenProvider() }
 
     single<PlaidItemApi> { PlaidItemApiImpl() }
+    single<AccountApi> { AccountApiImpl() }
 }
