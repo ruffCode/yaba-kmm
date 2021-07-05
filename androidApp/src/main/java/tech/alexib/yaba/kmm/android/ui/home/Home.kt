@@ -1,6 +1,7 @@
 package tech.alexib.yaba.kmm.android.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
@@ -28,9 +30,9 @@ import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.ui.AddSpace
 import tech.alexib.yaba.kmm.android.ui.components.TransactionItem
 import tech.alexib.yaba.kmm.android.ui.theme.MoneyGreen
+import tech.alexib.yaba.kmm.android.util.moneyFormat
 import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.kmm.model.Transaction
-import java.text.DecimalFormat
 
 @Immutable
 data class HomeScreenState(
@@ -67,7 +69,7 @@ private fun Home(
     viewModel: HomeViewModel,
     navigateToPlaidLinkScreen: () -> Unit
 ) {
-    viewModel.init()
+//    viewModel.init()
     val state by rememberFlowWithLifecycle(flow = viewModel.state).collectAsState(initial = HomeScreenState.Empty)
 
     Home(state) { action ->
@@ -82,61 +84,82 @@ private fun Home(
     state: HomeScreenState,
     actioner: (HomeScreenAction) -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-
-        AddSpace()
-
-        if (state.currentCashBalance == 0.0) {
-            Button(onClick = {
-                actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
-            }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Link your first account", style = MaterialTheme.typography.button)
-            }
-        } else {
-            TotalCashBalanceRow(state.currentCashBalance)
-            AddSpace()
-            RecentTransactions(transactions = state.recentTransactions) {
+    if (state.loading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                CircularProgressIndicator()
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Text(text = "Hang on while we load your data")
+                }
 
             }
         }
+    } else {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
 
+            AddSpace()
+
+            if (state.currentCashBalance == 0.0) {
+                Button(onClick = {
+                    actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
+                }, modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Link your first institution",
+                        style = MaterialTheme.typography.button
+                    )
+                }
+            } else {
+                TotalCashBalanceRow(state.currentCashBalance)
+                AddSpace()
+                RecentTransactions(transactions = state.recentTransactions) {
+
+                }
+            }
+        }
     }
+
 }
 
 @Composable
 fun TotalCashBalanceRow(
     balance: Double
 ) {
-    val isPositive = balance > 0
     Card(
         modifier = Modifier
             .wrapContentHeight(Alignment.CenterVertically),
         elevation = 3.dp
     ) {
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-                Text(text = "Current cash balance")
-                Text(
-                    text = "$${moneyFormat.format(balance)}",
-                    color = if (isPositive) MoneyGreen else Color.Red,
-                    textAlign = TextAlign.End
-                )
-            }
-
-        }
+        BalanceRow(balance = balance, description = "Current cash balance")
     }
+}
 
+@Composable
+fun BalanceRow(
+    balance: Double,
+    description: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+            Text(text = description)
+            Text(
+                text = "$${moneyFormat.format(balance)}",
+                color = if (balance > 0) MoneyGreen else Color.Red,
+                textAlign = TextAlign.End
+            )
+        }
+
+    }
 }
 
 @Composable
@@ -176,4 +199,3 @@ fun RecentTransactions(
     }
 }
 
-val moneyFormat = DecimalFormat("#,###.00")
