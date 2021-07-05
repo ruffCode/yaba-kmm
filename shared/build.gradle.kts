@@ -149,7 +149,8 @@ sqldelight {
 
     database("YabaDb") {
         packageName = "tech.alexib.yaba.data.db"
-//        schemaOutputDirectory = file("src/main/sqldelight/databases")
+        schemaOutputDirectory = file("src/commonMain/sqldelight/databases")
         dialect = "sqlite:3.24"
+        linkSqlite = true
     }
 }
