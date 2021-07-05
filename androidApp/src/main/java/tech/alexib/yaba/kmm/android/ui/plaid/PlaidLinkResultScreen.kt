@@ -37,11 +37,15 @@ fun PlaidLinkResultScreen(
     viewModel.init(result)
     val accounts = viewModel.accounts.collectAsState()
 
+    val shouldNavigateHome = viewModel.shouldNavigateHome.collectAsState(false)
+    if (shouldNavigateHome.value) {
+        navigateHome()
+    }
     val logo = base64ToBitmap(result.logo)
     PlaidLinkResultScreen(
         logo = logo,
         accounts = accounts,
-        handleSubmit = { viewModel.submitAccountsToHide(); navigateHome() }) { plaidAccountsId, show ->
+        handleSubmit = { viewModel.submitAccountsToHide() }) { plaidAccountsId, show ->
         viewModel.setAccountShown(plaidAccountsId, show)
     }
 }

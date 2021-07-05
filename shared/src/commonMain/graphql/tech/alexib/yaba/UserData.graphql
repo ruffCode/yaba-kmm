@@ -32,6 +32,28 @@ query UserAccounts{
     }
 }
 
+query NewItemData($id:UUID!){
+    me{
+        id
+        email
+    }
+    itemById(itemId: $id){
+        id
+        plaidInstitutionId
+        institution{
+            institutionId
+            name
+            logo
+            primaryColor
+        }
+        accounts{
+            ...AccountWithTransactions
+        }
+    }
+}
+
+
+
 query AllUserData{
     me{
         id

@@ -34,7 +34,8 @@ data class Transaction(
     val category: String?,
     val subcategory: String?,
     val isoCurrencyCode: String?,
-    val pending: Boolean?
+    val pending: Boolean?,
+    val merchantName:String? = null
 )
 
 fun TransactionEntity.toDomain() = Transaction(

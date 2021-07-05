@@ -26,9 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.benasher44.uuid.uuidFrom
 import kotlinx.datetime.LocalDate
-import tech.alexib.yaba.kmm.android.ui.home.moneyFormat
+
 import tech.alexib.yaba.kmm.android.ui.theme.MoneyGreen
 import tech.alexib.yaba.kmm.android.ui.theme.YabaTheme
+import tech.alexib.yaba.kmm.android.util.moneyFormat
 import tech.alexib.yaba.kmm.model.Transaction
 import tech.alexib.yaba.kmm.model.TransactionType
 

@@ -2,8 +2,6 @@ package tech.alexib.yaba.kmm.model
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import kotlin.jvm.JvmInline
-
 
 
 interface PlaidItemBase {
@@ -21,7 +19,7 @@ data class PlaidItem(
 ) : PlaidItemBase
 
 
-data class PlaidItemWIthAccounts(
+data class PlaidItemWithAccounts(
     val plaidItem: PlaidItem,
     val accounts: List<Account>,
 ) : PlaidItemBase by plaidItem {
@@ -48,5 +46,5 @@ object PlaidItemStubs {
     val items = listOf(TDBank)
 
     val itemWithAccounts =
-        PlaidItemWIthAccounts(accounts = AccountStubs.accounts, plaidItem = TDBank)
+        PlaidItemWithAccounts(accounts = AccountStubs.accounts, plaidItem = TDBank)
 }

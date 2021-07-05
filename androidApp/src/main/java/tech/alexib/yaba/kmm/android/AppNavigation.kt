@@ -1,6 +1,5 @@
 package tech.alexib.yaba.kmm.android
 
-import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
@@ -218,13 +217,6 @@ fun AppNavigation(
                         "plaidItem",
                         plaidItem
                     )
-                    navController.currentBackStackEntry?.arguments =
-                        Bundle().apply {
-                            putParcelable(
-                                "plaidItem",
-                                plaidItem
-                            )
-                        }
                     navController.navigate(PlaidLinkRoute.PlaidLinkResult.route)
                 }
             }

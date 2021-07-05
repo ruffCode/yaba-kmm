@@ -75,7 +75,7 @@ private fun tech.alexib.yaba.fragment.Account.toAccount(): Account = Account(
     hidden = hidden
 )
 
-private fun tech.alexib.yaba.fragment.Transaction.toTransaction() = Transaction(
+fun tech.alexib.yaba.fragment.Transaction.toTransaction() = Transaction(
     name = name,
     id = id as Uuid,
     type = TransactionType.valueOf(type.uppercase()),
@@ -89,7 +89,7 @@ private fun tech.alexib.yaba.fragment.Transaction.toTransaction() = Transaction(
     isoCurrencyCode = subcategory
 )
 
-private fun tech.alexib.yaba.fragment.AccountWithTransactions.toAccountWithTransactions() =
+fun tech.alexib.yaba.fragment.AccountWithTransactions.toAccountWithTransactions() =
     AccountWithTransactions(
         account = Account(id = id as Uuid,
             name = name,
