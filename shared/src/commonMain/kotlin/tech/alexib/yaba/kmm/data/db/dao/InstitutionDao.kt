@@ -27,6 +27,7 @@ internal class InstitutionDaoImpl(
     init {
         ensureNeverFrozen()
     }
+
     override suspend fun insert(institution: Institution) {
         withContext(backgroundDispatcher) {
             queries.insertInstitution(
@@ -46,19 +47,17 @@ internal class InstitutionDaoImpl(
     }
 
 
-    companion object {
-        private val institutionMapper = {
-                id: String,
-                logo: String,
-                name: String,
-                primary_color: String,
-            ->
-            Institution(
-                institutionId = id,
-                logo = logo,
-                name = name,
-                primaryColor = primary_color
-            )
-        }
+    private val institutionMapper = {
+            id: String,
+            logo: String,
+            name: String,
+            primary_color: String,
+        ->
+        Institution(
+            institutionId = id,
+            logo = logo,
+            name = name,
+            primaryColor = primary_color
+        )
     }
 }

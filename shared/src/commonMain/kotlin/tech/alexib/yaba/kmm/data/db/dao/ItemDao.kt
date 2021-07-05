@@ -68,20 +68,18 @@ internal class ItemDaoImpl(
         }
     }
 
-    companion object {
-        private val itemMapper = {
-                id: Uuid,
-                plaid_institution_id: String,
-                _: Uuid?,
-                logo: String,
-                name: String,
-            ->
-            PlaidItem(
-                id = id,
-                plaidInstitutionId = plaid_institution_id,
-                name = name,
-                base64Logo = logo
-            )
-        }
+    private val itemMapper = {
+            id: Uuid,
+            plaid_institution_id: String,
+            _: Uuid?,
+            name: String,
+            logo: String,
+        ->
+        PlaidItem(
+            id = id,
+            plaidInstitutionId = plaid_institution_id,
+            name = name,
+            base64Logo = logo
+        )
     }
 }
