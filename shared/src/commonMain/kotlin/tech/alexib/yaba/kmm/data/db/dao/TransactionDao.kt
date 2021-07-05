@@ -105,19 +105,19 @@ internal class TransactionDaoImpl(
     }
 
     companion object {
-        private val transactionMapper = {
-                id: Uuid,
-                account_id: Uuid,
-                item_id: Uuid,
-                _: Uuid?,
-                category: String?,
-                subcategory: String?,
-                type: TransactionType,
-                name: String,
-                iso_currency_code: String?,
-                date: LocalDate,
-                amount: Double,
-                pending: Boolean?,
+        private val transactionMapper = { id: Uuid,
+                                          account_id: Uuid,
+                                          item_id: Uuid,
+                                          _: Uuid?,
+                                          category: String?,
+                                          subcategory: String?,
+                                          type: TransactionType,
+                                          name: String,
+                                          iso_currency_code: String?,
+                                          date: LocalDate,
+                                          amount: Double,
+                                          pending: Boolean?,
+                                          merchant_name: String?
             ->
             Transaction(
                 id = id,
@@ -130,7 +130,8 @@ internal class TransactionDaoImpl(
                 category = category,
                 subcategory = subcategory,
                 isoCurrencyCode = iso_currency_code,
-                pending = pending
+                pending = pending,
+                merchantName = merchant_name
             )
         }
     }
@@ -146,6 +147,7 @@ internal class TransactionDaoImpl(
         category = category,
         subcategory = subcategory,
         iso_currency_code = isoCurrencyCode,
-        pending = pending
+        pending = pending,
+        merchant_name = merchantName
     )
 }

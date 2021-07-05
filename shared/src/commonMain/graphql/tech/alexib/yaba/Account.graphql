@@ -54,4 +54,5 @@ fragment Transaction on Transaction{
     pending
     subcategory
     isoCurrencyCode
+    merchantName
 }

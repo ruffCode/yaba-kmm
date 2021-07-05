@@ -14,6 +14,7 @@ type TEXT AS AccountType NOT NULL,
 subtype TEXT AS AccountSubtype NOT NULL,
 hidden INTEGER AS Boolean NOT NULL DEFAULT 1,
 FOREIGN KEY (item_id) REFERENCES ItemEntity(id)
+ON DELETE CASCADE
 );
 
 CREATE VIEW UserAccount
