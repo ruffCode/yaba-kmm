@@ -41,7 +41,7 @@ import tech.alexib.yaba.kmm.android.ui.components.BankLogo
 import tech.alexib.yaba.kmm.android.util.base64ToBitmap
 import tech.alexib.yaba.kmm.model.AccountSubtype
 import tech.alexib.yaba.kmm.model.AccountType
-import tech.alexib.yaba.kmm.model.PlaidItemWIthAccounts
+import tech.alexib.yaba.kmm.model.PlaidItemWithAccounts
 
 
 @Composable
@@ -190,7 +190,7 @@ data class PlaidItemDetail(
     ) : Parcelable
 
     companion object {
-        operator fun invoke(item: PlaidItemWIthAccounts): PlaidItemDetail = with(item) {
+        operator fun invoke(item: PlaidItemWithAccounts): PlaidItemDetail = with(item) {
             PlaidItemDetail(
                 id = id,
                 name = name,
