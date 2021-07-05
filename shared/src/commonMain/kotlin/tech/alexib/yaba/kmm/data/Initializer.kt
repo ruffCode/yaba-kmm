@@ -42,19 +42,15 @@ class InitializerImpl : Initializer, KoinComponent {
     private val itemDao: ItemDao by inject()
     private val transactionDao: TransactionDao by inject()
     private val userDao: UserDao by inject()
-    private val userRepository:UserRepository by inject()
-    private val transactionRepository: TransactionRepository by inject()
+    private val userRepository: UserRepository by inject()
 
     init {
         ensureNeverFrozen()
     }
 
-
     override suspend fun init() {
-//        val transactionCount = transactionRepository.count().first()
-//        val currentUser = userRepository.currentUser().firstOrNull()
-        if ( userRepository.currentUser().firstOrNull() == null) {
-            val response =  apolloApi.client().safeQuery(AllUserDataQuery()) {
+        if (userRepository.currentUser().firstOrNull() == null) {
+            val response = apolloApi.client().safeQuery(AllUserDataQuery()) {
                 val data = it.me
                 val userId = data.id as Uuid
                 val user = User(userId, data.email)
@@ -141,9 +137,13 @@ class InitializerImpl : Initializer, KoinComponent {
 
             transactionDao.insert(data.transactions)
 
-        }.getOrElse {
-            log.e { "Error inserting user data: ${it.message}" }
-        }
+        }.fold({
+            log.d { "User data inserted" }
+        }, {
+            log.e(it) {
+                "Error inserting user data: ${it.message}"
+            }
+        })
     }
 }
 
