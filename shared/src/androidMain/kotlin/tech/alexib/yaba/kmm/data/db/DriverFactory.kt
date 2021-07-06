@@ -17,10 +17,10 @@ actual class DriverFactory(private val context: Context, private val log: Kermit
                     super.onConfigure(db)
                     db.execSQL("PRAGMA foreign_keys=ON;")
                 }
+
             })
         return if (BuildConfig.DEBUG) {
             LogSqliteDriver(driver) { log.d { it } }
         } else driver
-
     }
 }

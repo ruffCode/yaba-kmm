@@ -59,15 +59,7 @@ query AllUserData{
         id
         email
         accounts{
-            id
-            name
-            currentBalance
-            availableBalance
-            mask
-            itemId
-            type
-            subtype
-            hidden
+           ...Account
         }
         items{
             id
@@ -81,20 +73,8 @@ query AllUserData{
 
         }
         transactions{
-            name
-            id
-            type
-            amount
-            date
-            accountId
-            itemId
-            category
-            pending
-            subcategory
-            isoCurrencyCode
-            merchantName
+           ...Transaction
         }
     }
 
 }
-

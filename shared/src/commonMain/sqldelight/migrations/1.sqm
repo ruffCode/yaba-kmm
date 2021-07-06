@@ -1,2 +1,0 @@
-ALTER TABLE TransactionEntity
-ADD COLUMN  merchant_name TEXT;

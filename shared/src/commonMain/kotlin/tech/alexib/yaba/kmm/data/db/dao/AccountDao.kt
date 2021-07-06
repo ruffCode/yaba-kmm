@@ -12,14 +12,16 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import tech.alexib.yaba.data.db.AccountEntity
 import tech.alexib.yaba.data.db.YabaDb
+import tech.alexib.yaba.kmm.data.api.dto.AccountDto
+import tech.alexib.yaba.kmm.data.api.dto.toEntity
 import tech.alexib.yaba.kmm.data.db.sqldelight.transactionWithContext
 import tech.alexib.yaba.kmm.model.Account
 import tech.alexib.yaba.kmm.model.AccountSubtype
 import tech.alexib.yaba.kmm.model.AccountType
 
 internal interface AccountDao {
-    suspend fun insert(account: Account)
-    suspend fun insert(accounts: List<Account>)
+    suspend fun insert(account: AccountEntity)
+    suspend fun insert(accounts: List<AccountEntity>)
     fun selectAll(userId: Uuid): Flow<List<Account>>
     fun selectById(accountId: Uuid): Flow<Account?>
     fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
@@ -32,26 +34,26 @@ internal class AccountDaoImpl(
     private val database: YabaDb,
     private val backgroundDispatcher: CoroutineDispatcher,
 ) : AccountDao {
-    private val accountQueries = database.accountsQueries
+    private val accountQueries = database.accountQueries
 
     init {
         ensureNeverFrozen()
     }
 
-    override suspend fun insert(account: Account) {
+    override suspend fun insert(account: AccountEntity) {
         withContext(backgroundDispatcher) {
             accountQueries.insertAccount(
-                account.toEntity()
+                account
             )
         }
 
     }
 
-    override suspend fun insert(accounts: List<Account>) {
+    override suspend fun insert(accounts: List<AccountEntity>) {
 
         database.transactionWithContext(backgroundDispatcher) {
             accounts.forEach {
-                accountQueries.insertAccount(it.toEntity())
+                accountQueries.insertAccount(it)
             }
         }
     }
@@ -89,42 +91,33 @@ internal class AccountDaoImpl(
             .flowOn(backgroundDispatcher)
 
     companion object {
-        private val accountMapper = {
-                id: Uuid,
-                item_id: Uuid,
-                _: Uuid?,
-                name: String,
-                mask: String,
-                current_balance: Double,
-                available_balance: Double,
-                type: AccountType,
-                subtype: AccountSubtype,
-                hidden: Boolean,
+        private val accountMapper =
+            { id: Uuid,
+              item_id: Uuid,
+              _: Uuid?,
+              name: String,
+              mask: String,
+              current_balance: Double,
+              available_balance: Double,
+              type: AccountType,
+              subtype: AccountSubtype,
+              hidden: Boolean,
+              institutionName: String?
 
-            ->
-            Account(
-                id = id,
-                name = name,
-                currentBalance = current_balance,
-                availableBalance = available_balance,
-                mask = mask,
-                itemId = item_id,
-                type = type,
-                subtype = subtype,
-                hidden = hidden
-            )
-        }
+                ->
+                Account(
+                    id = id,
+                    name = name,
+                    currentBalance = current_balance,
+                    availableBalance = available_balance,
+                    mask = mask,
+                    itemId = item_id,
+                    type = type,
+                    subtype = subtype,
+                    hidden = hidden,
+                    institutionName = institutionName ?: "unknown"
+                )
+            }
     }
 
-    private fun Account.toEntity(): AccountEntity = AccountEntity(
-        id = id,
-        name = name,
-        current_balance = currentBalance,
-        available_balance = availableBalance,
-        mask = mask,
-        item_id = itemId,
-        type = type,
-        subtype = subtype,
-        hidden = hidden
-    )
 }

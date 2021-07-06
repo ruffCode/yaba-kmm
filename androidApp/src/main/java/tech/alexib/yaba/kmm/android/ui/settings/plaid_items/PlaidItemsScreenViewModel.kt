@@ -16,7 +16,7 @@ import tech.alexib.yaba.kmm.model.PlaidItemWithAccounts
 class PlaidItemsScreenViewModel : ViewModel(), KoinComponent {
 
     private val itemRepository: ItemRepository by inject()
-    private val plaidItemsFlow = MutableSharedFlow<List<PlaidItemWithAccounts>>(replay = 1)
+    private val plaidItemsFlow = MutableStateFlow<List<PlaidItemWithAccounts>>(emptyList())
     private val loading = MutableStateFlow(false)
     val state: Flow<PlaidItemsScreenState> = combine(plaidItemsFlow, loading) { items, loading ->
         PlaidItemsScreenState(items, loading)

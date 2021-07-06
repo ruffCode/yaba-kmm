@@ -15,19 +15,21 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.db.TransactionEntity
-import tech.alexib.yaba.data.db.TransactionsQueries
+import tech.alexib.yaba.data.db.TransactionQueries
 import tech.alexib.yaba.data.db.YabaDb
 import tech.alexib.yaba.kmm.data.db.sqldelight.transactionWithContext
 import tech.alexib.yaba.kmm.model.Transaction
+import tech.alexib.yaba.kmm.model.TransactionDetail
 import tech.alexib.yaba.kmm.model.TransactionType
 
+
 internal interface TransactionDao {
-    suspend fun insert(transaction: Transaction)
-    suspend fun insert(transactions: List<Transaction>)
+    suspend fun insert(transaction: TransactionEntity)
+    suspend fun insert(transactions: List<TransactionEntity>)
     fun selectAll(userId: Uuid): Flow<List<Transaction>>
-    fun selectById(id: Uuid): Flow<Transaction>
-    fun selectByAccountId(accountId: Uuid): Flow<List<Transaction>>
-    fun selectByItemId(itemId: Uuid): Flow<List<Transaction>>
+    fun selectById(id: Uuid): Flow<TransactionDetail>
+    fun selectByAccountId(accountId: Uuid): Flow<List<TransactionDetail>>
+    fun selectByItemId(itemId: Uuid): Flow<List<TransactionDetail>>
     suspend fun deleteByItemId(itemId: Uuid)
     suspend fun deleteByAccountId(accountId: Uuid)
     fun count(userId: Uuid): Flow<Long>
@@ -38,7 +40,7 @@ internal class TransactionDaoImpl(
     private val database: YabaDb,
     private val backgroundDispatcher: CoroutineDispatcher,
 ) : TransactionDao, KoinComponent {
-    private val queries: TransactionsQueries = database.transactionsQueries
+    private val queries: TransactionQueries = database.transactionQueries
 
     private val log: Kermit by inject { parametersOf("TransactionDao") }
 
@@ -47,18 +49,18 @@ internal class TransactionDaoImpl(
 
     }
 
-    override suspend fun insert(transactions: List<Transaction>) {
+    override suspend fun insert(transactions: List<TransactionEntity>) {
         database.transactionWithContext(backgroundDispatcher) {
             transactions.forEach {
-                queries.insert(it.toEntity())
+                queries.insert(it)
             }
         }
     }
 
-    override suspend fun insert(transaction: Transaction) {
+    override suspend fun insert(transaction: TransactionEntity) {
         withContext(backgroundDispatcher) {
             queries.insert(
-                transaction.toEntity()
+                transaction
             )
         }
     }
@@ -68,18 +70,19 @@ internal class TransactionDaoImpl(
             .flowOn(backgroundDispatcher)
     }
 
-    override fun selectById(id: Uuid): Flow<Transaction> {
-        return queries.selectById(id, transactionMapper).asFlow().mapToOne()
+    override fun selectById(id: Uuid): Flow<TransactionDetail> {
+        return queries.selectById(id, transactionDetailMapper).asFlow().mapToOne()
             .flowOn(backgroundDispatcher)
     }
 
-    override fun selectByAccountId(accountId: Uuid): Flow<List<Transaction>> {
-        return queries.selectByAccontId(accountId, transactionMapper).asFlow().mapToList()
+    override fun selectByAccountId(accountId: Uuid): Flow<List<TransactionDetail>> {
+        return queries.selectByAccontId(accountId, transactionDetailMapper).asFlow()
+            .mapToList()
             .flowOn(backgroundDispatcher)
     }
 
-    override fun selectByItemId(itemId: Uuid): Flow<List<Transaction>> {
-        return queries.selectByItemId(itemId, transactionMapper).asFlow().mapToList()
+    override fun selectByItemId(itemId: Uuid): Flow<List<TransactionDetail>> {
+        return queries.selectByItemId(itemId, transactionDetailMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
@@ -104,50 +107,87 @@ internal class TransactionDaoImpl(
         }
     }
 
-    companion object {
-        private val transactionMapper = { id: Uuid,
-                                          account_id: Uuid,
-                                          item_id: Uuid,
-                                          _: Uuid?,
-                                          category: String?,
-                                          subcategory: String?,
-                                          type: TransactionType,
-                                          name: String,
-                                          iso_currency_code: String?,
-                                          date: LocalDate,
-                                          amount: Double,
-                                          pending: Boolean?,
-                                          merchant_name: String?
+
+    private val transactionMapper = {
+            id: Uuid,
+            account_id: Uuid,
+            item_id: Uuid,
+            _: Uuid?,
+            category: String?,
+            subcategory: String?,
+            type: TransactionType,
+            name: String,
+            merchant_name: String?,
+            date: LocalDate,
+            amount: Double,
+            iso_currency_code: String?,
+            pending: Boolean?,
+        ->
+        Transaction(
+            id = id,
+            accountId = account_id,
+            name = name,
+            type = type,
+            amount = amount,
+            date = date,
+            category = category,
+            subcategory = subcategory,
+            isoCurrencyCode = iso_currency_code,
+            pending = pending ?: false,
+            merchantName = merchant_name,
+        )
+    }
+
+    //  t.id,
+//    t.account_id,
+//    t.item_id,
+//    a.user_id,
+//    t.category,
+//    t.subcategory,
+//    t.type,
+//    t.name,
+//    t.iso_currency_code,
+//    t.date,
+//    t.amount,
+//    t.pending,
+//    t.merchant_name,
+//    a.name AS accountName,
+//    a.mask,
+//    a.institutionName
+    private val transactionDetailMapper =
+        { id: Uuid,
+          account_id: Uuid,
+          item_id: Uuid,
+          _: Uuid?,
+          category: String?,
+          subcategory: String?,
+          type: TransactionType,
+          name: String,
+          iso_currency_code: String?,
+          date: LocalDate,
+          amount: Double,
+          pending: Boolean?,
+          merchant_name: String?,
+          accountName: String?,
+          mask: String?,
+          institutionName: String?
             ->
-            Transaction(
+            TransactionDetail(
                 id = id,
+                accountId = account_id,
                 name = name,
                 type = type,
                 amount = amount,
                 date = date,
-                accountId = account_id,
-                itemId = item_id,
                 category = category,
                 subcategory = subcategory,
                 isoCurrencyCode = iso_currency_code,
                 pending = pending,
-                merchantName = merchant_name
+                merchantName = merchant_name,
+                accountName = accountName ?: "Unknown",
+                accountMask = mask ?: "0000",
+                institutionName = institutionName ?: "unknown"
             )
         }
-    }
 
-    private fun Transaction.toEntity() = TransactionEntity(
-        id = id,
-        name = name,
-        type = type,
-        amount = amount,
-        date = date,
-        account_id = accountId,
-        item_id = itemId,
-        category = category,
-        subcategory = subcategory,
-        iso_currency_code = isoCurrencyCode,
-        pending = pending,
-        merchant_name = merchantName
-    )
 }

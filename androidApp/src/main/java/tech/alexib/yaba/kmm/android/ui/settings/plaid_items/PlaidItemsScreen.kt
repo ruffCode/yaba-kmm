@@ -78,15 +78,20 @@ private fun PlaidItemsScreen(
         true -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
-        false -> PlaidItemsScreen(state) { action ->
-            when (action) {
-                is PlaidItemsScreenAction.OnItemSelected -> onItemSelected(action.item)
-                is PlaidItemsScreenAction.NavigateToLinkInstitution -> navigateToPlaidLink()
+        false -> when (state.items.isEmpty()) {
+            true -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+            false -> PlaidItemsScreen(state) { action ->
+                when (action) {
+                    is PlaidItemsScreenAction.OnItemSelected -> onItemSelected(action.item)
+                    is PlaidItemsScreenAction.NavigateToLinkInstitution -> navigateToPlaidLink()
+                }
             }
         }
+
+
     }
-
-
 }
 
 @ExperimentalAnimationApi

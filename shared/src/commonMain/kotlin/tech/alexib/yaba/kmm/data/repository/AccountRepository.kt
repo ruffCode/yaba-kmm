@@ -9,6 +9,8 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.data.api.AccountApi
+import tech.alexib.yaba.kmm.data.api.dto.toEntities
+import tech.alexib.yaba.kmm.data.api.dto.toEntity
 import tech.alexib.yaba.kmm.data.db.dao.AccountDao
 import tech.alexib.yaba.kmm.data.db.dao.TransactionDao
 import tech.alexib.yaba.kmm.model.Account
@@ -58,8 +60,8 @@ internal class AccountRepositoryImpl : UserIdProvider(), AccountRepository, Koin
         when (val result = accountApi.accountByIdWithTransactions(accountId).firstOrNull()) {
             is Success -> {
                 accountDao.setHidden(accountId, false)
-                accountDao.insert(result.data.account)
-                transactionDao.insert(result.data.transactions)
+                accountDao.insert(result.data.account.toEntity())
+                transactionDao.insert(result.data.transactions.toEntities())
             }
             is ErrorResult -> {
                 log.e { "error retrieving account and transactions ${result.error}" }

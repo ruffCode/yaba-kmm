@@ -9,22 +9,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.CreateItemMutation
 import tech.alexib.yaba.CreateLinkTokenMutation
-import tech.alexib.yaba.NewItemDataQuery
 import tech.alexib.yaba.SetAccountsToHideMutation
 import tech.alexib.yaba.UnlinkItemMutation
 import tech.alexib.yaba.kmm.data.repository.DataResult
 import tech.alexib.yaba.kmm.data.repository.ErrorResult
 import tech.alexib.yaba.kmm.data.repository.Success
-import tech.alexib.yaba.kmm.model.AccountWithTransactions
-import tech.alexib.yaba.kmm.model.PlaidItem
-import tech.alexib.yaba.kmm.model.User
 import tech.alexib.yaba.kmm.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.kmm.model.request.PlaidLinkEventCreateRequest
 import tech.alexib.yaba.kmm.model.response.CreateLinkTokenResponse
@@ -35,7 +30,7 @@ interface PlaidItemApi {
     fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<PlaidItemCreateResponse>>
     fun sendLinkEvent(request: PlaidLinkEventCreateRequest)
     fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>)
-    fun newItemData(itemId: Uuid): Flow<DataResult<NewItemData>>
+//    fun newItemData(itemId: Uuid): Flow<DataResult<NewItemData>>
     suspend fun unlink(itemId: Uuid)
 }
 
@@ -146,34 +141,29 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
         }
     }
 
-    override fun newItemData(itemId: Uuid): Flow<DataResult<NewItemData>> {
-        val query = NewItemDataQuery(itemId)
-        return apolloApi.client().safeQuery(query) { result ->
-            val item = result.itemById
-
-            NewItemData(
-                item = PlaidItem(
-                    id = item.id as Uuid,
-                    name = item.institution.name,
-                    base64Logo = item.institution.logo,
-                    plaidInstitutionId = item.plaidInstitutionId
-                ),
-                accounts =
-                item.accounts.map { it.fragments.accountWithTransactions.toAccountWithTransactions() },
-                user = User(result.me.id as Uuid, result.me.email)
-            )
-        }.map {
-            when (it) {
-                is ApolloResponse.Success -> Success(it.data)
-                is ApolloResponse.Error -> ErrorResult(it.message)
-            }
-        }
-    }
+//    override fun newItemData(itemId: Uuid): Flow<DataResult<NewItemData>> {
+//        val query = NewItemDataQuery(itemId)
+//        return apolloApi.client().safeQuery(query) { result ->
+//            val item = result.itemById
+//
+//            NewItemData(
+//                item = PlaidItem(
+//                    id = item.id as Uuid,
+//                    name = item.institution.name,
+//                    base64Logo = item.institution.logo,
+//                    plaidInstitutionId = item.plaidInstitutionId
+//                ),
+//                accounts =
+//                item.accounts.map { it.fragments.accountWithTransactions.toAccountWithTransactions() },
+//                user = User(result.me.id as Uuid, result.me.email)
+//            )
+//        }.map {
+//            when (it) {
+//                is ApolloResponse.Success -> Success(it.data)
+//                is ApolloResponse.Error -> ErrorResult(it.message)
+//            }
+//        }
+//    }
 }
 
 
-data class NewItemData(
-    val user: User,
-    val item: PlaidItem,
-    val accounts: List<AccountWithTransactions>
-)

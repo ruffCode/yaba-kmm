@@ -14,6 +14,7 @@ data class Account(
     val type: AccountType,
     val subtype: AccountSubtype,
     val hidden: Boolean = false,
+    val institutionName: String
 )
 
 enum class AccountType {
@@ -36,10 +37,6 @@ enum class AccountSubtype {
     MORTGAGE
 }
 
-data class AccountWithTransactions(
-    val account: Account,
-    val transactions: List<Transaction>,
-)
 
 object AccountStubs {
     val checking = Account(
@@ -51,7 +48,8 @@ object AccountStubs {
         itemId = uuidFrom("1a1222da-4b2a-45d1-8dbd-c907c083f111"),
         type = AccountType.DEPOSITORY,
         subtype = AccountSubtype.CHECKING,
-        hidden = false
+        hidden = false,
+        institutionName = "Chase"
     )
     val savings = Account(
         id = uuidFrom("92736233-c812-4b07-97b7-f9727f20e390"),
@@ -62,7 +60,8 @@ object AccountStubs {
         itemId = uuidFrom("1a1222da-4b2a-45d1-8dbd-c907c083f111"),
         type = AccountType.DEPOSITORY,
         subtype = AccountSubtype.SAVINGS,
-        hidden = false
+        hidden = false,
+        institutionName = "Chase"
     )
     val cd = Account(
         id = uuidFrom("9fbbe19f-0da1-4d7e-987a-4159003d8e76"),
@@ -73,7 +72,8 @@ object AccountStubs {
         itemId = uuidFrom("1a1222da-4b2a-45d1-8dbd-c907c083f111"),
         type = AccountType.DEPOSITORY,
         subtype = AccountSubtype.CD,
-        hidden = false
+        hidden = false,
+        institutionName = "Chase"
     )
     val creditCard = Account(
         id = uuidFrom("a7d03ff7-4f5b-4b8c-a974-9ada6b1965ee"),
@@ -84,7 +84,8 @@ object AccountStubs {
         itemId = uuidFrom("1a1222da-4b2a-45d1-8dbd-c907c083f111"),
         type = AccountType.CREDIT,
         subtype = AccountSubtype.CREDIT_CARD,
-        hidden = false
+        hidden = false,
+        institutionName = "Chase"
     )
     val moneyMarket = Account(
         id = uuidFrom("d7ff47ba-4bd4-4d26-98f7-024eb6035ab0"),
@@ -95,7 +96,8 @@ object AccountStubs {
         itemId = uuidFrom("1a1222da-4b2a-45d1-8dbd-c907c083f111"),
         type = AccountType.DEPOSITORY,
         subtype = AccountSubtype.MONEY_MARKET,
-        hidden = false
+        hidden = false,
+        institutionName = "Chase"
     )
     val ira = Account(
         id = uuidFrom("de6cd453-9e63-44ec-bcb5-d36f1371bbd5"),
@@ -106,7 +108,8 @@ object AccountStubs {
         itemId = uuidFrom("1a1222da-4b2a-45d1-8dbd-c907c083f111"),
         type = AccountType.INVESTMENT,
         subtype = AccountSubtype.IRA,
-        hidden = false
+        hidden = false,
+        institutionName = "Chase"
     )
     val FOUR_HUNDRED_ONE_K = Account(
         id = uuidFrom("14d41f78-47ab-4f03-b8eb-e3ee5db00dc0"),
@@ -117,7 +120,8 @@ object AccountStubs {
         itemId = uuidFrom("1a1222da-4b2a-45d1-8dbd-c907c083f111"),
         type = AccountType.INVESTMENT,
         subtype = AccountSubtype.FOUR_HUNDRED_ONE_K,
-        hidden = false
+        hidden = false,
+        institutionName = "Chase"
     )
 
     val studentLoan = Account(
@@ -129,7 +133,8 @@ object AccountStubs {
         itemId = uuidFrom("1a1222da-4b2a-45d1-8dbd-c907c083f111"),
         type = AccountType.LOAN,
         subtype = AccountSubtype.STUDENT,
-        hidden = false
+        hidden = false,
+        institutionName = "Chase"
     )
 
     val mortgage = Account(
@@ -141,9 +146,12 @@ object AccountStubs {
         itemId = uuidFrom("1a1222da-4b2a-45d1-8dbd-c907c083f111"),
         type = AccountType.LOAN,
         subtype = AccountSubtype.MORTGAGE,
-        hidden = false
+        hidden = false,
+        institutionName = "Chase"
     )
 
-    val accounts = listOf(checking, savings, cd, creditCard, moneyMarket, ira, FOUR_HUNDRED_ONE_K,
-        studentLoan, mortgage)
+    val accounts = listOf(
+        checking, savings, cd, creditCard, moneyMarket, ira, FOUR_HUNDRED_ONE_K,
+        studentLoan, mortgage
+    )
 }

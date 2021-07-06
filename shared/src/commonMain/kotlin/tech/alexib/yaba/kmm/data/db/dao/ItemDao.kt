@@ -12,6 +12,8 @@ import kotlinx.coroutines.withContext
 import tech.alexib.yaba.data.db.ItemEntity
 import tech.alexib.yaba.data.db.ItemEntityQueries
 import tech.alexib.yaba.data.db.YabaDb
+import tech.alexib.yaba.kmm.data.api.dto.ItemDto
+import tech.alexib.yaba.kmm.data.api.dto.toEntity
 import tech.alexib.yaba.kmm.data.db.sqldelight.transactionWithContext
 import tech.alexib.yaba.kmm.model.PlaidItem
 

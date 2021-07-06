@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.navigationBarsPadding
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.ui.AddSpace
 import tech.alexib.yaba.kmm.android.ui.components.BankLogo
@@ -33,6 +35,7 @@ fun PlaidLinkResultScreen(
     navigateHome: () -> Unit
 ) {
 
+    //TODO create loading screen to wait for new data to insert
     val viewModel: PlaidLinkResultScreenViewModel = getViewModel()
     viewModel.init(result)
     val accounts = viewModel.accounts.collectAsState()
@@ -74,7 +77,7 @@ fun PlaidLinkResultScreen(
             .fillMaxSize()
             .padding(vertical = 100.dp, horizontal = 16.dp)
     ) {
-        LazyColumn(modifier = Modifier.align(Alignment.TopCenter)) {
+        LazyColumn(modifier = Modifier.align(Alignment.TopCenter).padding(bottom = 50.dp)) {
             item {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                     Text(
@@ -95,7 +98,7 @@ fun PlaidLinkResultScreen(
                     BankLogo(logoBitmap = logo)
                 }) {
                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Text(text = "${item.name} - ${item.mask}")
+                        Text(text = "${item.name}  ****${item.mask}")
                     }
 
                 }
@@ -108,6 +111,7 @@ fun PlaidLinkResultScreen(
             },
             modifier = Modifier
                 .padding(top = 50.dp)
+
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
         ) {
