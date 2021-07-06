@@ -1,5 +1,6 @@
 package tech.alexib.yaba.kmm
 
+import android.os.Parcelable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 

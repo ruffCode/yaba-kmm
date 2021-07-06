@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.navigation
+import com.benasher44.uuid.uuidFrom
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.android.ui.auth.biometric.BiometricSetupScreen
@@ -26,6 +27,7 @@ import tech.alexib.yaba.kmm.android.ui.settings.SettingsScreenAction
 import tech.alexib.yaba.kmm.android.ui.settings.plaid_items.PlaidItemDetail
 import tech.alexib.yaba.kmm.android.ui.settings.plaid_items.PlaidItemDetailScreen
 import tech.alexib.yaba.kmm.android.ui.settings.plaid_items.PlaidItemsScreen
+import tech.alexib.yaba.kmm.android.ui.transactions.TransactionDetailScreen
 import tech.alexib.yaba.kmm.android.ui.transactions.TransactionListScreen
 
 sealed class Route(val route: String) {
@@ -34,6 +36,11 @@ sealed class Route(val route: String) {
     object Settings : Route("settings")
     object PlaidLink : Route("plaid")
     object Transactions : Route("transactions")
+    object TransactionDetail : Route("transactionDetail") {
+        const val key = "transactionId"
+        val argument =
+            navArgument(key) { NavType.StringType }
+    }
 }
 
 sealed class AuthRoute(val route: String) {
@@ -188,20 +195,41 @@ fun AppNavigation(
                 finishActivity()
             }
 
-            Home {
+            Home(navigateToPlaidLinkScreen = {
                 navController.navigate(PlaidLinkRoute.Launcher.route) {
                     launchSingleTop = true
                 }
+            }, navigateToTransactionsScreen = {
+                navController.navigate(Route.Transactions.route)
+            })
+        }
+
+        composable(Route.Transactions.route) {
+            BackHandler {
+                navigateHome()
+            }
+            TransactionListScreen {
+                navController.currentBackStackEntry?.arguments?.putString(
+                    Route.TransactionDetail.key,
+                    it.toString()
+                )
+                navController.navigate(Route.TransactionDetail.route)
             }
         }
 
-        composable(Route.Transactions.route){
-            BackHandler {
+        composable(
+            Route.TransactionDetail.route,
+            arguments = listOf(Route.TransactionDetail.argument)
+        ) {
+            val param: String =
+                navController.previousBackStackEntry?.arguments?.getString(
+                    Route.TransactionDetail.key
+                ) ?: throw IllegalStateException("transactionId was null")
+
+            TransactionDetailScreen(uuidFrom(param)) {
                 handleBack()
             }
-            TransactionListScreen()
         }
-
 
 
         navigation(PlaidLinkRoute.Launcher.route, Route.PlaidLink.route) {

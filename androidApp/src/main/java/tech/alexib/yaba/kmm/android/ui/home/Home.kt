@@ -1,5 +1,6 @@
 package tech.alexib.yaba.kmm.android.ui.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import tech.alexib.yaba.kmm.android.util.moneyFormat
 import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.kmm.model.Transaction
 
+
 @Immutable
 data class HomeScreenState(
     val loading: Boolean = false,
@@ -48,18 +50,22 @@ data class HomeScreenState(
 
 sealed class HomeScreenAction {
     object NavigateToPlaidLinkScreen : HomeScreenAction()
+    object NavigateToTransactionsScreen : HomeScreenAction()
 }
 
 @Composable
 fun Home(
-    navigateToPlaidLinkScreen: () -> Unit
+    navigateToPlaidLinkScreen: () -> Unit,
+    navigateToTransactionsScreen: () -> Unit
 ) {
 
     val viewModel: HomeViewModel = getViewModel()
 
-    Home(viewModel = viewModel) {
-        navigateToPlaidLinkScreen()
-    }
+    Home(
+        viewModel = viewModel,
+        navigateToPlaidLinkScreen = navigateToPlaidLinkScreen,
+        navigateToTransactionsScreen = navigateToTransactionsScreen
+    )
 
 }
 
@@ -67,14 +73,15 @@ fun Home(
 @Composable
 private fun Home(
     viewModel: HomeViewModel,
-    navigateToPlaidLinkScreen: () -> Unit
+    navigateToPlaidLinkScreen: () -> Unit,
+    navigateToTransactionsScreen: () -> Unit
 ) {
-//    viewModel.init()
     val state by rememberFlowWithLifecycle(flow = viewModel.state).collectAsState(initial = HomeScreenState.Empty)
 
     Home(state) { action ->
         when (action) {
             is HomeScreenAction.NavigateToPlaidLinkScreen -> navigateToPlaidLinkScreen()
+            is HomeScreenAction.NavigateToTransactionsScreen -> navigateToTransactionsScreen()
         }
     }
 }
@@ -116,7 +123,7 @@ private fun Home(
                 TotalCashBalanceRow(state.currentCashBalance)
                 AddSpace()
                 RecentTransactions(transactions = state.recentTransactions) {
-
+                    actioner(HomeScreenAction.NavigateToTransactionsScreen)
                 }
             }
         }
@@ -133,7 +140,6 @@ fun TotalCashBalanceRow(
             .wrapContentHeight(Alignment.CenterVertically),
         elevation = 3.dp
     ) {
-
         BalanceRow(balance = balance, description = "Current cash balance")
     }
 }
@@ -163,7 +169,7 @@ fun BalanceRow(
 }
 
 @Composable
-fun RecentTransactions(
+private fun RecentTransactions(
     transactions: List<Transaction>,
     onSelectAllTransactions: () -> Unit
 ) {
@@ -171,7 +177,10 @@ fun RecentTransactions(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(align = Alignment.Top)
-            .padding(16.dp), elevation = 3.dp
+            .padding(16.dp)
+            .clickable {
+                onSelectAllTransactions()
+            }, elevation = 3.dp
     ) {
 
         Column(
@@ -181,7 +190,9 @@ fun RecentTransactions(
 //only pulls 5 transactions
             transactions.forEach {
                 Row {
-                    TransactionItem(transaction = it)
+                    TransactionItem(transaction = it){
+                        onSelectAllTransactions()
+                    }
                 }
             }
 
@@ -194,6 +205,7 @@ fun RecentTransactions(
                 TextButton(onClick = { onSelectAllTransactions() }) {
                     Text(text = "View all transactions")
                 }
+
             }
         }
     }
