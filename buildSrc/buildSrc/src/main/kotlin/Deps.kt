@@ -3,8 +3,9 @@ object Lib {
     const val stately = "co.touchlab:stately-common:1.1.7"
 
     const val uuid = "com.benasher44:uuid:0.3.0"
+
     object Koin {
-        private const val version = "3.1.0"
+        private const val version = "3.1.2"
         const val core = "io.insert-koin:koin-core:$version"
         const val test = "io.insert-koin:koin-test:$version"
         const val android = "io.insert-koin:koin-android:$version"
@@ -31,6 +32,7 @@ object Lib {
         const val coroutinesSupport = "com.apollographql.apollo:apollo-coroutines-support:$version"
         const val cacheSqlite = "com.apollographql.apollo:apollo-normalized-cache-sqlite:$version"
     }
+
     object MultiplatformSettings {
         private const val version = "0.7.7"
         const val settings = "com.russhwolf:multiplatform-settings:$version"
@@ -43,8 +45,12 @@ object Lib {
 
         const val startup = "androidx.startup:startup-runtime:1.0.0"
         const val browser = "androidx.browser:browser:1.3.0"
-        const val dataStore = "androidx.datastore:datastore-preferences:1.0.0-beta02"
+        const val dataStore = "androidx.datastore:datastore-preferences:1.0.0-rc01"
+        const val crypto = "androidx.security:security-crypto-ktx:1.1.0-alpha03"
+        const val biometric = "androidx.biometric:biometric-ktx:1.2.0-alpha03"
+        const val work = "androidx.work:work-runtime-ktx:2.7.0-alpha04"
     }
+
     object KotlinX {
 
         object Serialization {
@@ -104,13 +110,13 @@ object Lib {
     }
 
     object Accompanist {
-        private const val version = "0.10.0"
+        private const val version = "0.13.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
     }
 
     object Activity {
-        const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha08"
+        const val activityCompose = "androidx.activity:activity-compose:1.3.0-rc01"
     }
 
     object Compose {
@@ -131,7 +137,7 @@ object Lib {
 
     object ConstraintLayout {
         const val constraintLayoutCompose =
-            "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha07"
+            "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08"
     }
 
 }
@@ -141,7 +147,7 @@ object Version {
     const val sqlDelight = "1.5.0"
     const val apollo = "2.5.9"
     const val arrow = "0.13.2"
-    const val compose = "1.0.0-beta09"
+    const val compose = "1.0.0-rc01"
     const val androidTools = "7.1.0-alpha02"
     const val coroutines = "1.5.0-native-mt"
 }

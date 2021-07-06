@@ -83,10 +83,10 @@ kotlin {
                 implementation(Lib.SqlDelight.androidDriver)
                 implementation(Lib.KotlinX.Coroutines.android)
                 implementation(Lib.MultiplatformSettings.datastore)
-                implementation("androidx.datastore:datastore-preferences:1.0.0-beta02")
-                implementation("androidx.security:security-crypto:1.1.0-alpha03")
-                implementation("androidx.biometric:biometric:1.2.0-alpha03")
-                implementation("androidx.work:work-runtime-ktx:2.6.0-beta01")
+                implementation(Lib.Jetpack.dataStore)
+                implementation(Lib.Jetpack.crypto)
+                implementation(Lib.Jetpack.biometric)
+                implementation(Lib.Jetpack.work)
             }
         }
         val androidTest by getting {
