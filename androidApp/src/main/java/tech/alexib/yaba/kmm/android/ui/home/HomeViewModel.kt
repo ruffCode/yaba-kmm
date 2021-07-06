@@ -34,11 +34,12 @@ class HomeViewModel(
             HomeScreenState(loading, error, cashBalance, recentTransactions)
         }
 
-    fun init() {
+    init {
         viewModelScope.launch {
             loading.value = true
             initializer.init()
             loading.value = false
+
         }
     }
 }

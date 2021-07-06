@@ -3,7 +3,7 @@ import kotlinx.datetime.LocalDate;
 import tech.alexib.yaba.kmm.model.TransactionType;
 
 CREATE TABLE TransactionEntity (
-id TEXT AS Uuid NOT NULL PRIMARY KEY,
+id TEXT AS Uuid NOT NULL PRIMARY KEY ON CONFLICT REPLACE,
 name TEXT NOT NULL,
 type TEXT AS TransactionType NOT NULL,
 amount REAL AS Double NOT NULL,
@@ -14,13 +14,36 @@ category TEXT,
 subcategory TEXT,
 iso_currency_code TEXT,
 pending INTEGER AS Boolean DEFAULT 1,
+merchant_name TEXT,
 FOREIGN KEY(account_id) REFERENCES AccountEntity(id)
-ON DELETE CASCADE,
+ON DELETE CASCADE
+ON UPDATE CASCADE,
 FOREIGN KEY(item_id) REFERENCES ItemEntity(id)
 ON DELETE CASCADE
+ON UPDATE CASCADE
 );
 
-CREATE VIEW UserTransasction
+
+CREATE VIEW UserTransaction
+AS
+SELECT
+    t.id,
+    t.account_id,
+    t.item_id,
+    a.user_id,
+    t.category,
+    t.subcategory,
+    t.type,
+    t.name,
+    t.merchant_name,
+    t.date,
+    t.amount,
+    t.iso_currency_code,
+    t.pending
+FROM TransactionEntity t
+           LEFT JOIN UserAccount a ON t.account_id = a.id;
+
+CREATE VIEW UserTransasctionDetail
 AS
 SELECT
     t.id,
@@ -34,7 +57,11 @@ SELECT
     t.iso_currency_code,
     t.date,
     t.amount,
-    t.pending
+    t.pending,
+    t.merchant_name,
+    a.name AS accountName,
+    a.mask,
+    a.institutionName
 FROM
     TransactionEntity t
         LEFT JOIN UserAccount a ON t.account_id = a.id;
@@ -45,37 +72,37 @@ VALUES ?;
 
 selectAll:
 SELECT *
-FROM UserTransasction
+FROM UserTransaction
 WHERE user_id = ?
 ORDER BY date DESC;
 
 
 selectRecent:
 SELECT *
-FROM UserTransasction
+FROM UserTransaction
 WHERE user_id = ?
 ORDER BY date DESC
 LIMIT 5;
 
 selectById:
 SELECT *
-FROM UserTransasction
+FROM UserTransasctionDetail
 WHERE id = ?;
 
 selectByAccontId:
 SELECT *
-FROM UserTransasction
+FROM UserTransasctionDetail
 WHERE account_id = ?
 ORDER BY date DESC;
 
 selectByItemId:
 SELECT *
-FROM UserTransasction
+FROM UserTransasctionDetail
 WHERE item_id = ?
 ORDER BY date DESC;
 
 count:
-SELECT COUNT(*) FROM UserTransasction
+SELECT COUNT(*) FROM UserTransaction
 WHERE user_id = ?;
 
 deleteByItemId:

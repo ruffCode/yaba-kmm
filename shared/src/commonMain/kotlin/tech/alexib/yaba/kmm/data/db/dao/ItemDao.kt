@@ -12,6 +12,8 @@ import kotlinx.coroutines.withContext
 import tech.alexib.yaba.data.db.ItemEntity
 import tech.alexib.yaba.data.db.ItemEntityQueries
 import tech.alexib.yaba.data.db.YabaDb
+import tech.alexib.yaba.kmm.data.api.dto.ItemDto
+import tech.alexib.yaba.kmm.data.api.dto.toEntity
 import tech.alexib.yaba.kmm.data.db.sqldelight.transactionWithContext
 import tech.alexib.yaba.kmm.model.PlaidItem
 
@@ -68,20 +70,18 @@ internal class ItemDaoImpl(
         }
     }
 
-    companion object {
-        private val itemMapper = {
-                id: Uuid,
-                plaid_institution_id: String,
-                _: Uuid?,
-                logo: String,
-                name: String,
-            ->
-            PlaidItem(
-                id = id,
-                plaidInstitutionId = plaid_institution_id,
-                name = name,
-                base64Logo = logo
-            )
-        }
+    private val itemMapper = {
+            id: Uuid,
+            plaid_institution_id: String,
+            _: Uuid?,
+            name: String,
+            logo: String,
+        ->
+        PlaidItem(
+            id = id,
+            plaidInstitutionId = plaid_institution_id,
+            name = name,
+            base64Logo = logo
+        )
     }
 }

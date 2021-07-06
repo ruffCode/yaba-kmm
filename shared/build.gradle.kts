@@ -6,6 +6,7 @@ plugins {
     id("com.android.library")
     id("com.apollographql.apollo")
     kotlin("plugin.serialization")
+    id("kotlin-parcelize")
     id("com.squareup.sqldelight")
 }
 
@@ -60,6 +61,8 @@ kotlin {
                 implementation(Lib.stately)
                 implementation(Lib.uuid)
                 api(Lib.Koin.core)
+                implementation(Lib.KotlinX.Serialization.core)
+                implementation(Lib.KotlinX.Serialization.json)
                 implementation(Lib.MultiplatformSettings.settings)
                 implementation(Lib.MultiplatformSettings.coroutines)
                 implementation(Lib.MultiplatformSettings.test)
@@ -149,7 +152,8 @@ sqldelight {
 
     database("YabaDb") {
         packageName = "tech.alexib.yaba.data.db"
-//        schemaOutputDirectory = file("src/main/sqldelight/databases")
+        schemaOutputDirectory = file("src/commonMain/sqldelight/databases")
         dialect = "sqlite:3.24"
+        linkSqlite = true
     }
 }

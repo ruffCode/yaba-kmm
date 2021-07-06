@@ -11,10 +11,8 @@ import com.plaid.link.result.LinkExit
 import com.plaid.link.result.LinkResult
 import com.plaid.link.result.LinkSuccess
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -32,8 +30,9 @@ import java.util.*
 
 class PlaidLinkViewModel(
     private val plaidItemApi: PlaidItemApi
-) : ViewModel() ,KoinComponent{
+) : ViewModel(), KoinComponent {
 
+    private var hadSuccess = false
     private val resultFlow = MutableStateFlow<PlaidLinkResult>(PlaidLinkResult.Empty)
     val result: StateFlow<PlaidLinkResult> = resultFlow
     private val log: Kermit by inject { parametersOf("PlaidLinkViewModel") }
@@ -41,14 +40,15 @@ class PlaidLinkViewModel(
     fun handleResult(linkResult: LinkResult) {
         when (linkResult) {
             is LinkSuccess -> {
-                Log.e("PLAID SUCCESS", linkResult.metadata.toString())
+                Log.d("PLAID SUCCESS", linkResult.metadata.toString())
+                resultFlow.value = PlaidLinkResult.AwaitingResult
                 handleSuccess(linkResult)
 
             }
             is LinkExit -> {
                 if (linkResult.error != null) {
 
-                    if (linkResult.error?.errorMessage == "No result returned.") {
+                    if (linkResult.error?.errorMessage == "No result returned." && resultFlow.value != PlaidLinkResult.AwaitingResult) {
                         resultFlow.value = PlaidLinkResult.Abandoned
                     } else {
                         resultFlow.value = PlaidLinkResult.Error(

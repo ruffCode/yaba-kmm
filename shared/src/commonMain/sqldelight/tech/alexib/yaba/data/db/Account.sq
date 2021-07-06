@@ -14,24 +14,29 @@ type TEXT AS AccountType NOT NULL,
 subtype TEXT AS AccountSubtype NOT NULL,
 hidden INTEGER AS Boolean NOT NULL DEFAULT 1,
 FOREIGN KEY (item_id) REFERENCES ItemEntity(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE
 );
 
 CREATE VIEW UserAccount
 AS
 SELECT
-a.id,
-a.item_id,
-i.user_id,
-a.name,
-a.mask,
-a.current_balance,
-a.available_balance,
-a.type,
-a.subtype,
-a.hidden
+    a.id,
+    a.item_id,
+    i.user_id,
+    a.name,
+    a.mask,
+    a.current_balance,
+    a.available_balance,
+    a.type,
+    a.subtype,
+    a.hidden,
+    i.name AS institutionName
 FROM
  AccountEntity  a
- LEFT JOIN ItemEntity i ON i.id = a.item_id;
+ LEFT JOIN itemWithLogo i ON i.id = a.item_id;
+
+
 
 insertAccount:
 INSERT OR REPLACE INTO AccountEntity

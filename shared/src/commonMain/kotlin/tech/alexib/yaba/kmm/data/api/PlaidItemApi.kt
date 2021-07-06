@@ -2,7 +2,6 @@ package tech.alexib.yaba.kmm.data.api
 
 import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
-import com.apollographql.apollo.ApolloClient
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +15,6 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.CreateItemMutation
 import tech.alexib.yaba.CreateLinkTokenMutation
-
 import tech.alexib.yaba.SetAccountsToHideMutation
 import tech.alexib.yaba.UnlinkItemMutation
 import tech.alexib.yaba.kmm.data.repository.DataResult
@@ -32,6 +30,7 @@ interface PlaidItemApi {
     fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<PlaidItemCreateResponse>>
     fun sendLinkEvent(request: PlaidLinkEventCreateRequest)
     fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>)
+//    fun newItemData(itemId: Uuid): Flow<DataResult<NewItemData>>
     suspend fun unlink(itemId: Uuid)
 }
 
@@ -54,7 +53,8 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
             flow<DataResult<CreateLinkTokenResponse>> {
 
                 when (val result =
-                    apolloApi.client().safeMutation(mutation) { result -> CreateLinkTokenResponse(result.createLinkToken.linkToken) }
+                    apolloApi.client()
+                        .safeMutation(mutation) { result -> CreateLinkTokenResponse(result.createLinkToken.linkToken) }
                         .first()) {
                     is ApolloResponse.Success -> emit(Success(result.data))
 
@@ -76,7 +76,7 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
         return runCatching {
 
             flow<DataResult<PlaidItemCreateResponse>> {
-                val result =  apolloApi.client().safeMutation(mutation) { result ->
+                val result = apolloApi.client().safeMutation(mutation) { result ->
                     result.itemCreate.let {
                         PlaidItemCreateResponse(
                             id = it.itemId as Uuid,
@@ -84,7 +84,6 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
                             logo = it.logo,
                             accounts = it.accounts.map { account ->
                                 PlaidItemCreateResponse.Account(
-
                                     mask = account.mask,
                                     plaidAccountId = account.plaidAccountId,
                                     name = account.name
@@ -141,6 +140,30 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
             }
         }
     }
+
+//    override fun newItemData(itemId: Uuid): Flow<DataResult<NewItemData>> {
+//        val query = NewItemDataQuery(itemId)
+//        return apolloApi.client().safeQuery(query) { result ->
+//            val item = result.itemById
+//
+//            NewItemData(
+//                item = PlaidItem(
+//                    id = item.id as Uuid,
+//                    name = item.institution.name,
+//                    base64Logo = item.institution.logo,
+//                    plaidInstitutionId = item.plaidInstitutionId
+//                ),
+//                accounts =
+//                item.accounts.map { it.fragments.accountWithTransactions.toAccountWithTransactions() },
+//                user = User(result.me.id as Uuid, result.me.email)
+//            )
+//        }.map {
+//            when (it) {
+//                is ApolloResponse.Success -> Success(it.data)
+//                is ApolloResponse.Error -> ErrorResult(it.message)
+//            }
+//        }
+//    }
 }
 
 

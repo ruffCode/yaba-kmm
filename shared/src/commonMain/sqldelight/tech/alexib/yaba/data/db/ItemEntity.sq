@@ -1,10 +1,13 @@
 import com.benasher44.uuid.Uuid;
 
 CREATE TABLE ItemEntity (
-id TEXT AS Uuid PRIMARY KEY NOT NULL,
+id TEXT AS Uuid PRIMARY KEY NOT NULL ON CONFLICT REPLACE,
 plaid_institution_id TEXT NOT NULL,
 user_id TEXT AS Uuid NOT NULL,
-FOREIGN KEY (plaid_institution_id) REFERENCES InstitutionEntity(id)
+FOREIGN KEY (plaid_institution_id) REFERENCES InstitutionEntity(id),
+FOREIGN KEY(user_id) REFERENCES UserEntity(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE
 );
 
 CREATE VIEW itemWithLogo AS
@@ -18,13 +21,8 @@ FROM ItemEntity i
 JOIN InstitutionEntity inst ON i.plaid_institution_id = inst.id;
 
 insert:
-INSERT OR REPLACE INTO ItemEntity
+INSERT OR IGNORE INTO ItemEntity
 VALUES ?;
-
--- selectAll:
--- SELECT *
--- FROM ItemEntity
--- JOIN InstitutionEntity i ON ItemEntity.plaid_institution_id = i.id;
 
 selectAll:
 SELECT *

@@ -32,20 +32,34 @@ query UserAccounts{
     }
 }
 
+query NewItemData($id:UUID!){
+    me{
+        id
+        email
+    }
+    itemById(itemId: $id){
+        id
+        plaidInstitutionId
+        institution{
+            institutionId
+            name
+            logo
+            primaryColor
+        }
+        accounts{
+            ...AccountWithTransactions
+        }
+    }
+}
+
+
+
 query AllUserData{
     me{
         id
         email
         accounts{
-            id
-            name
-            currentBalance
-            availableBalance
-            mask
-            itemId
-            type
-            subtype
-            hidden
+           ...Account
         }
         items{
             id
@@ -59,19 +73,8 @@ query AllUserData{
 
         }
         transactions{
-            name
-            id
-            type
-            amount
-            date
-            accountId
-            itemId
-            category
-            pending
-            subcategory
-            isoCurrencyCode
+           ...Transaction
         }
     }
 
 }
-

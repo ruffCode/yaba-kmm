@@ -1,17 +1,16 @@
 package tech.alexib.yaba.kmm.android
 
-import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.navigation
+import com.benasher44.uuid.uuidFrom
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.android.ui.auth.biometric.BiometricSetupScreen
@@ -28,12 +27,20 @@ import tech.alexib.yaba.kmm.android.ui.settings.SettingsScreenAction
 import tech.alexib.yaba.kmm.android.ui.settings.plaid_items.PlaidItemDetail
 import tech.alexib.yaba.kmm.android.ui.settings.plaid_items.PlaidItemDetailScreen
 import tech.alexib.yaba.kmm.android.ui.settings.plaid_items.PlaidItemsScreen
+import tech.alexib.yaba.kmm.android.ui.transactions.TransactionDetailScreen
+import tech.alexib.yaba.kmm.android.ui.transactions.TransactionListScreen
 
 sealed class Route(val route: String) {
     object Auth : Route("auth")
     object Home : Route("home")
     object Settings : Route("settings")
     object PlaidLink : Route("plaid")
+    object Transactions : Route("transactions")
+    object TransactionDetail : Route("transactionDetail") {
+        const val key = "transactionId"
+        val argument =
+            navArgument(key) { NavType.StringType }
+    }
 }
 
 sealed class AuthRoute(val route: String) {
@@ -60,7 +67,8 @@ fun shouldShowBottomBar(navBackStackEntry: NavBackStackEntry?): Boolean {
     return navBackStackEntry?.destination?.hierarchy?.any {
         it.route in listOf(
             Route.Home.route,
-            SettingsRoute.Main.route
+            SettingsRoute.Main.route,
+            Route.Transactions.route
         )
     } ?: false
 
@@ -133,7 +141,7 @@ fun AppNavigation(
                         }
                         is SettingsScreenAction.NavDestination.LinkedInstitutions -> navController.navigate(
                             SettingsRoute.LinkedInstitutions.route
-                        ){
+                        ) {
 
                         }
                     }
@@ -159,7 +167,8 @@ fun AppNavigation(
                     }
                 }
             }
-            composable(SettingsRoute.InstitutionDetail.route,
+            composable(
+                SettingsRoute.InstitutionDetail.route,
                 arguments =
                 listOf(navArgument("itemId") {
                     NavType.ParcelableType(PlaidItemDetail::class.java)
@@ -168,14 +177,17 @@ fun AppNavigation(
             ) {
                 val result =
                     navController.previousBackStackEntry?.arguments?.getParcelable<PlaidItemDetail>(
-                        "plaidItemDetail")
+                        "plaidItemDetail"
+                    )
                         ?: throw
                         IllegalArgumentException("plaidItemDetail  was null")
 
-                PlaidItemDetailScreen(result){
+                PlaidItemDetailScreen(result) {
                     handleBack()
                 }
             }
+
+
         }
 
         composable(Route.Home.route) {
@@ -183,12 +195,42 @@ fun AppNavigation(
                 finishActivity()
             }
 
-            Home {
+            Home(navigateToPlaidLinkScreen = {
                 navController.navigate(PlaidLinkRoute.Launcher.route) {
                     launchSingleTop = true
                 }
+            }, navigateToTransactionsScreen = {
+                navController.navigate(Route.Transactions.route)
+            })
+        }
+
+        composable(Route.Transactions.route) {
+            BackHandler {
+                navigateHome()
+            }
+            TransactionListScreen {
+                navController.currentBackStackEntry?.arguments?.putString(
+                    Route.TransactionDetail.key,
+                    it.toString()
+                )
+                navController.navigate(Route.TransactionDetail.route)
             }
         }
+
+        composable(
+            Route.TransactionDetail.route,
+            arguments = listOf(Route.TransactionDetail.argument)
+        ) {
+            val param: String =
+                navController.previousBackStackEntry?.arguments?.getString(
+                    Route.TransactionDetail.key
+                ) ?: throw IllegalStateException("transactionId was null")
+
+            TransactionDetailScreen(uuidFrom(param)) {
+                handleBack()
+            }
+        }
+
 
         navigation(PlaidLinkRoute.Launcher.route, Route.PlaidLink.route) {
 
@@ -203,13 +245,6 @@ fun AppNavigation(
                         "plaidItem",
                         plaidItem
                     )
-                    navController.currentBackStackEntry?.arguments =
-                        Bundle().apply {
-                            putParcelable(
-                                "plaidItem",
-                                plaidItem
-                            )
-                        }
                     navController.navigate(PlaidLinkRoute.PlaidLinkResult.route)
                 }
             }
@@ -227,7 +262,8 @@ fun AppNavigation(
                 }
                 val result =
                     navController.previousBackStackEntry?.arguments?.getParcelable<PlaidLinkScreenResult>(
-                        "plaidItem")
+                        "plaidItem"
+                    )
                         ?: throw
                         IllegalArgumentException("plaid item was null")
 

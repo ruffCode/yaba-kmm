@@ -16,6 +16,8 @@ import tech.alexib.yaba.kmm.android.ui.plaid.PlaidLinkViewModel
 import tech.alexib.yaba.kmm.android.ui.settings.SettingsScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.settings.plaid_items.PlaidItemDetailScreenViewModel
 import tech.alexib.yaba.kmm.android.ui.settings.plaid_items.PlaidItemsScreenViewModel
+import tech.alexib.yaba.kmm.android.ui.transactions.TransactionListScreenViewModel
+import tech.alexib.yaba.kmm.android.ui.transactions.TransactionDetailScreenViewModel
 import tech.alexib.yaba.kmm.di.ApolloUrl
 import tech.alexib.yaba.kmm.di.initKoin
 
@@ -41,6 +43,8 @@ class MainApp : Application() {
         viewModel { HomeViewModel(get()) }
         viewModel { PlaidItemsScreenViewModel() }
         viewModel { PlaidItemDetailScreenViewModel() }
+        viewModel { TransactionListScreenViewModel() }
+        viewModel { TransactionDetailScreenViewModel() }
 
     }
 

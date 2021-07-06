@@ -23,7 +23,7 @@ finishActivity:() -> Unit
 
     Scaffold(
         bottomBar = {
-            YabaBottomBar(navController, modifier = Modifier.padding(LocalWindowInsets.current.systemBars.toPaddingValues()))
+            YabaBottomBar(navController, modifier = Modifier.padding(LocalWindowInsets.current.navigationBars.toPaddingValues()))
         },
 
     ) {contentPadding->

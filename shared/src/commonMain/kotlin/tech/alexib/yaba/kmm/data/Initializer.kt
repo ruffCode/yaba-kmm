@@ -5,28 +5,25 @@ import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.datetime.LocalDate
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.AllUserDataQuery
-import tech.alexib.yaba.data.db.ItemEntity
 import tech.alexib.yaba.kmm.data.api.ApolloApi
 import tech.alexib.yaba.kmm.data.api.ApolloResponse
+import tech.alexib.yaba.kmm.data.api.dto.AccountDto
+import tech.alexib.yaba.kmm.data.api.dto.ItemDto
+import tech.alexib.yaba.kmm.data.api.dto.TransactionDto
+import tech.alexib.yaba.kmm.data.api.dto.toDto
+import tech.alexib.yaba.kmm.data.api.dto.toEntities
 import tech.alexib.yaba.kmm.data.api.safeQuery
 import tech.alexib.yaba.kmm.data.db.dao.AccountDao
 import tech.alexib.yaba.kmm.data.db.dao.InstitutionDao
 import tech.alexib.yaba.kmm.data.db.dao.ItemDao
 import tech.alexib.yaba.kmm.data.db.dao.TransactionDao
 import tech.alexib.yaba.kmm.data.db.dao.UserDao
-import tech.alexib.yaba.kmm.data.repository.TransactionRepository
 import tech.alexib.yaba.kmm.data.repository.UserRepository
-import tech.alexib.yaba.kmm.model.Account
-import tech.alexib.yaba.kmm.model.AccountSubtype
-import tech.alexib.yaba.kmm.model.AccountType
 import tech.alexib.yaba.kmm.model.Institution
-import tech.alexib.yaba.kmm.model.Transaction
-import tech.alexib.yaba.kmm.model.TransactionType
 import tech.alexib.yaba.kmm.model.User
 
 interface Initializer {
@@ -42,39 +39,22 @@ class InitializerImpl : Initializer, KoinComponent {
     private val itemDao: ItemDao by inject()
     private val transactionDao: TransactionDao by inject()
     private val userDao: UserDao by inject()
-    private val userRepository:UserRepository by inject()
-    private val transactionRepository: TransactionRepository by inject()
+    private val userRepository: UserRepository by inject()
 
     init {
         ensureNeverFrozen()
     }
 
-
     override suspend fun init() {
-//        val transactionCount = transactionRepository.count().first()
-//        val currentUser = userRepository.currentUser().firstOrNull()
-        if ( userRepository.currentUser().firstOrNull() == null) {
-            val response =  apolloApi.client().safeQuery(AllUserDataQuery()) {
+        if (userRepository.currentUser().firstOrNull() == null) {
+            val response = apolloApi.client().safeQuery(AllUserDataQuery()) {
                 val data = it.me
                 val userId = data.id as Uuid
                 val user = User(userId, data.email)
-                val transactions = data.transactions.map { transaction ->
-                    with(transaction) {
-                        Transaction(
-                            id = id as Uuid,
-                            type = TransactionType.valueOf(type.uppercase()),
-                            amount = amount,
-                            date = date as LocalDate,
-                            accountId = accountId as Uuid,
-                            itemId = itemId as Uuid,
-                            category = category,
-                            subcategory = subcategory,
-                            isoCurrencyCode = isoCurrencyCode,
-                            pending = pending,
-                            name = name
-                        )
-                    }
-                }
+
+                val transactions =
+                    data.transactions.map { transaction -> transaction.fragments.transaction.toDto() }
+
                 val institutions = data.items.map { item ->
                     with(item.institution) {
                         Institution(
@@ -86,28 +66,15 @@ class InitializerImpl : Initializer, KoinComponent {
                     }
                 }
                 val items = data.items.map { item ->
-                    ItemEntity(
+                    ItemDto(
                         id = item.id as Uuid,
-                        plaid_institution_id = item.plaidInstitutionId,
-                        user_id = userId
+                        plaidInstitutionId = item.plaidInstitutionId,
+                        userId = userId
                     )
                 }
 
-                val accounts = data.accounts.map { account ->
-                    with(account) {
-                        Account(
-                            id = id as Uuid,
-                            name = name,
-                            currentBalance = currentBalance,
-                            availableBalance = availableBalance,
-                            mask = mask,
-                            itemId = itemId as Uuid,
-                            type = AccountType.valueOf(type.name),
-                            subtype = AccountSubtype.valueOf(subtype.name),
-                            hidden = hidden
-                        )
-                    }
-                }
+                val accounts = data.accounts.map { account -> account.fragments.account.toDto() }
+
                 AllDataMappedResponse(
                     user, transactions, items, accounts, institutions
                 )
@@ -135,22 +102,26 @@ class InitializerImpl : Initializer, KoinComponent {
                 institutionDao.insert(it)
             }
 
-            itemDao.insert(data.items)
+            itemDao.insert(data.items.toEntities())
 
-            accountDao.insert(data.accounts)
+            accountDao.insert(data.accounts.toEntities())
 
-            transactionDao.insert(data.transactions)
+            transactionDao.insert(data.transactions.toEntities())
 
-        }.getOrElse {
-            log.e { "Error inserting user data: ${it.message}" }
-        }
+        }.fold({
+            log.d { "User data inserted" }
+        }, {
+            log.e(it) {
+                "Error inserting user data: ${it.message}"
+            }
+        })
     }
 }
 
 private data class AllDataMappedResponse(
     val user: User,
-    val transactions: List<Transaction>,
-    val items: List<ItemEntity>,
-    val accounts: List<Account>,
+    val transactions: List<TransactionDto>,
+    val items: List<ItemDto>,
+    val accounts: List<AccountDto>,
     val institutions: List<Institution>
 )

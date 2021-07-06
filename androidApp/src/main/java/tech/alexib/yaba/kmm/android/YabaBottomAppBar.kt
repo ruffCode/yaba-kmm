@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Money
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,6 +48,16 @@ fun YabaBottomBar(navController: NavHostController, modifier: Modifier = Modifie
 //                        launchSingleTop = true
 //                    }
 //                })
+            BottomNavigationItem(icon = { Icon(Icons.Filled.Search, contentDescription = "Transactions") },
+                selected = currentRoute?.route == Route.Transactions.route,
+                label = { Text(text = "Transactions") },
+                onClick = {
+                    navController.navigate(Route.Transactions.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                        }
+                        launchSingleTop = true
+                    }
+                })
             BottomNavigationItem(icon = { Icon(Icons.Filled.Settings, contentDescription = "Setting") },
                 selected = currentRoute?.route == Route.Settings.route,
                 label = { Text(text = "Settings") },
