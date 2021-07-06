@@ -111,7 +111,7 @@ internal class TransactionDaoImpl(
     private val transactionMapper = {
             id: Uuid,
             account_id: Uuid,
-            item_id: Uuid,
+            _: Uuid,
             _: Uuid?,
             category: String?,
             subcategory: String?,
@@ -138,26 +138,10 @@ internal class TransactionDaoImpl(
         )
     }
 
-    //  t.id,
-//    t.account_id,
-//    t.item_id,
-//    a.user_id,
-//    t.category,
-//    t.subcategory,
-//    t.type,
-//    t.name,
-//    t.iso_currency_code,
-//    t.date,
-//    t.amount,
-//    t.pending,
-//    t.merchant_name,
-//    a.name AS accountName,
-//    a.mask,
-//    a.institutionName
     private val transactionDetailMapper =
         { id: Uuid,
           account_id: Uuid,
-          item_id: Uuid,
+          _: Uuid,
           _: Uuid?,
           category: String?,
           subcategory: String?,

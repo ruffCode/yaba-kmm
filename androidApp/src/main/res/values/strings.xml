@@ -2,4 +2,10 @@
     <string name="app_name">YABA - KMM</string>
     <string name="transaction_notification_channel_id" translatable="false">fcm_transactions</string>
     <string name="base_url">https://ruffrevival.ngrok.io</string>
+    <string name="loading_data">Hang on while we load your data</string>
+    <string name="link_first_institution">Link your first institution</string>
+    <string name="current_cash_balance">Current cash balance</string>
+    <string name="view_all_transactions">View all transactions</string>
+    <string name="hide_password">hide password</string>
+    <string name="show_password">show password</string>
 </resources>

@@ -25,9 +25,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.getViewModel
+import tech.alexib.yaba.kmm.android.R
 import tech.alexib.yaba.kmm.android.ui.AddSpace
 import tech.alexib.yaba.kmm.android.ui.components.TransactionItem
 import tech.alexib.yaba.kmm.android.ui.theme.MoneyGreen
@@ -96,7 +98,7 @@ private fun Home(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 CircularProgressIndicator()
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = "Hang on while we load your data")
+                    Text(text = stringResource(id = R.string.loading_data))
                 }
 
             }
@@ -115,7 +117,7 @@ private fun Home(
                     actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
                 }, modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "Link your first institution",
+                        text = stringResource(id = R.string.link_first_institution),
                         style = MaterialTheme.typography.button
                     )
                 }
@@ -140,7 +142,8 @@ fun TotalCashBalanceRow(
             .wrapContentHeight(Alignment.CenterVertically),
         elevation = 3.dp
     ) {
-        BalanceRow(balance = balance, description = "Current cash balance")
+        BalanceRow(balance = balance, description = stringResource(id = R.string.current_cash_balance))
+        
     }
 }
 
@@ -190,7 +193,7 @@ private fun RecentTransactions(
 //only pulls 5 transactions
             transactions.forEach {
                 Row {
-                    TransactionItem(transaction = it){
+                    TransactionItem(transaction = it) {
                         onSelectAllTransactions()
                     }
                 }
@@ -203,7 +206,7 @@ private fun RecentTransactions(
                 horizontalArrangement = Arrangement.Center
             ) {
                 TextButton(onClick = { onSelectAllTransactions() }) {
-                    Text(text = "View all transactions")
+                    Text(text = stringResource(id = R.string.view_all_transactions))
                 }
 
             }

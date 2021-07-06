@@ -1,6 +1,5 @@
 package tech.alexib.yaba.kmm.android.ui.auth.register
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,19 +22,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import org.koin.androidx.compose.getViewModel
-import tech.alexib.yaba.kmm.android.R
 import tech.alexib.yaba.kmm.android.ui.AddSpace
 import tech.alexib.yaba.kmm.android.ui.auth.components.Password
 import tech.alexib.yaba.kmm.android.ui.auth.components.Username
+import tech.alexib.yaba.kmm.android.ui.components.YabaLogo
 import tech.alexib.yaba.kmm.android.ui.theme.BlueSlate
 import tech.alexib.yaba.kmm.android.ui.theme.YabaTheme
 import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
@@ -105,6 +102,10 @@ private fun RegisterScreen(
     var password by remember { mutableStateOf(TextFieldValue(state.password)) }
     val focusRequester = remember { FocusRequester() }
 
+    val imePadding = rememberInsetsPaddingValues(
+        insets = LocalWindowInsets.current.ime
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -112,9 +113,8 @@ private fun RegisterScreen(
             .padding(
                 start = 16.dp,
                 end = 16.dp,
-                bottom = LocalWindowInsets.current.ime
-                    .toPaddingValues()
-                    .calculateBottomPadding()
+                bottom = imePadding.calculateBottomPadding()
+
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -126,16 +126,7 @@ private fun RegisterScreen(
             color = BlueSlate
         )
 
-        Image(
-            modifier = Modifier
-                .height(200.dp),
-            painter = rememberCoilPainter(
-                R.drawable.yaba_y_bl,
-                previewPlaceholder = R.drawable.yaba_y_bl
-            ),
-            contentScale = ContentScale.Fit,
-            contentDescription = "YABA logo",
-        )
+        YabaLogo(200)
 
         Username(usernameState = email, onValueChange = { value ->
             email = value

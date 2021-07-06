@@ -1,3 +1,4 @@
+![yaba logo](./assets/yaba.png)
 # yaba (yet another budgeting app)
 ## Kotlin Multiplatform Mobile
 

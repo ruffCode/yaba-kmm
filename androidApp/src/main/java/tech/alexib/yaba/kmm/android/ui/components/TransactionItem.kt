@@ -1,6 +1,5 @@
 package tech.alexib.yaba.kmm.android.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,10 +40,8 @@ fun TransactionItem(
         .height(60.dp)
         .padding(horizontal = 8.dp, vertical = 4.dp)
         .clickable {
-            Log.d("TRANACTION ITEM", "clicked ${transaction.id}")
             onSelected?.let { it(transaction.id) }
         }
-
 
     Box(
         modifier = modifier
