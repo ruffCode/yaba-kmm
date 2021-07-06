@@ -19,6 +19,7 @@ dependencies {
     implementation(Lib.Compose.runtime)
     implementation(Lib.Compose.tooling)
     implementation(Lib.Compose.ui)
+    implementation(Lib.Compose.preview)
 
     implementation(platform(Lib.KotlinX.Coroutines.bom))
     implementation(Lib.KotlinX.Coroutines.core)
@@ -33,7 +34,6 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.3.0-rc01")
     implementation("androidx.navigation:navigation-compose:2.4.0-alpha04")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08")
     implementation("com.plaid.link:sdk-core:3.4.0")
     implementation(Lib.Accompanist.coil)
