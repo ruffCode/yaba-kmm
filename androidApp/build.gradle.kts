@@ -19,7 +19,7 @@ dependencies {
     implementation(Lib.Compose.runtime)
     implementation(Lib.Compose.tooling)
     implementation(Lib.Compose.ui)
-    implementation(Lib.Compose.preview)
+//    implementation(Lib.Compose.preview)
 
     implementation(platform(Lib.KotlinX.Coroutines.bom))
     implementation(Lib.KotlinX.Coroutines.core)

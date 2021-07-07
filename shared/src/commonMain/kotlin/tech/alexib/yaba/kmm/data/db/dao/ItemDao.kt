@@ -1,5 +1,6 @@
 package tech.alexib.yaba.kmm.data.db.dao
 
+import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import com.squareup.sqldelight.runtime.coroutines.asFlow
@@ -9,6 +10,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.db.ItemEntity
 import tech.alexib.yaba.data.db.ItemEntityQueries
 import tech.alexib.yaba.data.db.YabaDb
@@ -30,9 +34,10 @@ internal interface ItemDao {
 internal class ItemDaoImpl(
     private val database: YabaDb,
     private val backgroundDispatcher: CoroutineDispatcher,
-) : ItemDao {
+) : ItemDao,KoinComponent {
     private val queries: ItemEntityQueries = database.itemEntityQueries
 
+    private val log: Kermit by inject { parametersOf("ItemDao") }
     init {
         ensureNeverFrozen()
 
@@ -77,6 +82,7 @@ internal class ItemDaoImpl(
             name: String,
             logo: String,
         ->
+        log.d { "mapping item $id" }
         PlaidItem(
             id = id,
             plaidInstitutionId = plaid_institution_id,

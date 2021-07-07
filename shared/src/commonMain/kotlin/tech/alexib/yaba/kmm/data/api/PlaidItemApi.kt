@@ -30,7 +30,6 @@ interface PlaidItemApi {
     fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<PlaidItemCreateResponse>>
     fun sendLinkEvent(request: PlaidLinkEventCreateRequest)
     fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>)
-//    fun newItemData(itemId: Uuid): Flow<DataResult<NewItemData>>
     suspend fun unlink(itemId: Uuid)
 }
 
@@ -41,13 +40,10 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
 
     init {
         ensureNeverFrozen()
-
     }
 
     override fun createLinkToken(): Flow<DataResult<CreateLinkTokenResponse>> {
         val mutation = CreateLinkTokenMutation()
-
-
         return runCatching {
 
             flow<DataResult<CreateLinkTokenResponse>> {
@@ -140,30 +136,6 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
             }
         }
     }
-
-//    override fun newItemData(itemId: Uuid): Flow<DataResult<NewItemData>> {
-//        val query = NewItemDataQuery(itemId)
-//        return apolloApi.client().safeQuery(query) { result ->
-//            val item = result.itemById
-//
-//            NewItemData(
-//                item = PlaidItem(
-//                    id = item.id as Uuid,
-//                    name = item.institution.name,
-//                    base64Logo = item.institution.logo,
-//                    plaidInstitutionId = item.plaidInstitutionId
-//                ),
-//                accounts =
-//                item.accounts.map { it.fragments.accountWithTransactions.toAccountWithTransactions() },
-//                user = User(result.me.id as Uuid, result.me.email)
-//            )
-//        }.map {
-//            when (it) {
-//                is ApolloResponse.Success -> Success(it.data)
-//                is ApolloResponse.Error -> ErrorResult(it.message)
-//            }
-//        }
-//    }
 }
 
 

@@ -2,14 +2,24 @@ package tech.alexib.yaba.kmm.android.ui.plaid
 
 import android.os.Parcelable
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import com.benasher44.uuid.Uuid
 import com.plaid.link.PlaidActivityResultContract
 import com.plaid.link.result.LinkResult
 import kotlinx.parcelize.Parcelize
 import org.koin.androidx.compose.getViewModel
+import tech.alexib.yaba.kmm.android.ui.components.LoadingScreen
 import tech.alexib.yaba.kmm.android.ui.components.defaultLogoBase64
 import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.kmm.model.response.PlaidItemCreateResponse
@@ -96,6 +106,8 @@ private fun PlaidLinkScreen(
             is PlaidLinkResult.Success -> actioner(PlaidLinkScreenAction.HandleSuccess(state.data.toPlaidItem()))
             is PlaidLinkResult.AwaitingResult -> {
                 Log.d("PLAID", "AwaitingResult")
+
+               LoadingScreen()
             }
             is PlaidLinkResult.Error -> actioner(PlaidLinkScreenAction.ShowError(state.message))
             is PlaidLinkResult.Abandoned -> {

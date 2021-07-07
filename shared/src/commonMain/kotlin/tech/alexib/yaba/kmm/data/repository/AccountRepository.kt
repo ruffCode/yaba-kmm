@@ -4,7 +4,9 @@ import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -24,11 +26,12 @@ interface AccountRepository {
 }
 
 
-internal class AccountRepositoryImpl : UserIdProvider(), AccountRepository, KoinComponent {
+internal class AccountRepositoryImpl : AccountRepository, KoinComponent {
 
     private val accountDao: AccountDao by inject()
     private val accountApi: AccountApi by inject()
     private val transactionDao: TransactionDao by inject()
+    private val userIdProvider: UserIdProvider by inject()
 
     private val log: Kermit by inject { parametersOf("AccountRepository") }
 
@@ -36,16 +39,16 @@ internal class AccountRepositoryImpl : UserIdProvider(), AccountRepository, Koin
         ensureNeverFrozen()
     }
 
-    override fun getAll(): Flow<List<Account>> {
-        return accountDao.selectAll(userId.value)
+    override fun getAll(): Flow<List<Account>> = flow {
+        emitAll(accountDao.selectAll(userIdProvider.userId.value))
     }
 
-    override fun availableCashBalance(): Flow<Double> {
-        return accountDao.availableBalance(userId.value)
+    override fun availableCashBalance(): Flow<Double> = flow {
+        emitAll(accountDao.availableBalance(userIdProvider.userId.value))
     }
 
-    override fun currentCashBalance(): Flow<Double> {
-        return accountDao.currentBalance(userId.value)
+    override fun currentCashBalance(): Flow<Double> = flow {
+        emitAll(accountDao.currentBalance(userIdProvider.userId.value))
     }
 
     override suspend fun hide(accountId: Uuid) {

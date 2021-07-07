@@ -59,6 +59,7 @@ kotlin {
                 implementation(Lib.KotlinX.dateTime)
                 api(Lib.kermit)
                 implementation(Lib.stately)
+                implementation(Lib.statelyConcurrency)
                 implementation(Lib.uuid)
                 api(Lib.Koin.core)
                 implementation(Lib.KotlinX.Serialization.core)

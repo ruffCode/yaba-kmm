@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,10 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.navigationBarsPadding
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.ui.AddSpace
 import tech.alexib.yaba.kmm.android.ui.components.BankLogo
+import tech.alexib.yaba.kmm.android.ui.components.LoadingScreen
 import tech.alexib.yaba.kmm.android.util.base64ToBitmap
 
 @Composable
@@ -35,22 +34,36 @@ fun PlaidLinkResultScreen(
     navigateHome: () -> Unit
 ) {
 
-    //TODO create loading screen to wait for new data to insert
     val viewModel: PlaidLinkResultScreenViewModel = getViewModel()
     viewModel.init(result)
     val accounts = viewModel.accounts.collectAsState()
 
     val shouldNavigateHome = viewModel.shouldNavigateHome.collectAsState(false)
-    if (shouldNavigateHome.value) {
-        navigateHome()
+    val loading = viewModel.loading.collectAsState(false)
+
+    when{
+        loading.value && !shouldNavigateHome.value -> LoadingScreen()
+        shouldNavigateHome.value ->navigateHome()
+        else -> PlaidLinkResultScreen(
+            logo = base64ToBitmap(result.logo),
+            accounts = accounts,
+            handleSubmit = { viewModel.submitAccountsToHide() }) { plaidAccountsId, show ->
+            viewModel.setAccountShown(plaidAccountsId, show)
+        }
     }
-    val logo = base64ToBitmap(result.logo)
-    PlaidLinkResultScreen(
-        logo = logo,
-        accounts = accounts,
-        handleSubmit = { viewModel.submitAccountsToHide() }) { plaidAccountsId, show ->
-        viewModel.setAccountShown(plaidAccountsId, show)
-    }
+//    if (loading.value && !shouldNavigateHome.value) {
+//        LoadingScreen()
+//    }
+//    if (shouldNavigateHome.value) {
+//        navigateHome()
+//    }
+//
+//    PlaidLinkResultScreen(
+//        logo = base64ToBitmap(result.logo),
+//        accounts = accounts,
+//        handleSubmit = { viewModel.submitAccountsToHide() }) { plaidAccountsId, show ->
+//        viewModel.setAccountShown(plaidAccountsId, show)
+//    }
 }
 
 @Composable
@@ -77,7 +90,11 @@ fun PlaidLinkResultScreen(
             .fillMaxSize()
             .padding(vertical = 100.dp, horizontal = 16.dp)
     ) {
-        LazyColumn(modifier = Modifier.align(Alignment.TopCenter).padding(bottom = 50.dp)) {
+        LazyColumn(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(bottom = 50.dp)
+        ) {
             item {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                     Text(

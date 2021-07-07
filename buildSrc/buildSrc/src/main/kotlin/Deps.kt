@@ -1,6 +1,7 @@
 object Lib {
     const val kermit = "co.touchlab:kermit:0.1.9"
     const val stately = "co.touchlab:stately-common:1.1.7"
+    const val statelyConcurrency = "co.touchlab:stately-concurrency:1.1.4"
 
     const val uuid = "com.benasher44:uuid:0.3.0"
 
@@ -129,7 +130,7 @@ object Lib {
         const val iconsExtended = "androidx.compose.material:material-icons-extended:$version"
         const val material = "androidx.compose.material:material:$version"
         const val runtime = "androidx.compose.runtime:runtime:$version"
-        const val tooling = "androidx.compose.ui:ui-tooling:$version"
+        const val tooling = "androidx.compose.ui:ui-tooling:1.0.0-beta09"
         const val preview = "androidx.compose.ui:ui-tooling-preview:$version"
         const val ui = "androidx.compose.ui:ui:$version"
         const val uiUtil = "androidx.compose.ui:ui-util:$version"
