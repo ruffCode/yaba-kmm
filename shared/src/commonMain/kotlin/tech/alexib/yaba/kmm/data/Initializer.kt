@@ -3,8 +3,13 @@ package tech.alexib.yaba.kmm.data
 import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -25,9 +30,14 @@ import tech.alexib.yaba.kmm.data.db.dao.UserDao
 import tech.alexib.yaba.kmm.data.repository.UserRepository
 import tech.alexib.yaba.kmm.model.Institution
 import tech.alexib.yaba.kmm.model.User
+import tech.alexib.yaba.kmm.util.InvokeError
+import tech.alexib.yaba.kmm.util.InvokeStarted
+import tech.alexib.yaba.kmm.util.InvokeStatus
+import tech.alexib.yaba.kmm.util.InvokeSuccess
+
 
 interface Initializer {
-    suspend fun init()
+    fun init(): Flow<InvokeStatus>
 }
 
 class InitializerImpl : Initializer, KoinComponent {
@@ -40,14 +50,15 @@ class InitializerImpl : Initializer, KoinComponent {
     private val transactionDao: TransactionDao by inject()
     private val userDao: UserDao by inject()
     private val userRepository: UserRepository by inject()
+    private val backgroundDispatcher: CoroutineDispatcher by inject()
 
     init {
         ensureNeverFrozen()
     }
 
-    override suspend fun init() {
-        if (userRepository.currentUser().firstOrNull() == null) {
-            val response = apolloApi.client().safeQuery(AllUserDataQuery()) {
+    private suspend fun getRemoteUserData(): ApolloResponse<AllDataMappedResponse> {
+        return withContext(backgroundDispatcher) {
+            apolloApi.client().safeQuery(AllUserDataQuery()) {
                 val data = it.me
                 val userId = data.id as Uuid
                 val user = User(userId, data.email)
@@ -72,50 +83,61 @@ class InitializerImpl : Initializer, KoinComponent {
                         userId = userId
                     )
                 }
-
                 val accounts = data.accounts.map { account -> account.fragments.account.toDto() }
-
                 AllDataMappedResponse(
                     user, transactions, items, accounts, institutions
                 )
             }.first()
 
-            when (response) {
+        }
+    }
+
+    override fun init(): Flow<InvokeStatus> = flow {
+        emit(InvokeStarted)
+        val user = userRepository.currentUser().distinctUntilChanged().first()
+
+        if (user == null) {
+            when (val response = getRemoteUserData()) {
                 is ApolloResponse.Success -> {
 
                     insertAllUserData(response.data)
+                    emit(InvokeSuccess)
                 }
                 is ApolloResponse.Error -> {
 
                     log.e { "Error retrieving user data: ${response.message}" }
                 }
             }
+        } else {
+            emit(InvokeSuccess)
         }
+    }.catch {
+        log.e(it) { "Initializer error ${it.message}" }
+        emit(InvokeError(it))
     }
 
-    private suspend fun insertAllUserData(data: AllDataMappedResponse) {
+    private suspend fun insertAllUserData(data: AllDataMappedResponse) = runCatching {
 
-        runCatching {
+        userDao.insert(data.user)
+        data.institutions.forEach {
+            institutionDao.insert(it)
+        }
 
-            userDao.insert(data.user)
-            data.institutions.forEach {
-                institutionDao.insert(it)
-            }
+        itemDao.insert(data.items.toEntities())
 
-            itemDao.insert(data.items.toEntities())
+        accountDao.insert(data.accounts.toEntities())
 
-            accountDao.insert(data.accounts.toEntities())
+        transactionDao.insert(data.transactions.toEntities())
 
-            transactionDao.insert(data.transactions.toEntities())
+    }.fold({
+        log.d { "User data inserted" }
 
-        }.fold({
-            log.d { "User data inserted" }
-        }, {
-            log.e(it) {
-                "Error inserting user data: ${it.message}"
-            }
-        })
-    }
+    }, {
+        log.e(it) {
+            "Error inserting user data: ${it.message}"
+        }
+        throw it
+    })
 }
 
 private data class AllDataMappedResponse(

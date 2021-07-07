@@ -12,8 +12,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import tech.alexib.yaba.data.db.AccountEntity
 import tech.alexib.yaba.data.db.YabaDb
-import tech.alexib.yaba.kmm.data.api.dto.AccountDto
-import tech.alexib.yaba.kmm.data.api.dto.toEntity
 import tech.alexib.yaba.kmm.data.db.sqldelight.transactionWithContext
 import tech.alexib.yaba.kmm.model.Account
 import tech.alexib.yaba.kmm.model.AccountSubtype
@@ -22,11 +20,11 @@ import tech.alexib.yaba.kmm.model.AccountType
 internal interface AccountDao {
     suspend fun insert(account: AccountEntity)
     suspend fun insert(accounts: List<AccountEntity>)
-    fun selectAll(userId: Uuid): Flow<List<Account>>
-    fun selectById(accountId: Uuid): Flow<Account?>
-    fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
-    fun availableBalance(userId: Uuid): Flow<Double>
-    fun currentBalance(userId: Uuid): Flow<Double>
+    suspend fun selectAll(userId: Uuid): Flow<List<Account>>
+    suspend fun selectById(accountId: Uuid): Flow<Account?>
+    suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
+    suspend fun availableBalance(userId: Uuid): Flow<Double>
+    suspend fun currentBalance(userId: Uuid): Flow<Double>
     suspend fun setHidden(id: Uuid, hidden: Boolean)
 }
 
@@ -58,27 +56,24 @@ internal class AccountDaoImpl(
         }
     }
 
-    override fun selectAll(userId: Uuid): Flow<List<Account>> {
+    override suspend fun selectAll(userId: Uuid): Flow<List<Account>> {
         return accountQueries.selectAll(userId, accountMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
     }
 
-    override fun selectById(accountId: Uuid): Flow<Account?> {
-        return accountQueries.selectById(accountId, accountMapper).asFlow()
+    override suspend fun selectById(accountId: Uuid): Flow<Account?> =
+        accountQueries.selectById(accountId, accountMapper).asFlow()
             .mapToOneOrNull()
             .flowOn(backgroundDispatcher)
-    }
 
-    override fun selectAllByItemId(itemId: Uuid): Flow<List<Account>> {
-        return accountQueries.selectAllByItemId(itemId, accountMapper).asFlow().mapToList()
+    override suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>> =
+        accountQueries.selectAllByItemId(itemId, accountMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
-    }
 
-    override fun availableBalance(userId: Uuid): Flow<Double> {
-        return accountQueries.availableBalance(userId) { available -> available ?: 0.0 }.asFlow()
+    override suspend fun availableBalance(userId: Uuid): Flow<Double> =
+        accountQueries.availableBalance(userId) { available -> available ?: 0.0 }.asFlow()
             .mapToOne()
             .flowOn(backgroundDispatcher)
-    }
 
     override suspend fun setHidden(id: Uuid, hidden: Boolean) {
         withContext(backgroundDispatcher) {
@@ -86,7 +81,7 @@ internal class AccountDaoImpl(
         }
     }
 
-    override fun currentBalance(userId: Uuid): Flow<Double> =
+    override suspend fun currentBalance(userId: Uuid): Flow<Double> =
         accountQueries.currentBalance(userId) { current -> current ?: 0.0 }.asFlow().mapToOne()
             .flowOn(backgroundDispatcher)
 

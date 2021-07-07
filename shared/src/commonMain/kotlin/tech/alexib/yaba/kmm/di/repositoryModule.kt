@@ -16,11 +16,11 @@ import tech.alexib.yaba.kmm.data.repository.UserRepository
 import tech.alexib.yaba.kmm.data.repository.UserRepositoryImpl
 
 val repositoryModule = module {
+    single { UserIdProvider() }
     single<AuthApiRepository> { AuthApiRepositoryImpl(get(), getWith("AuthRepository")) }
     single<Initializer> { InitializerImpl() }
     single<AccountRepository> { AccountRepositoryImpl() }
     single<TransactionRepository> { TransactionRepositoryImpl() }
-    single { UserIdProvider() }
     single<ItemRepository> { ItemRepositoryImpl() }
-    single<UserRepository> {UserRepositoryImpl()}
+    single<UserRepository> { UserRepositoryImpl(get()) }
 }

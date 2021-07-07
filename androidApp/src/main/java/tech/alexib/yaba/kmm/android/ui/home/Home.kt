@@ -1,8 +1,10 @@
 package tech.alexib.yaba.kmm.android.ui.home
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Button
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
@@ -31,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.R
 import tech.alexib.yaba.kmm.android.ui.AddSpace
+import tech.alexib.yaba.kmm.android.ui.components.LoadingScreen
+import tech.alexib.yaba.kmm.android.ui.components.LoadingScreenWithCrossFade
 import tech.alexib.yaba.kmm.android.ui.components.TransactionItem
 import tech.alexib.yaba.kmm.android.ui.theme.MoneyGreen
 import tech.alexib.yaba.kmm.android.util.moneyFormat
@@ -41,7 +44,6 @@ import tech.alexib.yaba.kmm.model.Transaction
 @Immutable
 data class HomeScreenState(
     val loading: Boolean = false,
-    val error: String? = null,
     val currentCashBalance: Double = 0.0,
     val recentTransactions: List<Transaction> = emptyList()
 ) {
@@ -93,17 +95,8 @@ private fun Home(
     state: HomeScreenState,
     actioner: (HomeScreenAction) -> Unit
 ) {
-    if (state.loading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                CircularProgressIndicator()
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = stringResource(id = R.string.loading_data))
-                }
 
-            }
-        }
-    } else {
+    LoadingScreenWithCrossFade(state.loading){
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -130,7 +123,6 @@ private fun Home(
             }
         }
     }
-
 }
 
 @Composable
@@ -142,8 +134,11 @@ fun TotalCashBalanceRow(
             .wrapContentHeight(Alignment.CenterVertically),
         elevation = 3.dp
     ) {
-        BalanceRow(balance = balance, description = stringResource(id = R.string.current_cash_balance))
-        
+        BalanceRow(
+            balance = balance,
+            description = stringResource(id = R.string.current_cash_balance)
+        )
+
     }
 }
 

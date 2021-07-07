@@ -32,7 +32,6 @@ class PlaidLinkViewModel(
     private val plaidItemApi: PlaidItemApi
 ) : ViewModel(), KoinComponent {
 
-    private var hadSuccess = false
     private val resultFlow = MutableStateFlow<PlaidLinkResult>(PlaidLinkResult.Empty)
     val result: StateFlow<PlaidLinkResult> = resultFlow
     private val log: Kermit by inject { parametersOf("PlaidLinkViewModel") }

@@ -1,5 +1,6 @@
 package tech.alexib.yaba.kmm.android.ui.settings.plaid_items
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.ListItem
@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.insets.navigationBarsPadding
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.kmm.android.ui.components.BankLogo
+import tech.alexib.yaba.kmm.android.ui.components.LoadingScreen
 import tech.alexib.yaba.kmm.android.ui.theme.YabaTheme
 import tech.alexib.yaba.kmm.android.util.base64ToBitmap
 import tech.alexib.yaba.kmm.android.util.rememberFlowWithLifecycle
@@ -73,25 +74,18 @@ private fun PlaidItemsScreen(
 ) {
     val state by
     rememberFlowWithLifecycle(flow = viewModel.state).collectAsState(initial = PlaidItemsScreenState.Empty)
-
-    when (state.loading) {
-        true -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-        false -> when (state.items.isEmpty()) {
-            true -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-            false -> PlaidItemsScreen(state) { action ->
+    Crossfade(targetState = state.loading) { loading ->
+        when (loading) {
+            true -> LoadingScreen()
+            false -> PlaidItemsScreen(state = state) { action ->
                 when (action) {
                     is PlaidItemsScreenAction.OnItemSelected -> onItemSelected(action.item)
                     is PlaidItemsScreenAction.NavigateToLinkInstitution -> navigateToPlaidLink()
                 }
             }
         }
-
-
     }
+
 }
 
 @ExperimentalAnimationApi
@@ -132,73 +126,14 @@ private fun PlaidItemsScreen(
                     actioner(PlaidItemsScreenAction.OnItemSelected(it))
                 }
 
-                TextButton(
-                    onClick = { actioner(PlaidItemsScreenAction.NavigateToLinkInstitution) },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter)
+                LinkInstitutionButton(
+                    text = "Link another institution",
+                    modifier = Modifier.align(Alignment.BottomCenter)
                 ) {
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-                        Text(
-                            text = "Link another institution",
-                            style = MaterialTheme.typography.button, fontSize = 20.sp
-                        )
-                    }
+                    actioner(PlaidItemsScreenAction.NavigateToLinkInstitution)
                 }
             }
         }
-
-
-//        LazyColumn(
-//            modifier = Modifier
-//                .padding(top = 100.dp)
-//                .align(Alignment.Center),
-//            verticalArrangement = Arrangement.Center,
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            items(state.items) { plaidItem ->
-//                ListItem(trailing = {
-//                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-//                        Text(
-//                            text = "${
-//                                plaidItem.hiddenCount
-//                            } hidden"
-//                        )
-//                    }
-//                },
-//                    icon = {
-//                        BankLogo(logoBitmap = base64ToBitmap(plaidItem.base64Logo))
-//
-//                    },
-//                    modifier = Modifier
-//                        .clickable {
-//                            actioner(PlaidItemsScreenAction.OnItemSelected(plaidItem))
-//                        }
-//                ) {
-//                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-//                        Text(text = plaidItem.name)
-//                    }
-//                }
-//                Divider(modifier = Modifier.padding(horizontal = 16.dp))
-//            }
-//            item {
-//                TextButton(
-//                    onClick = { actioner(PlaidItemsScreenAction.NavigateToLinkInstitution) },
-//                    modifier = Modifier
-//                        .padding(16.dp)
-//                        .fillMaxWidth()
-//                ) {
-//                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-//                        Text(
-//                            text = "Link another institution",
-//                            style = MaterialTheme.typography.button, fontSize = 20.sp
-//                        )
-//                    }
-//
-//                }
-//            }
-//        }
     }
 }
 
@@ -261,7 +196,6 @@ private fun LinkInstitutionButton(
                 style = MaterialTheme.typography.button, fontSize = 20.sp
             )
         }
-
     }
 }
 

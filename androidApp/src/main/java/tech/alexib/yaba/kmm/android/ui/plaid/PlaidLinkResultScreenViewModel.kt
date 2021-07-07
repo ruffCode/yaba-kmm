@@ -24,6 +24,9 @@ class PlaidLinkResultScreenViewModel : ViewModel(), KoinComponent {
     private val log: Kermit by inject { parametersOf("PlaidLinkResultScreenViewModel") }
     private val accountsFlow = MutableStateFlow<List<PlaidLinkScreenResult.Account>>(emptyList())
 
+    private val loadingFlow = MutableStateFlow(false)
+    val loading: StateFlow<Boolean>
+        get() = loadingFlow
     private val shouldNavigateHomeFlow = MutableStateFlow(false)
     val shouldNavigateHome: StateFlow<Boolean>
         get() = shouldNavigateHomeFlow
@@ -45,6 +48,7 @@ class PlaidLinkResultScreenViewModel : ViewModel(), KoinComponent {
 
 
     fun submitAccountsToHide() {
+        loadingFlow.value = true
         val accountsToHide = accountsFlow.value.filter { !it.show }.map { it.plaidAccountId }
         plaidItemApi.setAccountsToHide(itemId, accountsToHide)
         viewModelScope.launch(Dispatchers.Default) {
@@ -52,7 +56,7 @@ class PlaidLinkResultScreenViewModel : ViewModel(), KoinComponent {
             log.d { "delayed" }
             val result = itemRepository.newItemData(itemId)
             log.d { "got result $result" }
-
+            loadingFlow.emit(false)
             shouldNavigateHomeFlow.emit(result)
 
 

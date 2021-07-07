@@ -3,10 +3,14 @@ package tech.alexib.yaba.kmm.data.repository
 import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.zip
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -39,34 +43,38 @@ interface ItemRepository {
 }
 
 
-internal class ItemRepositoryImpl : UserIdProvider(), ItemRepository, KoinComponent {
+internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
     private val itemDao: ItemDao by inject()
     private val accountDao: AccountDao by inject()
-    private val userDao: UserDao by inject()
     private val plaidItemApi: PlaidItemApi by inject()
     private val transactionDao: TransactionDao by inject()
     private val institutionDao: InstitutionDao by inject()
+    private val userIdProvider:UserIdProvider by inject()
     private val log: Kermit by inject { parametersOf("ItemRepository") }
     private val apolloApi: ApolloApi by inject()
+    private val backgroundDispatcher: CoroutineDispatcher by inject()
+
 
     init {
         ensureNeverFrozen()
     }
 
-    override fun getAll(): Flow<List<PlaidItem>> = itemDao.selectAll(userId.value)
+    override fun getAll(): Flow<List<PlaidItem>> = itemDao.selectAll(userIdProvider.userId.value)
 
     override fun getById(id: Uuid): Flow<PlaidItem> = itemDao.selectById(id)
 
 
-    override suspend fun getAllWithAccounts() =
-        combine(getAll(), accountDao.selectAll(userId.value)) { items, accounts ->
-            items.map {
-                PlaidItemWithAccounts(
-                    it,
-                    accounts.filter { account -> account.itemId == it.id }
-                )
-            }
-        }.distinctUntilChanged()
+    override suspend fun getAllWithAccounts():Flow<List<PlaidItemWithAccounts>> =
+       withContext(backgroundDispatcher){
+           combine(getAll(),accountDao.selectAll(userIdProvider.userId.value)) { items, accounts ->
+               items.map {
+                   PlaidItemWithAccounts(
+                       it,
+                       accounts.filter { account -> account.itemId == it.id }
+                   )
+               }
+           }
+       }
 
 
     override suspend fun unlinkItem(id: Uuid) {
