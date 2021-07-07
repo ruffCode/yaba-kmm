@@ -1,6 +1,7 @@
 object Lib {
     const val kermit = "co.touchlab:kermit:0.1.9"
     const val stately = "co.touchlab:stately-common:1.1.7"
+    const val statelyConcurrency = "co.touchlab:stately-concurrency:1.1.4"
 
     const val uuid = "com.benasher44:uuid:0.3.0"
 
