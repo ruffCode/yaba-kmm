@@ -26,6 +26,7 @@ allprojects {
         mavenCentral()
     }
 
+    println(project.name)
     apply<org.jlleitschuh.gradle.ktlint.KtlintPlugin>()
     // apply<io.gitlab.arturbosch.detekt.DetektPlugin>()
     apply<com.diffplug.gradle.spotless.SpotlessPlugin>()
@@ -57,7 +58,9 @@ allprojects {
             target("**/*.kt")
             licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
             targetExclude("$buildDir/**/*.kt")
+            targetExclude("Deps.kt")
             targetExclude("**/generated/**")
+            targetExclude("spotless/**")
             trimTrailingWhitespace()
             indentWithSpaces()
             endWithNewline()
@@ -80,7 +83,7 @@ allprojects {
             reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
         }
         filter {
-            exclude("**/generated/**")
+            exclude("**/generated/**", "$buildDir/**/*.kt")
             include("**/kotlin/**")
         }
         additionalEditorconfigFile.set(file("${rootProject.rootDir}/.editorConfig"))
