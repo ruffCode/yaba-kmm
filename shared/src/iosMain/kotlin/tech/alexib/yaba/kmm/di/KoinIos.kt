@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Alexi Bre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package tech.alexib.yaba.kmm.di
 
 import co.touchlab.kermit.Kermit
@@ -12,7 +27,6 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.module
 import tech.alexib.yaba.kmm.data.db.DriverFactory
 
-
 fun initKoinIos(
 //    userDefaults: NSUserDefaults,
 //    appInfo: AppInfo,
@@ -25,13 +39,11 @@ fun initKoinIos(
     }
 )
 
-
 actual val platformModule = module {
     val baseKermit = Kermit(NSLogLogger()).withTag("Yaba")
     factory { (tag: String?) -> if (tag != null) baseKermit.withTag(tag) else baseKermit }
     single<SqlDriver> { DriverFactory().createDriver() }
 }
-
 
 fun Koin.get(objCClass: ObjCClass, qualifier: Qualifier?, parameter: Any): Any {
     val kClazz = getOriginalKotlinClass(objCClass)!!

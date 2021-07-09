@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Alexi Bre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package tech.alexib.yaba.kmm.data.db.dao
 
 import co.touchlab.kermit.Kermit
@@ -22,7 +37,6 @@ import tech.alexib.yaba.kmm.model.Transaction
 import tech.alexib.yaba.kmm.model.TransactionDetail
 import tech.alexib.yaba.kmm.model.TransactionType
 
-
 internal interface TransactionDao {
     suspend fun insert(transaction: TransactionEntity)
     suspend fun insert(transactions: List<TransactionEntity>)
@@ -46,7 +60,6 @@ internal class TransactionDaoImpl(
 
     init {
         ensureNeverFrozen()
-
     }
 
     override suspend fun insert(transactions: List<TransactionEntity>) {
@@ -102,21 +115,20 @@ internal class TransactionDaoImpl(
         }
     }
 
-
     private val transactionMapper = {
-            id: Uuid,
-            account_id: Uuid,
-            _: Uuid,
-            _: Uuid?,
-            category: String?,
-            subcategory: String?,
-            type: TransactionType,
-            name: String,
-            merchant_name: String?,
-            date: LocalDate,
-            amount: Double,
-            iso_currency_code: String?,
-            pending: Boolean?,
+        id: Uuid,
+        account_id: Uuid,
+        _: Uuid,
+        _: Uuid?,
+        category: String?,
+        subcategory: String?,
+        type: TransactionType,
+        name: String,
+        merchant_name: String?,
+        date: LocalDate,
+        amount: Double,
+        iso_currency_code: String?,
+        pending: Boolean?,
         ->
         Transaction(
             id = id,
@@ -135,21 +147,21 @@ internal class TransactionDaoImpl(
 
     private val transactionDetailMapper =
         { id: Uuid,
-          account_id: Uuid,
-          _: Uuid,
-          _: Uuid?,
-          category: String?,
-          subcategory: String?,
-          type: TransactionType,
-          name: String,
-          iso_currency_code: String?,
-          date: LocalDate,
-          amount: Double,
-          pending: Boolean?,
-          merchant_name: String?,
-          accountName: String?,
-          mask: String?,
-          institutionName: String?
+            account_id: Uuid,
+            _: Uuid,
+            _: Uuid?,
+            category: String?,
+            subcategory: String?,
+            type: TransactionType,
+            name: String,
+            iso_currency_code: String?,
+            date: LocalDate,
+            amount: Double,
+            pending: Boolean?,
+            merchant_name: String?,
+            accountName: String?,
+            mask: String?,
+            institutionName: String?
             ->
             TransactionDetail(
                 id = id,
@@ -168,5 +180,4 @@ internal class TransactionDaoImpl(
                 institutionName = institutionName ?: "unknown"
             )
         }
-
 }

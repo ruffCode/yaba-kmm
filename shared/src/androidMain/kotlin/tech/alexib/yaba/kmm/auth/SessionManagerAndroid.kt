@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Alexi Bre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package tech.alexib.yaba.kmm.auth
 
 import co.touchlab.kermit.Kermit
@@ -14,7 +29,6 @@ import tech.alexib.yaba.kmm.data.repository.AuthApiRepository
 import tech.alexib.yaba.kmm.data.repository.AuthResult
 import tech.alexib.yaba.kmm.data.repository.UserRepository
 import tech.alexib.yaba.kmm.model.response.AuthResponse
-
 
 class SessionManagerAndroid(
     private val yabaAppSettings: AppSettings,
@@ -52,12 +66,10 @@ class SessionManagerAndroid(
     override suspend fun register(email: String, password: String): AuthResult {
         return runCatching {
             handleAuthResponse(authApiRepository.register(email, password).getOrThrow())
-
         }.getOrElse {
             AuthResult.Error(it.message ?: "User Registration Error")
         }
     }
-
 
     private suspend fun handleAuthResponse(authResponse: AuthResponse): AuthResult {
         return if (authResponse.token.isNotEmpty()) {
@@ -68,10 +80,10 @@ class SessionManagerAndroid(
     }
 
     override fun isShowOnBoarding(): Flow<Boolean> = yabaAppSettings.showOnboarding()
-    override fun startLogoutTimer() {
-        TODO("Not yet implemented")
-    }
 
+    @Suppress("EmptyFunctionBlock")
+    override fun startLogoutTimer() {
+    }
 
     suspend fun clearAppData() {
         yabaAppSettings.clearAppSettings()
@@ -82,5 +94,4 @@ class SessionManagerAndroid(
     override suspend fun setUserId(userId: Uuid) {
         yabaAppSettings.setUserId(userId)
     }
-
 }

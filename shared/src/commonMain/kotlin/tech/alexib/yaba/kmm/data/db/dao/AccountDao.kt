@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Alexi Bre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package tech.alexib.yaba.kmm.data.db.dao
 
 import co.touchlab.stately.ensureNeverFrozen
@@ -44,11 +59,9 @@ internal class AccountDaoImpl(
                 account
             )
         }
-
     }
 
     override suspend fun insert(accounts: List<AccountEntity>) {
-
         database.transactionWithContext(backgroundDispatcher) {
             accounts.forEach {
                 accountQueries.insertAccount(it)
@@ -88,16 +101,16 @@ internal class AccountDaoImpl(
     companion object {
         private val accountMapper =
             { id: Uuid,
-              item_id: Uuid,
-              _: Uuid?,
-              name: String,
-              mask: String,
-              current_balance: Double,
-              available_balance: Double,
-              type: AccountType,
-              subtype: AccountSubtype,
-              hidden: Boolean,
-              institutionName: String?
+                item_id: Uuid,
+                _: Uuid?,
+                name: String,
+                mask: String,
+                current_balance: Double,
+                available_balance: Double,
+                type: AccountType,
+                subtype: AccountSubtype,
+                hidden: Boolean,
+                institutionName: String?
 
                 ->
                 Account(
@@ -114,5 +127,4 @@ internal class AccountDaoImpl(
                 )
             }
     }
-
 }

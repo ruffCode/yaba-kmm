@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Alexi Bre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package tech.alexib.yaba.kmm
 
 import android.content.Context
@@ -20,7 +35,9 @@ import tech.alexib.yaba.kmm.data.db.AppSettings
 internal class BiometricSettings : KoinComponent {
 
     private val appContext: Context by inject()
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "yaba-biometric-settings")
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+        name = "yaba-biometric-settings"
+    )
     private val dataStore: DataStore<Preferences> = appContext.dataStore
     private val flowSettings: FlowSettings = DataStoreSettings(dataStore)
     private val appSettings: AppSettings by inject()
@@ -46,7 +63,8 @@ internal class BiometricSettings : KoinComponent {
     }
 
     val hasPromptedForBiometrics: Flow<Boolean> = flowSettings.getBooleanFlow(
-        HAS_PROMPTED_FOR_BIOMETRICS, false
+        HAS_PROMPTED_FOR_BIOMETRICS,
+        false
     )
 
     fun isBioEnabled(): Flow<Boolean> = flowSettings.getBooleanFlow(IS_BIO_ENABLED, false)
@@ -62,7 +80,6 @@ internal class BiometricSettings : KoinComponent {
             }
         }
     }
-
 
     private suspend fun disableBio() {
         setBioEnabled(false)
@@ -82,7 +99,7 @@ internal class BiometricSettings : KoinComponent {
     suspend fun handleUnsuccessfulBioLogin() {
         disableBio()
     }
-    suspend fun clear(){
+    suspend fun clear() {
         flowSettings.clear()
     }
 

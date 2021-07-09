@@ -39,7 +39,6 @@ dependencies {
     implementation(Lib.Accompanist.coil)
     implementation(Lib.Accompanist.insets)
     implementation(Lib.uuid)
-
 }
 
 android {
@@ -69,17 +68,16 @@ android {
             isDebuggable = true
             matchingFallbacks += "release"
         }
-
     }
     flavorDimensions("environment")
-    productFlavors{
-        create("prod"){
+    productFlavors {
+        create("prod") {
             dimension = "environment"
-            buildConfigField("String","APOLLO_URL","\"https://yabasandbox.alexib.dev/graphql\"")
+            buildConfigField("String", "APOLLO_URL", "\"https://yabasandbox.alexib.dev/graphql\"")
         }
-        create("dev"){
+        create("dev") {
             dimension = "environment"
-            buildConfigField("String","APOLLO_URL","\"https://ruffrevival.ngrok.io/graphql\"")
+            buildConfigField("String", "APOLLO_URL", "\"https://ruffrevival.ngrok.io/graphql\"")
         }
     }
 
@@ -88,7 +86,6 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = Version.compose
-
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -109,9 +106,18 @@ android {
             "-Xuse-experimental=androidx.compose.animation.ExperimentalAnimationApi"
         )
     }
+    lint {
+        lintConfig = rootProject.file(".lint/config.xml")
+        isCheckAllWarnings = true
+        isWarningsAsErrors = true
+        isAbortOnError = false
+    }
+    sourceSets {
+        getByName("main").java.srcDirs("src/main/kotlin")
+    }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>() {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         jvmTarget = "11"
     }

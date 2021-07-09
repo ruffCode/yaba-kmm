@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Alexi Bre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package tech.alexib.yaba.kmm.data.api
 
 import co.touchlab.kermit.Kermit
@@ -45,32 +60,33 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
     override fun createLinkToken(): Flow<DataResult<CreateLinkTokenResponse>> {
         val mutation = CreateLinkTokenMutation()
         return runCatching {
-
             flow<DataResult<CreateLinkTokenResponse>> {
-
-                when (val result =
-                    apolloApi.client()
-                        .safeMutation(mutation) { result -> CreateLinkTokenResponse(result.createLinkToken.linkToken) }
-                        .first()) {
+                when (
+                    val result =
+                        apolloApi.client()
+                            .safeMutation(mutation) { result ->
+                                CreateLinkTokenResponse(result.createLinkToken.linkToken)
+                            }
+                            .first()
+                ) {
                     is ApolloResponse.Success -> emit(Success(result.data))
 
                     is ApolloResponse.Error -> emit(ErrorResult(result.message))
                 }
             }
-
         }.getOrElse {
             log.e { "create token error ${it.message}" }
 
-            throw  it
+            throw it
         }
-
     }
 
-    override fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<PlaidItemCreateResponse>> {
+    override fun createPlaidItem(
+        request: PlaidItemCreateRequest
+    ): Flow<DataResult<PlaidItemCreateResponse>> {
         val mutation = CreateItemMutation(request.institutionId, request.publicToken)
 
         return runCatching {
-
             flow<DataResult<PlaidItemCreateResponse>> {
                 val result = apolloApi.client().safeMutation(mutation) { result ->
                     result.itemCreate.let {
@@ -95,8 +111,6 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
                     is ApolloResponse.Error -> emit(ErrorResult(result.message))
                 }
             }
-
-
         }.getOrElse {
             log.e { "Plaid item create error ${it.message}" }
             throw it
@@ -104,7 +118,6 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
     }
 
     override fun sendLinkEvent(request: PlaidLinkEventCreateRequest) {
-
         CoroutineScope(Dispatchers.Default).launch {
             runCatching {
                 apolloApi.client().mutate(request.toMutation()).execute().firstOrNull()
@@ -137,5 +150,3 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
         }
     }
 }
-
-

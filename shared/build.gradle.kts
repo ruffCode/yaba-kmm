@@ -15,17 +15,21 @@ version = "1.0"
 kotlin {
     android()
 
-    val iosTarget: (String, KotlinNativeTarget.() -> Unit) -> KotlinNativeTarget =
-        if (System.getenv("SDK_NAME")?.startsWith("iphoneos") == true)
-            ::iosArm64
-        else
-            ::iosX64
+//    val iosTarget: (String, KotlinNativeTarget.() -> Unit) -> KotlinNativeTarget =
+//        if (System.getenv("SDK_NAME")?.startsWith("iphoneos") == true) {
+//            ::iosArm64
+//        } else {
+//            ::iosX64
+//        }
 
-    iosTarget("ios") {
-
+    val isMac = System.getProperty("os.name").startsWith("Mac")
+    if (isMac) {
+        if (System.getenv("SDK_NAME")?.startsWith("iphoneos") == true) {
+            iosArm64("ios")
+        } else {
+            iosX64("ios") {}
+        }
     }
-
-
 
     cocoapods {
         summary = "Some description for the Shared Module"
@@ -41,7 +45,9 @@ kotlin {
                 useExperimentalAnnotation("com.apollographql.apollo.api.ApolloExperimental")
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 useExperimentalAnnotation("com.russhwolf.settings.ExperimentalSettingsApi")
-                useExperimentalAnnotation("com.russhwolf.settings.ExperimentalSettingsImplementation")
+                useExperimentalAnnotation(
+                    "com.russhwolf.settings.ExperimentalSettingsImplementation"
+                )
             }
         }
     }
@@ -96,18 +102,19 @@ kotlin {
                 implementation("junit:junit:4.13.2")
             }
         }
-        val iosMain by getting {
-            dependencies {
-                implementation(Lib.KotlinX.Coroutines.core) {
-                    version {
-                        strictly(Version.coroutines)
+        if (isMac) {
+            val iosMain by getting {
+                dependencies {
+                    implementation(Lib.KotlinX.Coroutines.core) {
+                        version {
+                            strictly(Version.coroutines)
+                        }
                     }
+                    implementation(Lib.SqlDelight.iosDriver)
                 }
-                implementation(Lib.SqlDelight.iosDriver)
             }
-
+            val iosTest by getting
         }
-        val iosTest by getting
     }
 
     targets.withType<KotlinNativeTarget> {
@@ -127,12 +134,17 @@ android {
         minSdk = 29
         targetSdk = 30
     }
+    lint {
+        lintConfig = rootProject.file(".lint/config.xml")
+        isCheckAllWarnings = true
+        isWarningsAsErrors = true
+        isAbortOnError = false
+    }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>() {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         jvmTarget = "11"
-
     }
 }
 
@@ -148,9 +160,7 @@ configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
     )
 }
 
-
 sqldelight {
-
     database("YabaDb") {
         packageName = "tech.alexib.yaba.data.db"
         schemaOutputDirectory = file("src/commonMain/sqldelight/databases")

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Alexi Bre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package tech.alexib.yaba.kmm.model
 
 import com.benasher44.uuid.Uuid
@@ -8,8 +23,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
-import tech.alexib.yaba.kmm.util.jSerializer
-
+import tech.alexib.yaba.kmm.util.serializer
 
 @Serializable
 enum class TransactionType {
@@ -18,7 +32,6 @@ enum class TransactionType {
     SPECIAL,
     UNRESOLVED
 }
-
 
 data class Transaction(
     val id: Uuid,
@@ -33,7 +46,6 @@ data class Transaction(
     val merchantName: String? = null,
     val pending: Boolean = false
 )
-
 
 @Serializable
 data class TransactionDetail(
@@ -57,7 +69,6 @@ data class TransactionDetail(
     @Transient
     val label = "$institutionName $accountName ****$accountMask"
 }
-
 
 object TransactionStubs {
 
@@ -83,7 +94,7 @@ object TransactionStubs {
         transactionStub
     )
 
-//s [isoCurrencyCode, institutionName, accountName, accountMask
+// s [isoCurrencyCode, institutionName, accountName, accountMask
     val detailStub = """
         {
         "id":"${uuid4()}",
@@ -134,5 +145,5 @@ object TransactionStubs {
         }
     """.trimIndent()
 
-    val transactionDetail: TransactionDetail = jSerializer.decodeFromString(detailStub)
+    val transactionDetail: TransactionDetail = serializer.decodeFromString(detailStub)
 }

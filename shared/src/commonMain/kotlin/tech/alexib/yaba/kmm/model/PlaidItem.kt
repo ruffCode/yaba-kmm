@@ -1,8 +1,22 @@
+/*
+ * Copyright 2021 Alexi Bre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package tech.alexib.yaba.kmm.model
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-
 
 interface PlaidItemBase {
     val id: Uuid
@@ -18,7 +32,6 @@ data class PlaidItem(
     override val base64Logo: String,
 ) : PlaidItemBase
 
-
 data class PlaidItemWithAccounts(
     val plaidItem: PlaidItem,
     val accounts: List<Account>,
@@ -29,7 +42,7 @@ data class PlaidItemWithAccounts(
 }
 
 object PlaidItemStubs {
-
+    @Suppress("MaxLineLength")
     val TDBank = PlaidItem(
         id = uuidFrom("1a1222da-4b2a-45d1-8dbd-c907c083f111"),
         plaidInstitutionId = "ins_14",

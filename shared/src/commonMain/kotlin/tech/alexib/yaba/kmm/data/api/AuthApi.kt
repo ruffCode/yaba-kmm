@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Alexi Bre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package tech.alexib.yaba.kmm.data.api
 
 import co.touchlab.stately.ensureNeverFrozen
@@ -21,12 +36,13 @@ internal class AuthApiImpl(
     private val apolloApi: ApolloApi
 ) : AuthApi {
 
-
     init {
         ensureNeverFrozen()
     }
 
-    override suspend fun login(userLoginInput: UserLoginInput): Flow<ApolloResponse<AuthResponse>> {
+    override suspend fun login(
+        userLoginInput: UserLoginInput
+    ): Flow<ApolloResponse<AuthResponse>> {
         val mutation = LoginMutation(userLoginInput.email, userLoginInput.password)
 
         return runCatching {
@@ -34,10 +50,11 @@ internal class AuthApiImpl(
                 it.login.toAuthResponse()
             }
         }.getOrThrow()
-
     }
 
-    override suspend fun register(userRegisterInput: UserRegisterInput): Flow<ApolloResponse<AuthResponse>> {
+    override suspend fun register(
+        userRegisterInput: UserRegisterInput
+    ): Flow<ApolloResponse<AuthResponse>> {
         val mutation = RegisterMutation(userRegisterInput.email, userRegisterInput.password)
         return runCatching {
             apolloApi.client().safeMutation(mutation) {

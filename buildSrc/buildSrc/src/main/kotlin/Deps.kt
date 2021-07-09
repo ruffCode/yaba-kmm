@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Alexi Bre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@file:SuppressWarnings()
 object Lib {
     const val kermit = "co.touchlab:kermit:0.1.9"
     const val stately = "co.touchlab:stately-common:1.1.7"
@@ -152,4 +168,27 @@ object Version {
     const val compose = "1.0.0-rc01"
     const val androidTools = "7.1.0-alpha02"
     const val coroutines = "1.5.0-native-mt"
+}
+
+
+object GradleVersions {
+    const val DETEKT = "1.17.1"
+    const val FIREBASE_CRASHLYTICS = "2.7.0"
+    const val FIREBASE_PERFORMANCE = "1.4.0"
+    const val GOOGLE_SERVICES = "4.3.8"
+    const val KTLINT = "0.41.0"
+
+    const val SONARQUBE = "3.0"
+    const val SPOTLESS = "5.14.1"
+}
+
+
+object GradlePlugins{
+
+    const val DETEKT = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.17.1"
+    const val FIREBASE_CRASHLYTICS = "com.google.firebase:firebase-crashlytics-gradle:2.7.0"
+    const val FIREBASE_PERFORMANCE = "com.google.firebase:perf-plugin:1.4.0"
+    const val GOOGLE_SERVICES = "com.google.gms:google-services:4.3.8"
+    const val SPOTLESS = "com.diffplug.spotless:spotless-plugin-gradle:5.14.1"
+    const val KTLINT = "org.jlleitschuh.gradle:ktlint-gradle:10.1.0"
 }
