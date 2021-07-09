@@ -20,7 +20,9 @@ import tech.alexib.yaba.kmm.data.db.AppSettings
 internal class BiometricSettings : KoinComponent {
 
     private val appContext: Context by inject()
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "yaba-biometric-settings")
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+        name = "yaba-biometric-settings"
+    )
     private val dataStore: DataStore<Preferences> = appContext.dataStore
     private val flowSettings: FlowSettings = DataStoreSettings(dataStore)
     private val appSettings: AppSettings by inject()
@@ -46,7 +48,8 @@ internal class BiometricSettings : KoinComponent {
     }
 
     val hasPromptedForBiometrics: Flow<Boolean> = flowSettings.getBooleanFlow(
-        HAS_PROMPTED_FOR_BIOMETRICS, false
+        HAS_PROMPTED_FOR_BIOMETRICS,
+        false
     )
 
     fun isBioEnabled(): Flow<Boolean> = flowSettings.getBooleanFlow(IS_BIO_ENABLED, false)
@@ -62,7 +65,6 @@ internal class BiometricSettings : KoinComponent {
             }
         }
     }
-
 
     private suspend fun disableBio() {
         setBioEnabled(false)
@@ -82,7 +84,7 @@ internal class BiometricSettings : KoinComponent {
     suspend fun handleUnsuccessfulBioLogin() {
         disableBio()
     }
-    suspend fun clear(){
+    suspend fun clear() {
         flowSettings.clear()
     }
 

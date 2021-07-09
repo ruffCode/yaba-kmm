@@ -11,7 +11,6 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
-
 private val log = Kermit()
 
 internal object EncryptionManager {
@@ -69,7 +68,8 @@ internal object EncryptionManager {
         keyGenerator.init(
             KeyGenParameterSpec
                 .Builder(
-                    KEY_NAME, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+                    KEY_NAME,
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
                 )
                 .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                 .setUserAuthenticationRequired(false)

@@ -45,32 +45,33 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
     override fun createLinkToken(): Flow<DataResult<CreateLinkTokenResponse>> {
         val mutation = CreateLinkTokenMutation()
         return runCatching {
-
             flow<DataResult<CreateLinkTokenResponse>> {
-
-                when (val result =
-                    apolloApi.client()
-                        .safeMutation(mutation) { result -> CreateLinkTokenResponse(result.createLinkToken.linkToken) }
-                        .first()) {
+                when (
+                    val result =
+                        apolloApi.client()
+                            .safeMutation(mutation) { result ->
+                                CreateLinkTokenResponse(result.createLinkToken.linkToken)
+                            }
+                            .first()
+                ) {
                     is ApolloResponse.Success -> emit(Success(result.data))
 
                     is ApolloResponse.Error -> emit(ErrorResult(result.message))
                 }
             }
-
         }.getOrElse {
             log.e { "create token error ${it.message}" }
 
-            throw  it
+            throw it
         }
-
     }
 
-    override fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<PlaidItemCreateResponse>> {
+    override fun createPlaidItem(
+        request: PlaidItemCreateRequest
+    ): Flow<DataResult<PlaidItemCreateResponse>> {
         val mutation = CreateItemMutation(request.institutionId, request.publicToken)
 
         return runCatching {
-
             flow<DataResult<PlaidItemCreateResponse>> {
                 val result = apolloApi.client().safeMutation(mutation) { result ->
                     result.itemCreate.let {
@@ -95,8 +96,6 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
                     is ApolloResponse.Error -> emit(ErrorResult(result.message))
                 }
             }
-
-
         }.getOrElse {
             log.e { "Plaid item create error ${it.message}" }
             throw it
@@ -104,7 +103,6 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
     }
 
     override fun sendLinkEvent(request: PlaidLinkEventCreateRequest) {
-
         CoroutineScope(Dispatchers.Default).launch {
             runCatching {
                 apolloApi.client().mutate(request.toMutation()).execute().firstOrNull()
@@ -137,5 +135,3 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
         }
     }
 }
-
-

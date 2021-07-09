@@ -34,8 +34,6 @@ sealed class ApolloResponse<out T> {
             }
         }
     }
-
-
 }
 
 private fun List<ApolloError>.messages(): List<String> = this.map { it.message }

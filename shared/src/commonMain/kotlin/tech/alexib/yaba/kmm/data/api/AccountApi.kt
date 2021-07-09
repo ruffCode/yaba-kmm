@@ -26,7 +26,6 @@ internal interface AccountApi {
     fun accountByIdWithTransactions(id: Uuid): Flow<DataResult<AccountWithTransactionsDto>>
 }
 
-
 internal class AccountApiImpl : AccountApi, KoinComponent {
 
     private val apolloApi: ApolloApi by inject()
@@ -45,11 +44,11 @@ internal class AccountApiImpl : AccountApi, KoinComponent {
         return response.toDataResult()
     }
 
-    override fun accountByIdWithTransactions(id: Uuid): Flow<DataResult<AccountWithTransactionsDto>> {
+    override fun accountByIdWithTransactions(id: Uuid):
+        Flow<DataResult<AccountWithTransactionsDto>> {
         val query = AccountByIdWithTransactionQuery(id)
 
         return apolloApi.client().safeQuery(query) {
-
             it.accountById.fragments.accountWithTransactions.toAccountWithTransactions()
         }.map {
             when (it) {
@@ -59,4 +58,3 @@ internal class AccountApiImpl : AccountApi, KoinComponent {
         }
     }
 }
-

@@ -44,11 +44,9 @@ internal class AccountDaoImpl(
                 account
             )
         }
-
     }
 
     override suspend fun insert(accounts: List<AccountEntity>) {
-
         database.transactionWithContext(backgroundDispatcher) {
             accounts.forEach {
                 accountQueries.insertAccount(it)
@@ -88,16 +86,16 @@ internal class AccountDaoImpl(
     companion object {
         private val accountMapper =
             { id: Uuid,
-              item_id: Uuid,
-              _: Uuid?,
-              name: String,
-              mask: String,
-              current_balance: Double,
-              available_balance: Double,
-              type: AccountType,
-              subtype: AccountSubtype,
-              hidden: Boolean,
-              institutionName: String?
+                item_id: Uuid,
+                _: Uuid?,
+                name: String,
+                mask: String,
+                current_balance: Double,
+                available_balance: Double,
+                type: AccountType,
+                subtype: AccountSubtype,
+                hidden: Boolean,
+                institutionName: String?
 
                 ->
                 Account(
@@ -114,5 +112,4 @@ internal class AccountDaoImpl(
                 )
             }
     }
-
 }

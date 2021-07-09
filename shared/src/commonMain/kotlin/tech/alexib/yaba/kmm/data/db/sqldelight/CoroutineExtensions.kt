@@ -5,7 +5,7 @@ import com.squareup.sqldelight.TransactionWithoutReturn
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-//all credit to https://github.com/touchlab/KaMPKit
+// all credit to https://github.com/touchlab/KaMPKit
 
 suspend fun Transacter.transactionWithContext(
     coroutineContext: CoroutineContext,

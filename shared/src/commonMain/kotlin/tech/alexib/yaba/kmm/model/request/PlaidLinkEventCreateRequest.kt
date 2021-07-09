@@ -18,21 +18,17 @@ sealed class PlaidLinkEventCreateRequest {
 
     fun toMutation(): CreateLinkEventMutation {
         return when (this) {
-            is Exit -> {
-                CreateLinkEventMutation(
-                    type = "LinkExit",
-                    requestId = Input.optional(requestId),
-                    errorCode = Input.optional(errorCode),
-                    errorType = Input.optional(errorType),
-                    linkSessionId = linkSessionId
-                )
-            }
-            is Success -> {
-                CreateLinkEventMutation(
-                    type = "LinkSuccess",
-                    linkSessionId = linkSessionId
-                )
-            }
+            is Exit -> CreateLinkEventMutation(
+                type = "LinkExit",
+                requestId = Input.optional(requestId),
+                errorCode = Input.optional(errorCode),
+                errorType = Input.optional(errorType),
+                linkSessionId = linkSessionId
+            )
+            is Success -> CreateLinkEventMutation(
+                type = "LinkSuccess",
+                linkSessionId = linkSessionId
+            )
         }
     }
 }

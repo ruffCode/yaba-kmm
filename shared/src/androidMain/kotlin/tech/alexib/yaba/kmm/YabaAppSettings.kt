@@ -12,14 +12,14 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.kmm.data.db.AppSettings
 
-
 class YabaAppSettings : AppSettings(), KoinComponent {
 
     private val appContext: Context by inject()
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "yaba-settings")
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+        name = "yaba-settings"
+    )
     private val dataStore: DataStore<Preferences> = appContext.dataStore
     private val log: Kermit by inject { parametersOf("YabaAppSettings") }
-
 
     private val dataStoreSettings = DataStoreSettings(dataStore)
     override val flowSettings = dataStoreSettings
@@ -27,6 +27,4 @@ class YabaAppSettings : AppSettings(), KoinComponent {
     init {
         ensureNeverFrozen()
     }
-
-
 }

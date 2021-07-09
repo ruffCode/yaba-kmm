@@ -11,14 +11,17 @@ import tech.alexib.yaba.kmm.BuildConfig
 
 actual class DriverFactory(private val context: Context, private val log: Kermit) {
     actual fun createDriver(): SqlDriver {
-        val driver = AndroidSqliteDriver(YabaDb.Schema, context, "yaba.db",
+        val driver = AndroidSqliteDriver(
+            YabaDb.Schema,
+            context,
+            "yaba.db",
             callback = object : AndroidSqliteDriver.Callback(YabaDb.Schema) {
                 override fun onConfigure(db: SupportSQLiteDatabase) {
                     super.onConfigure(db)
                     db.execSQL("PRAGMA foreign_keys=ON;")
                 }
-
-            })
+            }
+        )
         return if (BuildConfig.DEBUG) {
             LogSqliteDriver(driver) { log.d { it } }
         } else driver

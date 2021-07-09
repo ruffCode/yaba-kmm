@@ -22,30 +22,17 @@ import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import tech.alexib.yaba.kmm.data.db.AppSettings
-import tech.alexib.yaba.kmm.di.ApolloUrl
 import tech.alexib.yaba.type.CustomType
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-
-internal class Apollo : TokenProvider, KoinComponent {
-
-    override suspend fun currentToken(): String {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun refreshToken(previousToken: String): String = ""
-}
-
 internal class ApolloApi(
-    private val serverUrl: ApolloUrl,
+    serverUrl: String,
     log: Kermit,
 ) : KoinComponent, TokenProvider {
 
     private val appSettings: AppSettings by inject()
-//    private val ioDispatcher: CoroutineDispatcher by inject()
-//    private val authToken = MutableStateFlow<String?>(null)
 
     @Suppress("CanBePrimaryConstructorProperty")
     private val log = log
@@ -56,16 +43,15 @@ internal class ApolloApi(
 
     private val apolloClient: ApolloClient = ApolloClient(
         networkTransport = ApolloHttpNetworkTransport(
-            serverUrl = serverUrl.value,
+            serverUrl = serverUrl,
             headers = mutableMapOf(
                 "Accept" to "application/json",
                 "Content-Type" to "application/json",
             ),
         ),
-
         subscriptionNetworkTransport = ApolloWebSocketNetworkTransport(
             webSocketFactory = ApolloWebSocketFactory(
-                serverUrl = serverUrl.value,
+                serverUrl = serverUrl,
                 mutableMapOf(
                     "Accept" to "application/json",
                     "Content-Type" to "application/json",
@@ -83,48 +69,11 @@ internal class ApolloApi(
     )
 
     fun client() = apolloClient
-//    fun client(): ApolloClient {
-////        val token = authToken.value
-////        log.d { "TOKEN is $token" }
-//        val headers = mutableMapOf(
-//            "Accept" to "application/json",
-//            "Content-Type" to "application/json",
-//        )
-//
-//        return ApolloClient(
-//            networkTransport = ApolloHttpNetworkTransport(
-//                serverUrl = serverUrl.value,
-//                headers = mutableMapOf(
-//                    "Accept" to "application/json",
-//                    "Content-Type" to "application/json",
-//                ),
-//            ),
-//
-//            subscriptionNetworkTransport = ApolloWebSocketNetworkTransport(
-//                webSocketFactory = ApolloWebSocketFactory(
-//                    serverUrl = serverUrl.value,
-//                    mutableMapOf(
-//                        "Accept" to "application/json",
-//                        "Content-Type" to "application/json",
-//                    )
-//                )
-//            ),
-//            scalarTypeAdapters = ScalarTypeAdapters(
-//                mapOf(
-//                    CustomType.UUID to uuidAdapter,
-//                    CustomType.ID to uuidAdapter,
-//                    CustomType.LOCALDATE to localDateAdapter
-//                )
-//            ),
-//            interceptors = listOf(BearerTokenInterceptor(this), LoggingInterceptor(log))
-//        )
-//    }
 
     override suspend fun currentToken(): String = appSettings.token().firstOrNull() ?: ""
 
     override suspend fun refreshToken(previousToken: String): String = ""
 }
-
 
 internal class LoggingInterceptor(private val log: Kermit) : ApolloRequestInterceptor {
     @ExperimentalTime
@@ -149,14 +98,13 @@ internal class LoggingInterceptor(private val log: Kermit) : ApolloRequestInterc
         return response
     }
 }
-//private val catchApolloError: suspend FlowCollector<ApolloResponse.Error>.(cause: Throwable) -> Unit =
+// private val catchApolloError: suspend FlowCollector<ApolloResponse.Error>.(cause: Throwable) -> Unit =
 //    { exception ->
 //        exception.message?.let {
 //            emit(ApolloResponse.Error(listOf(it)))
 //        }
 //        emit(ApolloResponse.Error(listOf()))
 //    }
-
 
 fun <T : Operation.Data, R> ApolloClient.safeQuery(
     queryData: Query<T, T, Operation.Variables>,
@@ -165,7 +113,7 @@ fun <T : Operation.Data, R> ApolloClient.safeQuery(
 
 //    .catch(
 //    catchApolloError
-//)
+// )
 
 fun <T : Operation.Data> ApolloClient.safeQuery(
     queryData: Query<T, T, Operation.Variables>,
@@ -173,7 +121,7 @@ fun <T : Operation.Data> ApolloClient.safeQuery(
 
 //    .catch(
 //    catchApolloError
-//)
+// )
 
 fun <T : Operation.Data, R> ApolloClient.safeMutation(
     mutationData: Mutation<T, T, Operation.Variables>,
@@ -182,7 +130,6 @@ fun <T : Operation.Data, R> ApolloClient.safeMutation(
     this.mutate(mutationData).execute().map(checkResponse(mapper))
 
 //        .catch(catchApolloError)
-
 
 fun <T : Operation.Data> ApolloClient.safeMutation(
     mutationData: Mutation<T, T, Operation.Variables>,

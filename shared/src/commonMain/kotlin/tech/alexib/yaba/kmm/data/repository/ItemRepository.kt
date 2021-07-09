@@ -6,10 +6,7 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -27,7 +24,6 @@ import tech.alexib.yaba.kmm.data.db.dao.AccountDao
 import tech.alexib.yaba.kmm.data.db.dao.InstitutionDao
 import tech.alexib.yaba.kmm.data.db.dao.ItemDao
 import tech.alexib.yaba.kmm.data.db.dao.TransactionDao
-import tech.alexib.yaba.kmm.data.db.dao.UserDao
 import tech.alexib.yaba.kmm.model.Institution
 import tech.alexib.yaba.kmm.model.PlaidItem
 import tech.alexib.yaba.kmm.model.PlaidItemWithAccounts
@@ -39,9 +35,7 @@ interface ItemRepository {
     suspend fun getAllWithAccounts(): Flow<List<PlaidItemWithAccounts>>
     suspend fun newItemData(itemId: Uuid): Boolean
     suspend fun unlinkItem(id: Uuid)
-
 }
-
 
 internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
     private val itemDao: ItemDao by inject()
@@ -49,11 +43,10 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
     private val plaidItemApi: PlaidItemApi by inject()
     private val transactionDao: TransactionDao by inject()
     private val institutionDao: InstitutionDao by inject()
-    private val userIdProvider:UserIdProvider by inject()
+    private val userIdProvider: UserIdProvider by inject()
     private val log: Kermit by inject { parametersOf("ItemRepository") }
     private val apolloApi: ApolloApi by inject()
     private val backgroundDispatcher: CoroutineDispatcher by inject()
-
 
     init {
         ensureNeverFrozen()
@@ -63,19 +56,20 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
 
     override fun getById(id: Uuid): Flow<PlaidItem> = itemDao.selectById(id)
 
-
-    override suspend fun getAllWithAccounts():Flow<List<PlaidItemWithAccounts>> =
-       withContext(backgroundDispatcher){
-           combine(getAll(),accountDao.selectAll(userIdProvider.userId.value)) { items, accounts ->
-               items.map {
-                   PlaidItemWithAccounts(
-                       it,
-                       accounts.filter { account -> account.itemId == it.id }
-                   )
-               }
-           }
-       }
-
+    override suspend fun getAllWithAccounts(): Flow<List<PlaidItemWithAccounts>> =
+        withContext(backgroundDispatcher) {
+            combine(
+                getAll(),
+                accountDao.selectAll(userIdProvider.userId.value)
+            ) { items, accounts ->
+                items.map {
+                    PlaidItemWithAccounts(
+                        it,
+                        accounts.filter { account -> account.itemId == it.id }
+                    )
+                }
+            }
+        }
 
     override suspend fun unlinkItem(id: Uuid) {
         plaidItemApi.unlink(id)
@@ -83,7 +77,6 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
     }
 
     override suspend fun newItemData(itemId: Uuid): Boolean {
-
         val query = NewItemDataQuery(itemId)
 
         val response = apolloApi.client().safeQuery(query) { result ->
@@ -97,7 +90,9 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
                     plaidInstitutionId = item.plaidInstitutionId
                 ),
                 accounts =
-                item.accounts.map { it.fragments.accountWithTransactions.toAccountWithTransactions() },
+                item.accounts.map {
+                    it.fragments.accountWithTransactions.toAccountWithTransactions()
+                },
                 user = User(result.me.id as Uuid, result.me.email)
             )
         }
@@ -127,14 +122,16 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
                     it.account.toEntity()
                 }
                 val transactions =
-                    data.accounts.flatMap { it.transactions.map { transactionDto -> transactionDto.toEntity() } }
+                    data.accounts.flatMap {
+                        it.transactions.map { transactionDto ->
+                            transactionDto.toEntity()
+                        }
+                    }
                 accountDao.insert(accounts)
                 transactionDao.insert(transactions)
                 true
             }
-            is ApolloResponse.Error -> {
-                true
-            }
+            is ApolloResponse.Error -> true
             null -> {
                 log.d { "error fetching new item data: result was null" }
                 true

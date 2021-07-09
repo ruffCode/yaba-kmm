@@ -3,7 +3,6 @@ package tech.alexib.yaba.kmm.model
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 
-
 data class Account(
     val id: Uuid,
     val name: String,
@@ -24,7 +23,6 @@ enum class AccountType {
     LOAN
 }
 
-
 enum class AccountSubtype {
     CHECKING,
     SAVINGS,
@@ -36,7 +34,6 @@ enum class AccountSubtype {
     STUDENT,
     MORTGAGE
 }
-
 
 object AccountStubs {
     val checking = Account(

@@ -16,11 +16,8 @@ import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.db.ItemEntity
 import tech.alexib.yaba.data.db.ItemEntityQueries
 import tech.alexib.yaba.data.db.YabaDb
-import tech.alexib.yaba.kmm.data.api.dto.ItemDto
-import tech.alexib.yaba.kmm.data.api.dto.toEntity
 import tech.alexib.yaba.kmm.data.db.sqldelight.transactionWithContext
 import tech.alexib.yaba.kmm.model.PlaidItem
-
 
 internal interface ItemDao {
     suspend fun insert(item: ItemEntity)
@@ -30,17 +27,15 @@ internal interface ItemDao {
     suspend fun deleteById(id: Uuid)
 }
 
-
 internal class ItemDaoImpl(
     private val database: YabaDb,
     private val backgroundDispatcher: CoroutineDispatcher,
-) : ItemDao,KoinComponent {
+) : ItemDao, KoinComponent {
     private val queries: ItemEntityQueries = database.itemEntityQueries
 
     private val log: Kermit by inject { parametersOf("ItemDao") }
     init {
         ensureNeverFrozen()
-
     }
 
     override suspend fun insert(items: List<ItemEntity>) {
@@ -76,11 +71,11 @@ internal class ItemDaoImpl(
     }
 
     private val itemMapper = {
-            id: Uuid,
-            plaid_institution_id: String,
-            _: Uuid?,
-            name: String,
-            logo: String,
+        id: Uuid,
+        plaid_institution_id: String,
+        _: Uuid?,
+        name: String,
+        logo: String,
         ->
         log.d { "mapping item $id" }
         PlaidItem(

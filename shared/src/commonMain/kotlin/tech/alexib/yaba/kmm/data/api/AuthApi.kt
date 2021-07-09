@@ -21,12 +21,13 @@ internal class AuthApiImpl(
     private val apolloApi: ApolloApi
 ) : AuthApi {
 
-
     init {
         ensureNeverFrozen()
     }
 
-    override suspend fun login(userLoginInput: UserLoginInput): Flow<ApolloResponse<AuthResponse>> {
+    override suspend fun login(
+        userLoginInput: UserLoginInput
+    ): Flow<ApolloResponse<AuthResponse>> {
         val mutation = LoginMutation(userLoginInput.email, userLoginInput.password)
 
         return runCatching {
@@ -34,10 +35,11 @@ internal class AuthApiImpl(
                 it.login.toAuthResponse()
             }
         }.getOrThrow()
-
     }
 
-    override suspend fun register(userRegisterInput: UserRegisterInput): Flow<ApolloResponse<AuthResponse>> {
+    override suspend fun register(
+        userRegisterInput: UserRegisterInput
+    ): Flow<ApolloResponse<AuthResponse>> {
         val mutation = RegisterMutation(userRegisterInput.email, userRegisterInput.password)
         return runCatching {
             apolloApi.client().safeMutation(mutation) {

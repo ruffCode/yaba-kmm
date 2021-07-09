@@ -153,3 +153,26 @@ object Version {
     const val androidTools = "7.1.0-alpha02"
     const val coroutines = "1.5.0-native-mt"
 }
+
+
+object GradleVersions {
+    const val DETEKT = "1.17.1"
+    const val FIREBASE_CRASHLYTICS = "2.7.0"
+    const val FIREBASE_PERFORMANCE = "1.4.0"
+    const val GOOGLE_SERVICES = "4.3.8"
+    const val KTLINT = "0.41.0"
+
+    const val SONARQUBE = "3.0"
+    const val SPOTLESS = "5.14.1"
+}
+
+
+object GradlePlugins{
+
+    const val DETEKT = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.17.1"
+    const val FIREBASE_CRASHLYTICS = "com.google.firebase:firebase-crashlytics-gradle:2.7.0"
+    const val FIREBASE_PERFORMANCE = "com.google.firebase:perf-plugin:1.4.0"
+    const val GOOGLE_SERVICES = "com.google.gms:google-services:4.3.8"
+    const val SPOTLESS = "com.diffplug.spotless:spotless-plugin-gradle:5.14.1"
+    const val KTLINT = "org.jlleitschuh.gradle:ktlint-gradle:10.1.0"
+}

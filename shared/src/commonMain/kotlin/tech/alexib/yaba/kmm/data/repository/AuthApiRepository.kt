@@ -10,19 +10,16 @@ import tech.alexib.yaba.kmm.model.response.AuthResponse
 import tech.alexib.yaba.model.request.UserLoginInput
 import tech.alexib.yaba.model.request.UserRegisterInput
 
-
 sealed class AuthResult {
     object Success : AuthResult()
     data class Error(val message: String) : AuthResult()
 }
-
 
 interface AuthApiRepository {
     suspend fun login(email: String, password: String): DataResult<AuthResponse>
     suspend fun register(email: String, password: String): DataResult<AuthResponse>
     suspend fun verifyToken(): DataResult<User>
 }
-
 
 class AuthApiRepositoryImpl(
     private val authApi: AuthApi,
@@ -62,7 +59,6 @@ class AuthApiRepositoryImpl(
     }
 
     override suspend fun verifyToken(): DataResult<User> {
-
         return when (val result = authApi.verifyToken().first()) {
             is ApolloResponse.Success -> Success(result.data)
             is ApolloResponse.Error -> {
@@ -73,5 +69,4 @@ class AuthApiRepositoryImpl(
             }
         }
     }
-
 }

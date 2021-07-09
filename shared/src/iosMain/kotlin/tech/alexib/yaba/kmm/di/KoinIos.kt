@@ -12,7 +12,6 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.module
 import tech.alexib.yaba.kmm.data.db.DriverFactory
 
-
 fun initKoinIos(
 //    userDefaults: NSUserDefaults,
 //    appInfo: AppInfo,
@@ -25,13 +24,11 @@ fun initKoinIos(
     }
 )
 
-
 actual val platformModule = module {
     val baseKermit = Kermit(NSLogLogger()).withTag("Yaba")
     factory { (tag: String?) -> if (tag != null) baseKermit.withTag(tag) else baseKermit }
     single<SqlDriver> { DriverFactory().createDriver() }
 }
-
 
 fun Koin.get(objCClass: ObjCClass, qualifier: Qualifier?, parameter: Any): Any {
     val kClazz = getOriginalKotlinClass(objCClass)!!

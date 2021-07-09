@@ -15,7 +15,6 @@ import tech.alexib.yaba.kmm.auth.SessionManagerAndroid
 import tech.alexib.yaba.kmm.data.db.AppSettings
 import tech.alexib.yaba.kmm.data.db.DriverFactory
 
-
 actual val platformModule: Module = module {
     single { createIoDispatcher() }
     single { CipherWrapper() }
@@ -26,7 +25,6 @@ actual val platformModule: Module = module {
     single<SqlDriver> { DriverFactory(get(), getWith("SqlDelight")).createDriver() }
     val baseKermit = Kermit(LogcatLogger()).withTag("Yaba")
     factory { (tag: String?) -> if (tag != null) baseKermit.withTag(tag) else baseKermit }
-
 }
 
 internal fun createIoDispatcher() = Dispatchers.Default

@@ -15,7 +15,6 @@ import tech.alexib.yaba.kmm.data.repository.AuthResult
 import tech.alexib.yaba.kmm.data.repository.UserRepository
 import tech.alexib.yaba.kmm.model.response.AuthResponse
 
-
 class SessionManagerAndroid(
     private val yabaAppSettings: AppSettings,
     private val biometricsManager: BiometricsManager
@@ -52,12 +51,10 @@ class SessionManagerAndroid(
     override suspend fun register(email: String, password: String): AuthResult {
         return runCatching {
             handleAuthResponse(authApiRepository.register(email, password).getOrThrow())
-
         }.getOrElse {
             AuthResult.Error(it.message ?: "User Registration Error")
         }
     }
-
 
     private suspend fun handleAuthResponse(authResponse: AuthResponse): AuthResult {
         return if (authResponse.token.isNotEmpty()) {
@@ -68,10 +65,10 @@ class SessionManagerAndroid(
     }
 
     override fun isShowOnBoarding(): Flow<Boolean> = yabaAppSettings.showOnboarding()
-    override fun startLogoutTimer() {
-        TODO("Not yet implemented")
-    }
 
+    @Suppress("EmptyFunctionBlock")
+    override fun startLogoutTimer() {
+    }
 
     suspend fun clearAppData() {
         yabaAppSettings.clearAppSettings()
@@ -82,5 +79,4 @@ class SessionManagerAndroid(
     override suspend fun setUserId(userId: Uuid) {
         yabaAppSettings.setUserId(userId)
     }
-
 }

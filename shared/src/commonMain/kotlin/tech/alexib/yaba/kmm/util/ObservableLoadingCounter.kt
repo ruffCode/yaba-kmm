@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 
-//all credit to Chris Banes https://github.com/chrisbanes/tivi
+// all credit to Chris Banes https://github.com/chrisbanes/tivi
 
 sealed class InvokeStatus
 object InvokeStarted : InvokeStatus()

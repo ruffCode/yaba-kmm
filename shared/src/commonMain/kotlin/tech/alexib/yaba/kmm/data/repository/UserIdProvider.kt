@@ -40,9 +40,9 @@ internal class UserIdProvider : KoinComponent {
     }
 
     fun getCurrentUserId(): Flow<Uuid> {
-        return channelFlow <Uuid> {
+        return channelFlow<Uuid> {
             userIdFlow.dropWhile { it == defaultUserId }.collectLatest {
-                launch(backgroundDispatcher){
+                launch(backgroundDispatcher) {
                     send(it)
                 }
             }

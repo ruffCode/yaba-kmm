@@ -3,7 +3,6 @@ package tech.alexib.yaba.kmm.model
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 
-
 interface PlaidItemBase {
     val id: Uuid
     val plaidInstitutionId: String
@@ -18,7 +17,6 @@ data class PlaidItem(
     override val base64Logo: String,
 ) : PlaidItemBase
 
-
 data class PlaidItemWithAccounts(
     val plaidItem: PlaidItem,
     val accounts: List<Account>,
@@ -29,7 +27,7 @@ data class PlaidItemWithAccounts(
 }
 
 object PlaidItemStubs {
-
+    @Suppress("MaxLineLength")
     val TDBank = PlaidItem(
         id = uuidFrom("1a1222da-4b2a-45d1-8dbd-c907c083f111"),
         plaidInstitutionId = "ins_14",

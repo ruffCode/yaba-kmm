@@ -17,7 +17,6 @@ internal interface InstitutionDao {
     suspend fun selectAll(): Flow<List<Institution>>
 }
 
-
 internal class InstitutionDaoImpl(
     database: YabaDb,
     private val backgroundDispatcher: CoroutineDispatcher
@@ -46,12 +45,11 @@ internal class InstitutionDaoImpl(
             .flowOn(backgroundDispatcher)
     }
 
-
     private val institutionMapper = {
-            id: String,
-            logo: String,
-            name: String,
-            primary_color: String,
+        id: String,
+        logo: String,
+        name: String,
+        primary_color: String,
         ->
         Institution(
             institutionId = id,

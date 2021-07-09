@@ -50,4 +50,4 @@ internal fun tech.alexib.yaba.fragment.Transaction.toDto() = TransactionDto(
     merchantName = merchantName
 )
 
-internal fun List<TransactionDto>.toEntities():List<TransactionEntity> = this.map { it.toEntity() }
+internal fun List<TransactionDto>.toEntities(): List<TransactionEntity> = this.map { it.toEntity() }

@@ -10,7 +10,7 @@ interface BiometricsManager {
     val bioToken: Flow<String?>
     val isBioEnabled: Flow<Boolean>
     suspend fun clear()
-    suspend fun setBioEnabled(enabled:Boolean)
+    suspend fun setBioEnabled(enabled: Boolean)
     suspend fun handleBiometricAuthResult(
         result: BiometricAuthResult,
         onSuccess: suspend () -> Unit,

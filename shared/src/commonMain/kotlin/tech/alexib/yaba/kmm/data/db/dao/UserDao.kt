@@ -18,7 +18,6 @@ internal interface UserDao {
     suspend fun deleteById(userId: Uuid)
 }
 
-
 internal class UserDaoImpl(
     database: YabaDb,
     private val backgroundDispatcher: CoroutineDispatcher

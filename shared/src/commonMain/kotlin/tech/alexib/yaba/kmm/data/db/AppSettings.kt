@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 
-
 @ExperimentalSettingsApi
 abstract class AppSettings {
 
@@ -30,7 +29,6 @@ abstract class AppSettings {
     fun isLoggedIn(): Flow<Boolean> = token().map { !it.isNullOrEmpty() }
 
     fun token(): Flow<String?> = flowSettings.getStringOrNullFlow(AUTH_TOKEN)
-
 
     private val authTokenFlow = MutableStateFlow<String?>(null)
 
@@ -64,11 +62,9 @@ abstract class AppSettings {
         flowSettings.putString(USER_ID, "")
     }
 
-
     companion object {
         private const val AUTH_TOKEN = "AUTH_TOKEN"
         private const val USER_ID = "USER_ID"
         private const val SHOW_ONBOARDING = "SHOW_ONBOARDING"
     }
-
 }

@@ -1,20 +1,25 @@
 ![yaba logo](./assets/yaba.png)
+
 # yaba (yet another budgeting app)
+
 ## Kotlin Multiplatform Mobile
 
 #### Learning in public
 
-An app which uses Plaid's APIs and allows users to track the balances and transactions for any financial institution they choose to link.
+#### An app which uses Plaid's APIs and allows users to track the balances and transactions for any financial institution they choose to link.
 
-This is a work in progress and at this time, only the Android app is being developed as I am just starting to learn Swift.
+#### This is a work in progress and at this time, only the Android app is being developed as I am just starting to learn Swift.
 
-The backend is using Plaid's sandbox api so you can only get fake data.
+The [backend]((https://github.com/ruffCode/yaba-server)) is using Plaid's sandbox api, so you can
+only get fake data.
 
 ## Usage
 
-There are two flavors, prod and dev. Dev requires you to run the server locally (link below), prod does not.
+There are two flavors, prod and dev. Dev requires you to run the server locally (link below), prod
+does not.
 
 Install your preferred flavor
+
 ````shell script
 ./gradlew installProdDebug
 ./gradlew installProdRelease
@@ -22,19 +27,32 @@ Install your preferred flavor
 ./gradlew installDevRelease 
 ````
 
-Register with any email address you'd like, it just has to be a valid format.
+Register with any email address you'd like, the format needs to be valid but nothing will be emailed
+to you.
 
-When linking an account, when prompted for a username and password for the financial institution, the credentials are:
+When linking an account, when prompted for a username and password for the financial institution,
+the credentials are:
 
 ```
 username: user_good
 password: pass_good
 pin: credential_good (when required)
 ```
-Please see [Plaid sandbox test credentials](https://plaid.com/docs/sandbox/test-credentials/) for MFA credentials if the institution you are attempting to link requires them.
 
+Please see [Plaid sandbox test credentials](https://plaid.com/docs/sandbox/test-credentials/) for
+MFA credentials if the institution you are attempting to link requires them.
 
-[The backend is at https://github.com/ruffCode/yaba-server](https://github.com/ruffCode/yaba-server)
+## Prior Art
+
+### [tivi by Chris Banes](https://github.com/chisbanes/tivi)
+
+This project is a great example of how to build a large and stable project. I was greatly inspired
+by Chris' state management technique and use some of his code, including Flow extensions, observers
+and interactors. Credit is given where used.
+
+### [KaMPKit by Touchlab](https://github.com/touchlab/KaMPKit)
+
+Great starter template for KMM. I used the Koin setup logic as well as some Koin extensions.
 
 ## 📝 License
 
@@ -53,4 +71,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-

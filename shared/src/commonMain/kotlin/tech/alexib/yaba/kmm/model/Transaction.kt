@@ -8,8 +8,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
-import tech.alexib.yaba.kmm.util.jSerializer
-
+import tech.alexib.yaba.kmm.util.serializer
 
 @Serializable
 enum class TransactionType {
@@ -18,7 +17,6 @@ enum class TransactionType {
     SPECIAL,
     UNRESOLVED
 }
-
 
 data class Transaction(
     val id: Uuid,
@@ -33,7 +31,6 @@ data class Transaction(
     val merchantName: String? = null,
     val pending: Boolean = false
 )
-
 
 @Serializable
 data class TransactionDetail(
@@ -57,7 +54,6 @@ data class TransactionDetail(
     @Transient
     val label = "$institutionName $accountName ****$accountMask"
 }
-
 
 object TransactionStubs {
 
@@ -83,7 +79,7 @@ object TransactionStubs {
         transactionStub
     )
 
-//s [isoCurrencyCode, institutionName, accountName, accountMask
+// s [isoCurrencyCode, institutionName, accountName, accountMask
     val detailStub = """
         {
         "id":"${uuid4()}",
@@ -134,5 +130,5 @@ object TransactionStubs {
         }
     """.trimIndent()
 
-    val transactionDetail: TransactionDetail = jSerializer.decodeFromString(detailStub)
+    val transactionDetail: TransactionDetail = serializer.decodeFromString(detailStub)
 }

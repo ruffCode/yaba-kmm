@@ -35,7 +35,6 @@ import tech.alexib.yaba.kmm.util.InvokeStarted
 import tech.alexib.yaba.kmm.util.InvokeStatus
 import tech.alexib.yaba.kmm.util.InvokeSuccess
 
-
 interface Initializer {
     fun init(): Flow<InvokeStatus>
 }
@@ -64,7 +63,9 @@ class InitializerImpl : Initializer, KoinComponent {
                 val user = User(userId, data.email)
 
                 val transactions =
-                    data.transactions.map { transaction -> transaction.fragments.transaction.toDto() }
+                    data.transactions.map { transaction ->
+                        transaction.fragments.transaction.toDto()
+                    }
 
                 val institutions = data.items.map { item ->
                     with(item.institution) {
@@ -85,10 +86,13 @@ class InitializerImpl : Initializer, KoinComponent {
                 }
                 val accounts = data.accounts.map { account -> account.fragments.account.toDto() }
                 AllDataMappedResponse(
-                    user, transactions, items, accounts, institutions
+                    user,
+                    transactions,
+                    items,
+                    accounts,
+                    institutions
                 )
             }.first()
-
         }
     }
 
@@ -99,13 +103,11 @@ class InitializerImpl : Initializer, KoinComponent {
         if (user == null) {
             when (val response = getRemoteUserData()) {
                 is ApolloResponse.Success -> {
-
                     insertAllUserData(response.data)
                     emit(InvokeSuccess)
                 }
-                is ApolloResponse.Error -> {
-
-                    log.e { "Error retrieving user data: ${response.message}" }
+                is ApolloResponse.Error -> log.e {
+                    "Error retrieving user data: ${response.message}"
                 }
             }
         } else {
@@ -117,7 +119,6 @@ class InitializerImpl : Initializer, KoinComponent {
     }
 
     private suspend fun insertAllUserData(data: AllDataMappedResponse) = runCatching {
-
         userDao.insert(data.user)
         data.institutions.forEach {
             institutionDao.insert(it)
@@ -128,16 +129,17 @@ class InitializerImpl : Initializer, KoinComponent {
         accountDao.insert(data.accounts.toEntities())
 
         transactionDao.insert(data.transactions.toEntities())
-
-    }.fold({
-        log.d { "User data inserted" }
-
-    }, {
-        log.e(it) {
-            "Error inserting user data: ${it.message}"
+    }.fold(
+        {
+            log.d { "User data inserted" }
+        },
+        {
+            log.e(it) {
+                "Error inserting user data: ${it.message}"
+            }
+            throw it
         }
-        throw it
-    })
+    )
 }
 
 private data class AllDataMappedResponse(

@@ -48,12 +48,10 @@ class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
     private val authApiRepository: AuthApiRepository by inject()
     private var executor: Executor? = null
 
-
     override val bioToken: Flow<String?> = biometricSettings.bioToken
 
     init {
         ensureNeverFrozen()
-
     }
 
     override val isBioEnabled: Flow<Boolean> = biometricSettings.isBioEnabled()
@@ -81,7 +79,6 @@ class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
         if (enabled) {
             setupBiometrics()
         }
-
     }
 
     private fun setupBiometrics() {
@@ -113,7 +110,9 @@ class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
                         trySend(BiometricAuthResult.Failed)
                     }
 
-                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    override fun onAuthenticationSucceeded(
+                        result: BiometricPrompt.AuthenticationResult
+                    ) {
                         super.onAuthenticationSucceeded(result)
                         trySend(BiometricAuthResult.Success)
                     }
@@ -123,7 +122,6 @@ class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
             }
             awaitClose()
         }.flowOn(Dispatchers.Main)
-
 
     override fun promptForBiometrics(): Flow<BiometricAuthResult> {
         return authenticate()
@@ -138,25 +136,21 @@ class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
         when (result) {
             is BiometricAuthResult.Success -> onSuccess()
             is BiometricAuthResult.Failed -> onError()
-            is BiometricAuthResult.Error -> {
-                if (result.shouldDisableBiometrics) {
-                    setBioEnabled(false)
-                    log.e {
-                        """
-                            BIO ERROR 
+            is BiometricAuthResult.Error -> if (result.shouldDisableBiometrics) {
+                setBioEnabled(false)
+                log.e {
+                    """
+                            BIO ERROR
                             code :${result.errorCode}
                             message: ${result.message}
-                        """.trimIndent()
-                    }
-                    onError()
-                } else {
-                    onCancel()
+                    """.trimIndent()
                 }
+                onError()
+            } else {
+                onCancel()
             }
         }
-
     }
-
 
     override suspend fun handleBioLogin(): AuthResult {
         biometricSettings.bioToken()
@@ -179,6 +173,23 @@ class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
         .setNegativeButtonText("Use account email and password")
         .setConfirmationRequired(true)
         .build()
+
+    internal fun Int.shouldDisable() = when (this) {
+        ERROR_HW_UNAVAILABLE -> false
+        ERROR_UNABLE_TO_PROCESS -> false
+        ERROR_TIMEOUT -> false
+        ERROR_NO_SPACE -> false
+        ERROR_CANCELED -> false
+        ERROR_LOCKOUT -> true
+        ERROR_VENDOR -> true
+        ERROR_LOCKOUT_PERMANENT -> true
+        ERROR_USER_CANCELED -> false
+        ERROR_NO_BIOMETRICS -> true
+        ERROR_HW_NOT_PRESENT -> true
+        ERROR_NEGATIVE_BUTTON -> false
+        ERROR_NO_DEVICE_CREDENTIAL -> true
+        else -> false
+    }
 }
 
 sealed class BiometricAuthResult {
@@ -191,21 +202,3 @@ sealed class BiometricAuthResult {
     object Failed : BiometricAuthResult()
     object Success : BiometricAuthResult()
 }
-
-private fun Int.shouldDisable() = when (this) {
-    ERROR_HW_UNAVAILABLE -> false
-    ERROR_UNABLE_TO_PROCESS -> false
-    ERROR_TIMEOUT -> false
-    ERROR_NO_SPACE -> false
-    ERROR_CANCELED -> false
-    ERROR_LOCKOUT -> true
-    ERROR_VENDOR -> true
-    ERROR_LOCKOUT_PERMANENT -> true
-    ERROR_USER_CANCELED -> false
-    ERROR_NO_BIOMETRICS -> true
-    ERROR_HW_NOT_PRESENT -> true
-    ERROR_NEGATIVE_BUTTON -> false
-    ERROR_NO_DEVICE_CREDENTIAL -> true
-    else -> false
-}
-

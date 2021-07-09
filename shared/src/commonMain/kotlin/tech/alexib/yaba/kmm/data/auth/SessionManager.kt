@@ -14,5 +14,3 @@ interface SessionManager {
     fun isShowOnBoarding(): Flow<Boolean>
     suspend fun setUserId(userId: Uuid)
 }
-
-

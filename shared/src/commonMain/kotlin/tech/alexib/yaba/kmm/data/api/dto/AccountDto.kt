@@ -46,7 +46,7 @@ internal fun AccountDto.toEntity(): AccountEntity = AccountEntity(
     hidden = hidden
 )
 
-internal fun List<AccountDto>.toEntities():List<AccountEntity> = this.map { it.toEntity() }
+internal fun List<AccountDto>.toEntities(): List<AccountEntity> = this.map { it.toEntity() }
 
 internal fun tech.alexib.yaba.fragment.AccountWithTransactions.toAccountWithTransactions() =
     AccountWithTransactionsDto(

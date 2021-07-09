@@ -9,7 +9,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 
-
 class DateAdapter : ColumnAdapter<LocalDate, Long> {
     override fun decode(databaseValue: Long): LocalDate =
         Instant.fromEpochSeconds(databaseValue)
@@ -19,7 +18,7 @@ class DateAdapter : ColumnAdapter<LocalDate, Long> {
         value.atStartOfDayIn(TimeZone.currentSystemDefault()).epochSeconds
 }
 
-class UUIDAdapter : ColumnAdapter<Uuid, String> {
+class UuidAdapter : ColumnAdapter<Uuid, String> {
     override fun decode(databaseValue: String): Uuid =
         uuidFrom(databaseValue)
 

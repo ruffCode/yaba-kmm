@@ -23,4 +23,4 @@ internal fun ItemDto.toEntity(): ItemEntity = ItemEntity(
     user_id = userId
 )
 
-internal fun List<ItemDto>.toEntities():List<ItemEntity> = this.map { it.toEntity() }
+internal fun List<ItemDto>.toEntities(): List<ItemEntity> = this.map { it.toEntity() }

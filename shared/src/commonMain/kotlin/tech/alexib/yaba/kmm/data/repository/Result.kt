@@ -19,7 +19,6 @@ data class Success<T>(val data: T) : DataResult<T>() {
 
 data class ErrorResult<T>(val error: String) : DataResult<T>()
 
-
 inline fun <reified T, reified R : DataResult<T>> Flow<ApolloResponse<T>>.toDataResult(): Flow<R> =
     this.transform {
         when (it) {

@@ -33,7 +33,6 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
         emitAll(dao.selectRecent(userIdProvider.userId.value))
     }
 
-
     override fun count(): Flow<Long> = flow {
         emitAll(dao.count(userIdProvider.userId.value))
     }

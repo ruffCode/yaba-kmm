@@ -25,7 +25,6 @@ interface AccountRepository {
     suspend fun show(accountId: Uuid)
 }
 
-
 internal class AccountRepositoryImpl : AccountRepository, KoinComponent {
 
     private val accountDao: AccountDao by inject()
@@ -66,9 +65,7 @@ internal class AccountRepositoryImpl : AccountRepository, KoinComponent {
                 accountDao.insert(result.data.account.toEntity())
                 transactionDao.insert(result.data.transactions.toEntities())
             }
-            is ErrorResult -> {
-                log.e { "error retrieving account and transactions ${result.error}" }
-            }
+            is ErrorResult -> log.e { "error retrieving account and transactions ${result.error}" }
             null -> log.e { "result was null $accountId" }
         }
     }
