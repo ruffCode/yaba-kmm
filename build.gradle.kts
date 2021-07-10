@@ -16,7 +16,7 @@ buildscript {
 
 plugins {
     id("com.diffplug.spotless") version "5.14.1"
-    id("io.gitlab.arturbosch.detekt") version GradleVersions.DETEKT apply false
+    // id("io.gitlab.arturbosch.detekt") version GradleVersions.DETEKT apply false
     id("org.jlleitschuh.gradle.ktlint-idea").version("10.1.0")
     id("org.jlleitschuh.gradle.ktlint").version("10.1.0")
 }
@@ -26,7 +26,6 @@ allprojects {
         mavenCentral()
     }
 
-    println(project.name)
     apply<org.jlleitschuh.gradle.ktlint.KtlintPlugin>()
     // apply<io.gitlab.arturbosch.detekt.DetektPlugin>()
     apply<com.diffplug.gradle.spotless.SpotlessPlugin>()

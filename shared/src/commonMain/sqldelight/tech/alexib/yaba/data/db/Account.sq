@@ -1,6 +1,6 @@
 import com.benasher44.uuid.Uuid;
-import tech.alexib.yaba.kmm.model.AccountSubtype;
-import tech.alexib.yaba.kmm.model.AccountType;
+import tech.alexib.yaba.model.AccountSubtype;
+import tech.alexib.yaba.model.AccountType;
 
 
 CREATE TABLE AccountEntity (

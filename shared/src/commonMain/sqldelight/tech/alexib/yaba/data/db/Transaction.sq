@@ -1,6 +1,6 @@
 import com.benasher44.uuid.Uuid;
 import kotlinx.datetime.LocalDate;
-import tech.alexib.yaba.kmm.model.TransactionType;
+import tech.alexib.yaba.model.TransactionType;
 
 CREATE TABLE TransactionEntity (
 id TEXT AS Uuid NOT NULL PRIMARY KEY ON CONFLICT REPLACE,
