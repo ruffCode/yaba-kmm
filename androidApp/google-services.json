@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "1096237098026",
+    "project_id": "yaba-110e8",
+    "storage_bucket": "yaba-110e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096237098026:android:332e6273091b23548a0f53",
+        "android_client_info": {
+          "package_name": "tech.alexib.yaba"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096237098026-cuot1to9549hscc8jjgf6jvik0t1v3ot.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.alexib.yaba",
+            "certificate_hash": "947c6bd989ef035186d314e6b5fecf2d77ed3d4d"
+          }
+        },
+        {
+          "client_id": "1096237098026-hi599n496g11k4he097athan4h6onb6b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.alexib.yaba",
+            "certificate_hash": "99928c58f38de279bf11f92f09097616e3c82c1b"
+          }
+        },
+        {
+          "client_id": "1096237098026-vcer6begu731ts7nitrkecv3ondvapsm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.alexib.yaba",
+            "certificate_hash": "7e78019bac6be50e43697baf7ef4dc7b7e0aece4"
+          }
+        },
+        {
+          "client_id": "1096237098026-i7t9ec4dpf8g8pg8asdhobe7voa95k5i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwwaLURa7WVx9cOUzCzz0pamn3uHH8SIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096237098026-i7t9ec4dpf8g8pg8asdhobe7voa95k5i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
