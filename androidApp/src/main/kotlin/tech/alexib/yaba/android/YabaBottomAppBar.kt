@@ -19,9 +19,9 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
@@ -40,7 +40,7 @@ fun YabaBottomBar(navController: NavHostController, modifier: Modifier = Modifie
             BottomNavigationItem(
                 icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
                 selected = currentRoute?.route == Route.Home.route,
-                label = { Text(text = "Home") },
+                // label = { Text(text = "Home") },
                 onClick = {
                     navController.navigate(Route.Home.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
@@ -54,19 +54,22 @@ fun YabaBottomBar(navController: NavHostController, modifier: Modifier = Modifie
                     }
                 }
             )
-//            BottomNavigationItem(icon = { Icon(Icons.Filled.Money, contentDescription = null) },
-//                selected = currentRoute == Route.Accounts,
-//                label = { Text(text = "Accounts") },
-//                onClick = {
-//                    navController.navigate(Route.Accounts) {
-//                        popUpTo = navController.graph.startDestination
-//                        launchSingleTop = true
-//                    }
-//                })
+            BottomNavigationItem(
+                icon = { Icon(Icons.Filled.Money, contentDescription = null) },
+                selected = currentRoute?.route == Route.Accounts.route,
+                // label = { Text(text = "Accounts") },
+                onClick = {
+                    navController.navigate(Route.Accounts.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
             BottomNavigationItem(
                 icon = { Icon(Icons.Filled.Search, contentDescription = "Transactions") },
                 selected = currentRoute?.route == Route.Transactions.route,
-                label = { Text(text = "Transactions") },
+                // label = { Text(text = "Transactions") },
                 onClick = {
                     navController.navigate(Route.Transactions.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
@@ -78,7 +81,7 @@ fun YabaBottomBar(navController: NavHostController, modifier: Modifier = Modifie
             BottomNavigationItem(
                 icon = { Icon(Icons.Filled.Settings, contentDescription = "Setting") },
                 selected = currentRoute?.route == Route.Settings.route,
-                label = { Text(text = "Settings") },
+                // label = { Text(text = "Settings") },
                 onClick = {
                     navController.navigate(Route.Settings.route) {
                         popUpTo(navController.graph.findStartDestination().id) {

@@ -23,6 +23,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import tech.alexib.yaba.AppInfo
 import tech.alexib.yaba.android.fcm.PushTokenManagerImpl
+import tech.alexib.yaba.android.ui.accounts.AccountsScreenViewModel
 import tech.alexib.yaba.android.ui.auth.biometric.BiometricSetupScreenViewModel
 import tech.alexib.yaba.android.ui.auth.login.LoginScreenViewModel
 import tech.alexib.yaba.android.ui.auth.register.RegisterScreenViewModel
@@ -63,6 +64,7 @@ class MainApp : Application() {
         viewModel { TransactionListScreenViewModel() }
         viewModel { TransactionDetailScreenViewModel() }
         single<PushTokenManager> { PushTokenManagerImpl() }
+        viewModel { AccountsScreenViewModel() }
     }
 
     override fun onCreate() {

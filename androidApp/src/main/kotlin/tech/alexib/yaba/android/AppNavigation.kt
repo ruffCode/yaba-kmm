@@ -30,6 +30,7 @@ import androidx.navigation.navigation
 import com.benasher44.uuid.uuidFrom
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
+import tech.alexib.yaba.android.ui.accounts.AccountsScreen
 import tech.alexib.yaba.android.ui.auth.biometric.BiometricSetupScreen
 import tech.alexib.yaba.android.ui.auth.login.Login
 import tech.alexib.yaba.android.ui.auth.register.RegistrationScreen
@@ -58,6 +59,8 @@ sealed class Route(val route: String) {
         val argument =
             navArgument(key) { NavType.StringType }
     }
+
+    object Accounts : Route("accounts")
 }
 
 sealed class AuthRoute(val route: String) {
@@ -83,7 +86,8 @@ fun shouldShowBottomBar(navBackStackEntry: NavBackStackEntry?): Boolean {
         it.route in listOf(
             Route.Home.route,
             SettingsRoute.Main.route,
-            Route.Transactions.route
+            Route.Transactions.route,
+            Route.Accounts.route
         )
     } ?: false
 }
@@ -100,6 +104,7 @@ fun AppNavigation(
         addHome(navController, finishActivity)
         addAuthRoute(navController, authViewModel, finishActivity)
         addSettingsRoute(navController)
+        addAccounts(navController)
 
         addTransactions(navController)
         addTransactionDetail(navController)
@@ -375,5 +380,14 @@ private fun NavGraphBuilder.addPlaidLinkResult(navController: NavController) {
         PlaidLinkResultScreen(result = result) {
             navController.navigateHome()
         }
+    }
+}
+
+private fun NavGraphBuilder.addAccounts(navController: NavController) {
+    composable(Route.Accounts.route) {
+        BackHandler {
+            navController.navigateHome()
+        }
+        AccountsScreen()
     }
 }
