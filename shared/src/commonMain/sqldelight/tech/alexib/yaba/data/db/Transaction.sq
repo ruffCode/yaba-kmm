@@ -112,3 +112,7 @@ WHERE item_id = ?;
 deleteByAccontId:
 DELETE FROM TransactionEntity
 WHERE account_id = ?;
+
+deleteById:
+DELETE FROM TransactionEntity
+WHERE id = ?;

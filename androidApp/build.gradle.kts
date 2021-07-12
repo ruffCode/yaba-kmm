@@ -44,13 +44,15 @@ dependencies {
     implementation(Lib.Firebase.analytics)
     implementation(Lib.Firebase.cloudMessaging)
     implementation(Lib.Firebase.messagingDirectBoot)
+    implementation(Lib.Jetpack.work)
+    implementation(Lib.Jetpack.workMultiProcess)
 }
 
 android {
     compileSdk = 30
     buildToolsVersion = "30.0.3"
     defaultConfig {
-        applicationId = "tech.alexib.yaba.android"
+        applicationId = "tech.alexib.yaba"
         minSdk = 29
         targetSdk = 30
         versionCode = 1

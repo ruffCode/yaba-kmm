@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "9996237098026",
+    "project_id": "yaba-fake",
+    "storage_bucket": "yaba-fake.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "OhSoFake",
+        "android_client_info": {
+          "package_name": "tech.alexib.yaba"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "OhSoFake",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.alexib.yaba",
+            "certificate_hash": "OhSoFake"
+          }
+        },
+        {
+          "client_id": "OhSoFake",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.alexib.yaba",
+            "certificate_hash": "OhSoFake"
+          }
+        },
+        {
+          "client_id": "OhSoFake",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.alexib.yaba",
+            "certificate_hash": "OhSoFake"
+          }
+        },
+        {
+          "client_id": "OhSoFake",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "OhSoFake"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "OhSoFake",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

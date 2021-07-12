@@ -26,6 +26,7 @@ import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.AccountByIdQuery
 import tech.alexib.yaba.AccountByIdWithTransactionQuery
 import tech.alexib.yaba.AccountSetHiddenMutation
+import tech.alexib.yaba.AccountsByItemIdQuery
 import tech.alexib.yaba.data.api.dto.AccountDto
 import tech.alexib.yaba.data.api.dto.AccountWithTransactionsDto
 import tech.alexib.yaba.data.api.dto.toAccountWithTransactions
@@ -39,6 +40,7 @@ internal interface AccountApi {
     suspend fun setHideAccount(hide: Boolean, accountId: Uuid)
     fun accountById(id: Uuid): Flow<DataResult<AccountDto>>
     fun accountByIdWithTransactions(id: Uuid): Flow<DataResult<AccountWithTransactionsDto>>
+    fun accountsByItemId(itemId: Uuid): Flow<DataResult<List<AccountDto>>>
 }
 
 internal class AccountApiImpl : AccountApi, KoinComponent {
@@ -71,5 +73,12 @@ internal class AccountApiImpl : AccountApi, KoinComponent {
                 is ApolloResponse.Error -> ErrorResult(it.message)
             }
         }
+    }
+
+    override fun accountsByItemId(itemId: Uuid): Flow<DataResult<List<AccountDto>>> {
+        val query = AccountsByItemIdQuery(itemId)
+        return apolloApi.client().safeQuery(query) { data ->
+            data.accountsByItemId.map { it.fragments.account.toDto() }
+        }.toDataResult()
     }
 }

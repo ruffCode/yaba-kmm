@@ -88,6 +88,26 @@ fun shouldShowBottomBar(navBackStackEntry: NavBackStackEntry?): Boolean {
     } ?: false
 }
 
+@Composable
+fun AppNavigation(
+    navController: NavHostController,
+    finishActivity: () -> Unit,
+) {
+    val authViewModel = getViewModel<SplashScreenViewModel> { parametersOf(navController) }
+
+    NavHost(navController = navController, startDestination = Route.Auth.route) {
+
+        addHome(navController, finishActivity)
+        addAuthRoute(navController, authViewModel, finishActivity)
+        addSettingsRoute(navController)
+
+        addTransactions(navController)
+        addTransactionDetail(navController)
+
+        addPlaidLinkLauncherRoute(navController)
+    }
+}
+
 private fun NavGraphBuilder.addAuthRoute(
     navController: NavController,
     splashScreenViewModel: SplashScreenViewModel,
@@ -140,7 +160,7 @@ private fun NavGraphBuilder.addRegistration(
             finishActivity()
         }
         RegistrationScreen({ navController.navigate(AuthRoute.Login.route) }) {
-            navController.navigateHome()
+            navController.navigate(AuthRoute.BiometricSetup.route)
         }
     }
 }
@@ -280,7 +300,7 @@ private fun NavGraphBuilder.addTransactions(navController: NavController) {
         BackHandler {
             navController.navigateHome()
         }
-        TransactionListScreen {
+        TransactionListScreen(onBack = { navController.navigateHome() }) {
             navController.currentBackStackEntry?.arguments?.putString(
                 Route.TransactionDetail.key,
                 it.toString()
@@ -355,219 +375,5 @@ private fun NavGraphBuilder.addPlaidLinkResult(navController: NavController) {
         PlaidLinkResultScreen(result = result) {
             navController.navigateHome()
         }
-    }
-}
-
-@Composable
-fun AppNavigation(
-    navController: NavHostController,
-    finishActivity: () -> Unit,
-) {
-    val authViewModel = getViewModel<SplashScreenViewModel> { parametersOf(navController) }
-
-    NavHost(navController = navController, startDestination = Route.Auth.route) {
-        fun navigateHome() {
-            navController.navigate(Route.Home.route) {
-                popUpTo(navController.graph.startDestinationId)
-                launchSingleTop = true
-            }
-        }
-
-        fun handleBack() {
-            if (navController.currentBackStackEntry != null) {
-                navController.popBackStack()
-            }
-        }
-//        navigation(route = Route.Auth.route, startDestination = AuthRoute.Splash.route) {
-//            composable(AuthRoute.Splash.route) {
-//                Splash(authViewModel)
-//            }
-//            composable(AuthRoute.Login.route) {
-//                BackHandler {
-//                    finishActivity()
-//                }
-//                Login(
-//                    {
-//                        navController.navigate(AuthRoute.Registration.route)
-//                    },
-//                    navigateHome = { navigateHome() }
-//                ) {
-//                    navController.navigate(AuthRoute.BiometricSetup.route)
-//                }
-//            }
-//            composable(AuthRoute.Registration.route) {
-//                BackHandler {
-//                    finishActivity()
-//                }
-//                RegistrationScreen({ navController.navigate(AuthRoute.Login.route) }) {
-//                    navigateHome()
-//                }
-//            }
-//            composable(AuthRoute.BiometricSetup.route) {
-//                BackHandler {
-//                    navigateHome()
-//                }
-//                BiometricSetupScreen {
-//                    navigateHome()
-//                }
-//            }
-//        }
-        addHome(navController, finishActivity)
-        addAuthRoute(navController, authViewModel, finishActivity)
-        addSettingsRoute(navController)
-
-//        navigation(SettingsRoute.Main.route, Route.Settings.route) {
-//            composable(SettingsRoute.Main.route) {
-//                BackHandler {
-//                    handleBack()
-//                }
-//                SettingsScreen { navDestination ->
-//                    when (navDestination) {
-//                        is SettingsScreenAction.NavDestination.Auth -> navController.navigate(
-//                            AuthRoute.Splash.route
-//                        ) {
-//                            launchSingleTop = true
-//                        }
-//                        is SettingsScreenAction.NavDestination.LinkedInstitutions ->
-//                            navController.navigate(
-//                                SettingsRoute.LinkedInstitutions.route
-//                            ) {
-//                            }
-//                    }
-//                }
-//            }
-//            composable(SettingsRoute.LinkedInstitutions.route) {
-//                BackHandler {
-//                    handleBack()
-//                }
-//                PlaidItemsScreen(
-//                    onItemSelected = {
-//                        val item = PlaidItemDetail(it)
-//
-//                        navController.currentBackStackEntry?.arguments?.putParcelable(
-//                            "plaidItemDetail",
-//                            item
-//                        )
-//                        navController.navigate(SettingsRoute.InstitutionDetail.route)
-//                    }
-//                ) {
-//                    navController.navigate(PlaidLinkRoute.Launcher.route) {
-//                        launchSingleTop = true
-//                    }
-//                }
-//            }
-//            composable(
-//                SettingsRoute.InstitutionDetail.route,
-//                arguments =
-//                listOf(
-//                    navArgument("itemId") {
-//                        NavType.ParcelableType(PlaidItemDetail::class.kotlin)
-//                    }
-//                )
-//            ) {
-//                val result =
-//                    navController.previousBackStackEntry?.arguments?.getParcelable<PlaidItemDetail>(
-//                        "plaidItemDetail"
-//                    )
-//                        ?: throw
-//                        IllegalArgumentException("plaidItemDetail  was null")
-//
-//                PlaidItemDetailScreen(result) {
-//                    handleBack()
-//                }
-//            }
-//        }
-
-//        composable(Route.Home.route) {
-//            BackHandler {
-//                finishActivity()
-//            }
-//
-//            Home(
-//                navigateToPlaidLinkScreen = {
-//                    navController.navigate(PlaidLinkRoute.Launcher.route) {
-//                        launchSingleTop = true
-//                    }
-//                },
-//                navigateToTransactionsScreen = {
-//                    navController.navigate(Route.Transactions.route)
-//                }
-//            )
-//        }
-
-//        composable(Route.Transactions.route) {
-//            BackHandler {
-//                navigateHome()
-//            }
-//            TransactionListScreen {
-//                navController.currentBackStackEntry?.arguments?.putString(
-//                    Route.TransactionDetail.key,
-//                    it.toString()
-//                )
-//                navController.navigate(Route.TransactionDetail.route)
-//            }
-//        }
-        addTransactions(navController)
-        addTransactionDetail(navController)
-//        composable(
-//            Route.TransactionDetail.route,
-//            arguments = listOf(Route.TransactionDetail.argument)
-//        ) {
-//            val param: String? =
-//                navController.previousBackStackEntry?.arguments?.getString(
-//                    Route.TransactionDetail.key
-//                )
-//            checkNotNull(param) {
-//                "transactionId was null"
-//            }
-//
-//            TransactionDetailScreen(uuidFrom(param)) {
-//                handleBack()
-//            }
-//        }
-
-//        navigation(PlaidLinkRoute.Launcher.route, Route.PlaidLink.route) {
-//
-//            composable(PlaidLinkRoute.Launcher.route) {
-//
-//                BackHandler {
-//                    handleBack()
-//                }
-//                PlaidLinkScreen({ navigateHome() }) { plaidItem ->
-//
-//                    navController.currentBackStackEntry?.arguments?.putParcelable(
-//                        "plaidItem",
-//                        plaidItem
-//                    )
-//                    navController.navigate(PlaidLinkRoute.PlaidLinkResult.route)
-//                }
-//            }
-//
-//            composable(
-//                PlaidLinkRoute.PlaidLinkResult.route,
-//                arguments = listOf(
-//                    navArgument("plaidItem") {
-//
-//                        NavType.ParcelableType(PlaidLinkScreenResult::class.kotlin)
-//                    }
-//                )
-//            ) {
-//
-//                BackHandler {
-//                    navigateHome()
-//                }
-//                val result: PlaidLinkScreenResult? =
-//                    navController.previousBackStackEntry?.arguments?.getParcelable<PlaidLinkScreenResult>(
-//                        "plaidItem"
-//                    )
-//                checkNotNull(result) {
-//                    "PlaidLinkScreenResult was null"
-//                }
-//
-//                PlaidLinkResultScreen(result = result) {
-//                    navigateHome()
-//                }
-//            }
-        addPlaidLinkLauncherRoute(navController)
     }
 }

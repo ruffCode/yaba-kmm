@@ -38,6 +38,7 @@ interface AccountRepository {
     fun currentCashBalance(): Flow<Double>
     suspend fun hide(accountId: Uuid)
     suspend fun show(accountId: Uuid)
+    suspend fun updateByItemId(itemId: Uuid)
 }
 
 internal class AccountRepositoryImpl : AccountRepository, KoinComponent {
@@ -82,6 +83,14 @@ internal class AccountRepositoryImpl : AccountRepository, KoinComponent {
             }
             is ErrorResult -> log.e { "error retrieving account and transactions ${result.error}" }
             null -> log.e { "result was null $accountId" }
+        }
+    }
+
+    override suspend fun updateByItemId(itemId: Uuid) {
+        when (val result = accountApi.accountsByItemId(itemId).firstOrNull()) {
+            is Success -> accountDao.insert(result.data.toEntities())
+            is ErrorResult -> log.e { "Error updating accounts ${result.error}" }
+            null -> log.e { "Error updating accounts: result was null" }
         }
     }
 }

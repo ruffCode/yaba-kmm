@@ -15,6 +15,7 @@
  */
 package tech.alexib.yaba.di
 
+import androidx.work.WorkManager
 import co.touchlab.kermit.Kermit
 import co.touchlab.kermit.LogcatLogger
 import com.squareup.sqldelight.db.SqlDriver
@@ -38,6 +39,7 @@ actual val platformModule: Module = module {
     single<AppSettings> { YabaAppSettings() }
     single { BiometricSettings() }
     single<SqlDriver> { DriverFactory(get(), getWith("SqlDelight")).createDriver() }
+    single { WorkManager.getInstance(get()) }
     val baseKermit = Kermit(LogcatLogger()).withTag("Yaba")
     factory { (tag: String?) -> if (tag != null) baseKermit.withTag(tag) else baseKermit }
 }

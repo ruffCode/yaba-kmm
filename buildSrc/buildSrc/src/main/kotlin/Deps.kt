@@ -66,6 +66,7 @@ object Lib {
         const val crypto = "androidx.security:security-crypto-ktx:1.1.0-alpha03"
         const val biometric = "androidx.biometric:biometric-ktx:1.2.0-alpha03"
         const val work = "androidx.work:work-runtime-ktx:2.7.0-alpha04"
+        const val workMultiProcess = "androidx.work:work-multiprocess:2.7.0-alpha04"
     }
 
     object KotlinX {

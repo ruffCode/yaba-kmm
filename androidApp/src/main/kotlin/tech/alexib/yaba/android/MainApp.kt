@@ -64,7 +64,6 @@ class MainApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         initKoin(appModule)
     }
 }

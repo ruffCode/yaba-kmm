@@ -27,13 +27,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
 
-val serializer = Json {
-    serializersModule = serializerModule
-    isLenient = true
-    ignoreUnknownKeys = true
-}
-
-internal object UuidSerializer : KSerializer<Uuid> {
+object UuidSerializer : KSerializer<Uuid> {
 
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("Uuid", PrimitiveKind.STRING)
@@ -42,6 +36,12 @@ internal object UuidSerializer : KSerializer<Uuid> {
     override fun serialize(encoder: Encoder, value: Uuid) = encoder.encodeString(value.toString())
 }
 
-internal val serializerModule = SerializersModule {
+val serializerModule = SerializersModule {
     contextual(UuidSerializer)
+}
+val jSerializer = Json {
+    serializersModule = serializerModule
+    isLenient = true
+    ignoreUnknownKeys = true
+    encodeDefaults = true
 }

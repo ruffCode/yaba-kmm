@@ -18,6 +18,9 @@ package tech.alexib.yaba.android.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Kermit
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -89,6 +92,8 @@ class HomeViewModel(
         }
 
     init {
+        Firebase.messaging.isAutoInitEnabled = true
+        Firebase.analytics.setAnalyticsCollectionEnabled(true)
         homeDataLoader()
         scope.launch {
             initializer.init().collectInto(homeDataLoaderState)

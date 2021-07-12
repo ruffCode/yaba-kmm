@@ -15,16 +15,19 @@
  */
 package tech.alexib.yaba.android.util
 
-import android.os.Bundle
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import tech.alexib.yaba.util.jSerializer
+import android.app.NotificationManager
 
-inline fun <reified T> Bundle.getSerialized(key: String): T? {
-    return this.getString(key)?.let {
-        jSerializer.decodeFromString(it)
-    }
+sealed class YabaNotificationChannel {
+    abstract val name: String
+    abstract val id: String
 }
 
-inline fun <reified T> Bundle.putSerialized(key: String, value: T) =
-    this.putString(key, jSerializer.encodeToString(value))
+object NewTransactionChannel : YabaNotificationChannel() {
+    override val id: String = "new_transaction"
+    override val name: String = "New transactions"
+}
+
+fun NotificationManager.isChannelActive(channel: YabaNotificationChannel): Boolean {
+    val notificationChannel = this.getNotificationChannel(channel.id)
+    return notificationChannel != null && notificationChannel.importance != NotificationManager.IMPORTANCE_NONE
+}

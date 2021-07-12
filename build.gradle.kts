@@ -58,6 +58,7 @@ allprojects {
             licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
             targetExclude("$buildDir/**/*.kt")
             targetExclude("Deps.kt")
+            targetExclude("**/build/**")
             targetExclude("**/generated/**")
             targetExclude("spotless/**")
             trimTrailingWhitespace()
@@ -82,7 +83,8 @@ allprojects {
             reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
         }
         filter {
-            exclude("**/generated/**", "$buildDir/**/*.kt")
+            exclude("**/generated/**")
+            exclude("$buildDir/**/*.kt")
             include("**/kotlin/**")
         }
         additionalEditorconfigFile.set(file("${rootProject.rootDir}/.editorConfig"))

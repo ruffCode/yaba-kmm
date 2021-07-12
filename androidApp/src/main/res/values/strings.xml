@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">yaba - KMM</string>
-    <string name="transaction_notification_channel_id" translatable="false">fcm_transactions</string>
+    <string name="transaction_notification_channel_id" translatable="false">new_transaction</string>
+    <string name="transactions_updated_channel_id" translatable="false">transactions_updated</string>
     <string name="loading_data">Hang on while we fetch your data</string>
     <string name="link_first_institution">Link your first institution</string>
     <string name="current_cash_balance">Current cash balance</string>

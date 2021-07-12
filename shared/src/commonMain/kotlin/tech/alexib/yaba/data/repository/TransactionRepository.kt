@@ -18,27 +18,41 @@ package tech.alexib.yaba.data.repository
 import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import tech.alexib.yaba.TransactionsUpdateQuery
+import tech.alexib.yaba.data.api.ApolloApi
+import tech.alexib.yaba.data.api.ApolloResponse
+import tech.alexib.yaba.data.api.dto.toDto
+import tech.alexib.yaba.data.api.dto.toEntities
+import tech.alexib.yaba.data.api.safeQuery
 import tech.alexib.yaba.data.db.dao.TransactionDao
 import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.model.TransactionDetail
+import tech.alexib.yaba.model.request.UpdateTransactionsRequest
 
 interface TransactionRepository {
     fun recentTransactions(): Flow<List<Transaction>>
     fun count(): Flow<Long>
     fun selectAll(): Flow<List<Transaction>>
     fun selectById(id: Uuid): Flow<TransactionDetail>
+    suspend fun updateTransactions(updateId: Uuid)
 }
 
 internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent {
     private val log: Kermit by inject { parametersOf("TransactionRepository") }
     private val userIdProvider: UserIdProvider by inject()
     private val dao: TransactionDao by inject()
+    private val apolloApi: ApolloApi by inject()
+    private val accountRepository: AccountRepository by inject()
+    private val backgroundDispatcher: CoroutineDispatcher by inject()
 
     init {
         ensureNeverFrozen()
@@ -57,5 +71,45 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
 
     override fun selectById(id: Uuid): Flow<TransactionDetail> = flow {
         emitAll(dao.selectById(id))
+    }
+
+    private suspend fun delete(ids: List<Uuid>) {
+        ids.forEach {
+            dao.deleteById(it)
+        }
+    }
+
+    private fun getUpdate(updateId: Uuid): Flow<ApolloResponse<UpdateTransactionsRequest?>> =
+        apolloApi.client().safeQuery(TransactionsUpdateQuery(updateId)) { data ->
+            if (data.transactionsUpdated != null) {
+                val added =
+                    data.transactionsUpdated.added?.map { it.fragments.transaction.toDto() }
+                val removed = data.transactionsUpdated.removed?.map { it as Uuid }
+                UpdateTransactionsRequest(added, removed)
+            } else null
+        }
+
+    override suspend fun updateTransactions(updateId: Uuid) {
+
+        withContext(backgroundDispatcher) {
+            when (val update = getUpdate(updateId).firstOrNull()) {
+                is ApolloResponse.Success -> {
+                    if (update.data != null) {
+                        val itemId = update.data.added?.firstOrNull()?.itemId
+                        update.data.added?.let {
+                            dao.insert(it.toEntities())
+                        }
+                        update.data.removed?.let {
+                            delete(it)
+                        }
+                        itemId?.let {
+                            accountRepository.updateByItemId(it)
+                        }
+                    }
+                }
+                is ApolloResponse.Error -> log.e { "Error fetching transactions updates: ${update.message}" }
+                null -> log.e { "Error fetching transactions updates: response was null" }
+            }
+        }
     }
 }

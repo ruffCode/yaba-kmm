@@ -23,7 +23,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
-import tech.alexib.yaba.util.serializer
+import tech.alexib.yaba.util.jSerializer
 
 @Serializable
 enum class TransactionType {
@@ -67,7 +67,7 @@ data class TransactionDetail(
     val accountMask: String,
 ) {
     @Transient
-    val label = "$institutionName $accountName ****$accountMask"
+    val label = "$institutionName \n $accountName ****$accountMask"
 }
 
 object TransactionStubs {
@@ -145,5 +145,5 @@ object TransactionStubs {
         }
     """.trimIndent()
 
-    val transactionDetail: TransactionDetail = serializer.decodeFromString(detailStub)
+    val transactionDetail: TransactionDetail = jSerializer.decodeFromString(detailStub)
 }
