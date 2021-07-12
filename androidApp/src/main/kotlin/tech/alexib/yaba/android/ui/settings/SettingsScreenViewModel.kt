@@ -17,15 +17,19 @@ package tech.alexib.yaba.android.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Kermit
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.auth.SessionManagerAndroid
 
 class SettingsScreenViewModel : ViewModel(), KoinComponent {
 
     private val sessionManager: SessionManagerAndroid by inject()
+    private val log: Kermit by inject { parametersOf("SettingsScreenViewModel") }
 
     fun logout() {
         viewModelScope.launch {
@@ -39,6 +43,13 @@ class SettingsScreenViewModel : ViewModel(), KoinComponent {
             sessionManager.clearAppData()
             sessionManager.logout()
             delay(100)
+        }
+    }
+
+    init {
+
+        FirebaseMessaging.getInstance().token.addOnSuccessListener {
+            log.d { "tonken $it" }
         }
     }
 }

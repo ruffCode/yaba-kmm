@@ -15,17 +15,16 @@
  */
 package tech.alexib.yaba.android.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tech.alexib.yaba.android.ui.theme.YabaTheme
@@ -33,49 +32,44 @@ import tech.alexib.yaba.android.ui.theme.YabaTheme
 @Composable
 fun GenericDialog(
     modifier: Modifier = Modifier,
-    onDismiss: () -> Unit,
     title: String,
+    positiveAction: DialogAction,
+    negativeAction: DialogAction,
     description: String? = null,
-    positiveAction: DialogAction? = null,
-    negativeAction: DialogAction? = null,
+    warnConfirm: Boolean? = false,
 ) {
     AlertDialog(
-        onDismissRequest = onDismiss,
-        modifier = modifier,
+        onDismissRequest = {
+            negativeAction.onAction()
+        },
+        modifier = modifier.padding(16.dp),
         title = { Text(text = title) },
         text = {
             description?.let {
                 Text(text = it)
             }
         },
-        buttons = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceAround
+        confirmButton = {
+            val danger = ButtonDefaults.buttonColors(
+                contentColor = Color.White,
+                backgroundColor = MaterialTheme.colors.error
+            )
+            OutlinedButton(
+                onClick = { positiveAction.onAction() },
+                colors = if (warnConfirm == true) danger else ButtonDefaults.buttonColors()
             ) {
-                negativeAction?.let {
-                    Button(
-                        modifier = Modifier.padding(8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = MaterialTheme.colors.onError
-                        ),
-                        onClick = it.onAction
-                    ) {
-                        Text(text = it.buttonText)
-                    }
-                }
-                positiveAction?.let {
-                    Button(
-                        modifier = Modifier.padding(8.dp),
-                        onClick = it.onAction
-                    ) {
-                        Text(text = it.buttonText)
-                    }
-                }
+                Text(text = positiveAction.buttonText)
             }
-        }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = { negativeAction.onAction() },
+
+                ) {
+                Text(text = negativeAction.buttonText)
+            }
+        },
+
     )
 }
 
@@ -94,18 +88,15 @@ data class NegativeAction(
     override val onAction: () -> Unit,
 ) : DialogAction
 
-data class GenericDialogInfo(
-    val title: String,
-    val description: String? = null,
-    val positiveAction: DialogAction? = null,
-    val negativeAction: DialogAction? = null,
-    val onDismiss: () -> Unit,
-)
-
 @Preview
 @Composable
 fun GenericDialogPreview() {
     YabaTheme {
-        GenericDialog(onDismiss = { }, title = "Alert")
+        GenericDialog(
+            title = "Alert",
+            negativeAction = NegativeAction() {},
+            positiveAction = PositiveAction() {},
+            warnConfirm = true
+        )
     }
 }

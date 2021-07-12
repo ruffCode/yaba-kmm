@@ -96,8 +96,6 @@ private fun Settings(
                     )
                 )
             }
-
-            SettingsScreenButton(label = "Notifications") { }
         }
         Column(modifier = Modifier.align(Alignment.BottomCenter)) {
             LogoutButton {
@@ -109,7 +107,6 @@ private fun Settings(
         }
         if (clearAppDataRequested) {
             GenericDialog(
-                onDismiss = { clearAppDataRequested = false },
                 title = "Are you sure?",
                 positiveAction = PositiveAction("Confirm") {
                     actioner(SettingsScreenAction.ClearAppData)
@@ -117,7 +114,9 @@ private fun Settings(
                 },
                 negativeAction = NegativeAction("Cancel") {
                     clearAppDataRequested = false
-                }
+                },
+                warnConfirm = true,
+                description = "This action will clear all app data and log you out"
             )
         }
     }
@@ -164,7 +163,7 @@ private fun ClearAppDataButton(
             .padding(16.dp)
             .fillMaxWidth(),
 
-    ) {
+        ) {
         Text(
             text = "Clear app data",
             style = MaterialTheme.typography.button,

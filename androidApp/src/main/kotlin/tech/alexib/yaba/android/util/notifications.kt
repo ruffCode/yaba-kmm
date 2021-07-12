@@ -29,5 +29,6 @@ object NewTransactionChannel : YabaNotificationChannel() {
 
 fun NotificationManager.isChannelActive(channel: YabaNotificationChannel): Boolean {
     val notificationChannel = this.getNotificationChannel(channel.id)
-    return notificationChannel != null && notificationChannel.importance != NotificationManager.IMPORTANCE_NONE
+    return notificationChannel != null
+        && notificationChannel.importance != NotificationManager.IMPORTANCE_NONE
 }
