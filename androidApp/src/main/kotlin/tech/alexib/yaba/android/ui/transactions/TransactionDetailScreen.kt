@@ -162,12 +162,16 @@ private fun TransactionDetailScreenContent(transaction: TransactionDetail) {
         transaction.merchantName?.let { merchantName ->
             item { TransactionRow(name = "Name", value = merchantName) }
         }
-        item {
-            TransactionRow(
-                name = transaction.merchantName?.let { "Details" } ?: "Name",
-                value = transaction.name
-            )
+
+        if (transaction.merchantName != transaction.name) {
+            item {
+                TransactionRow(
+                    name = transaction.merchantName?.let { "Details" } ?: "Name",
+                    value = transaction.name
+                )
+            }
         }
+
         item {
             TransactionRow(
                 name = "Status",

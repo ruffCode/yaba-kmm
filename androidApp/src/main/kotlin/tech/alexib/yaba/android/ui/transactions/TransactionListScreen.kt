@@ -24,14 +24,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
@@ -45,26 +49,28 @@ import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.model.TransactionStubs
 
 @Composable
-fun TransactionListScreen(onSelected: (Uuid) -> Unit) {
+fun TransactionListScreen(onBack: () -> Unit, onSelected: (Uuid) -> Unit) {
     val viewModel: TransactionListScreenViewModel = getViewModel()
-    TransactionListScreen(viewModel, onSelected)
+    TransactionListScreen(viewModel, onBack, onSelected)
 }
 
 @Composable
 private fun TransactionListScreen(
     viewModel: TransactionListScreenViewModel,
+    onBack: () -> Unit,
     onSelected: (Uuid) -> Unit,
 ) {
     val state by rememberFlowWithLifecycle(flow = viewModel.state).collectAsState(
         initial = emptyList()
     )
 
-    TransactionListScreen(state, onSelected)
+    TransactionListScreen(state, onBack, onSelected)
 }
 
 @Composable
 private fun TransactionListScreen(
     transactions: List<Transaction>,
+    handleBack: () -> Unit,
     onSelected: (Uuid) -> Unit
 ) {
     Scaffold(
@@ -74,15 +80,21 @@ private fun TransactionListScreen(
                     .fillMaxWidth()
                     .wrapContentHeight(Alignment.CenterVertically)
             ) {
-//            IconButton(
-//                onClick = {
-// //                handleBack()
-//                }, modifier = Modifier
-//                    .align(Alignment.TopStart)
-//                    .padding(top = 4.dp)
-//            ) {
-//                Icon(Icons.Filled.ArrowBack, "Back arrow")
-//            }
+                IconButton(
+                    onClick = {
+                        handleBack()
+                    }, modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 4.dp)
+                ) {
+                    Icon(Icons.Filled.ArrowBack, "Back arrow")
+                }
+                Text(
+                    text = "Transactions",
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(12.dp)
+                )
             }
         },
         modifier = Modifier.statusBarsPadding()
@@ -93,9 +105,14 @@ private fun TransactionListScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.LightGray.copy(alpha = 0.3f))
+                            .padding(4.dp)
+                            .background(MaterialTheme.colors.primary.copy(alpha = 0.9f))
                     ) {
-                        Text(text = date.longFormat(), modifier = Modifier.padding(4.dp))
+                        Text(
+                            text = date.longFormat(),
+                            modifier = Modifier.padding(4.dp),
+                            color = MaterialTheme.colors.onPrimary
+                        )
                     }
                 }
                 items(transactions) { transaction ->
@@ -119,7 +136,9 @@ private fun TransactionItemPreview() {
 private fun TransactionListScreenPreview() {
     YabaTheme {
         TransactionListScreen(
-            transactions = TransactionStubs.transactions
-        ) {}
+            transactions = TransactionStubs.transactions,
+            onSelected = {},
+            handleBack = {}
+        )
     }
 }

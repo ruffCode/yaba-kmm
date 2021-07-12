@@ -93,7 +93,7 @@ private fun TransactionItemContent(
         )
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
-                text = transaction.name,
+                text = transaction.merchantName?: transaction.name,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.body2,
