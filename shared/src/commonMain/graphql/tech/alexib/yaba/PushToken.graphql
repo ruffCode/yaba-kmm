@@ -1,6 +1,6 @@
-#mutation InsertToken($token:String!){
-#    pushTokenInsert(token:$token)
-#}
+mutation InsertToken($token:String!){
+    pushTokenInsert(token:$token)
+}
 #
 #mutation PushTokenDelete($token:String!){
 #    pushTokenDelete(token: $token)

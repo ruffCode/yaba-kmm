@@ -56,3 +56,9 @@ fragment Transaction on Transaction{
     isoCurrencyCode
     merchantName
 }
+
+query AccountsByItemId($itemId:UUID!){
+    accountsByItemId(itemId: $itemId){
+        ...Account
+    }
+}

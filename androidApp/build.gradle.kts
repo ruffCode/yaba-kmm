@@ -4,6 +4,7 @@ plugins {
     kotlin("kapt")
     id("kotlin-parcelize")
     kotlin("plugin.serialization")
+    id("com.google.gms.google-services")
 }
 
 dependencies {
@@ -39,13 +40,19 @@ dependencies {
     implementation(Lib.Accompanist.coil)
     implementation(Lib.Accompanist.insets)
     implementation(Lib.uuid)
+    implementation(platform(Lib.Firebase.bom))
+    implementation(Lib.Firebase.analytics)
+    implementation(Lib.Firebase.cloudMessaging)
+    implementation(Lib.Firebase.messagingDirectBoot)
+    implementation(Lib.Jetpack.work)
+    implementation(Lib.Jetpack.workMultiProcess)
 }
 
 android {
     compileSdk = 30
     buildToolsVersion = "30.0.3"
     defaultConfig {
-        applicationId = "tech.alexib.yaba.kmm.android"
+        applicationId = "tech.alexib.yaba"
         minSdk = 29
         targetSdk = 30
         versionCode = 1
