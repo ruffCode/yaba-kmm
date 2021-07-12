@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.android
+package tech.alexib.yaba.android.fcm
 
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -26,40 +26,22 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.task.UpdateTransactionsWorker
-import tech.alexib.yaba.data.task.UserPushTokenWorker
+import tech.alexib.yaba.fcm.PushTokenManager
 
 class FCMService : FirebaseMessagingService(), KoinComponent {
 
     private val log: Kermit by inject { parametersOf("FCMService") }
+    private val pushTokenManager: PushTokenManager by inject()
     private val workManager: WorkManager by inject()
     override fun onNewToken(token: String) {
         saveToken(token)
     }
 
     private fun saveToken(token: String) {
-        val work = OneTimeWorkRequestBuilder<UserPushTokenWorker>()
-            .setInputData(UserPushTokenWorker.addToken(token)).build()
-        workManager.enqueue(work)
+        pushTokenManager.saveToken(token)
     }
 
-    // init {
-    //     FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-    //         if (!task.isSuccessful) {
-    //             log.w(task.exception) {
-    //                 "Fetching FCM registration token failed"
-    //             }
-    //             return@OnCompleteListener
-    //         }
-    //         task.result?.let {
-    //             log.d { "token is $it" }
-    //             saveToken(it)
-    //         }
-    //
-    //     })
-    // }
-
     override fun onMessageReceived(message: RemoteMessage) {
-
         message.getTransactionUpdatedId()?.let { updateId ->
             val work = OneTimeWorkRequestBuilder<UpdateTransactionsWorker>()
                 .setInputData(UpdateTransactionsWorker.addData(updateId)).build()

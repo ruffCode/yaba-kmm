@@ -24,6 +24,8 @@ import tech.alexib.yaba.data.repository.AuthApiRepository
 import tech.alexib.yaba.data.repository.AuthApiRepositoryImpl
 import tech.alexib.yaba.data.repository.ItemRepository
 import tech.alexib.yaba.data.repository.ItemRepositoryImpl
+import tech.alexib.yaba.data.repository.PushTokenRepository
+import tech.alexib.yaba.data.repository.PushTokenRepositoryImpl
 import tech.alexib.yaba.data.repository.TransactionRepository
 import tech.alexib.yaba.data.repository.TransactionRepositoryImpl
 import tech.alexib.yaba.data.repository.UserIdProvider
@@ -38,4 +40,5 @@ val repositoryModule = module {
     single<TransactionRepository> { TransactionRepositoryImpl() }
     single<ItemRepository> { ItemRepositoryImpl() }
     single<UserRepository> { UserRepositoryImpl(get()) }
+    single<PushTokenRepository> { PushTokenRepositoryImpl() }
 }

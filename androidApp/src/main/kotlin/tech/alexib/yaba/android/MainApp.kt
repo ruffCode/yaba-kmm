@@ -22,6 +22,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import tech.alexib.yaba.AppInfo
+import tech.alexib.yaba.android.fcm.PushTokenManagerImpl
 import tech.alexib.yaba.android.ui.auth.biometric.BiometricSetupScreenViewModel
 import tech.alexib.yaba.android.ui.auth.login.LoginScreenViewModel
 import tech.alexib.yaba.android.ui.auth.register.RegisterScreenViewModel
@@ -35,6 +36,7 @@ import tech.alexib.yaba.android.ui.settings.plaid_items.PlaidItemsScreenViewMode
 import tech.alexib.yaba.android.ui.transactions.TransactionDetailScreenViewModel
 import tech.alexib.yaba.android.ui.transactions.TransactionListScreenViewModel
 import tech.alexib.yaba.di.initKoin
+import tech.alexib.yaba.fcm.PushTokenManager
 
 class MainApp : Application() {
 
@@ -60,6 +62,7 @@ class MainApp : Application() {
         viewModel { PlaidItemDetailScreenViewModel() }
         viewModel { TransactionListScreenViewModel() }
         viewModel { TransactionDetailScreenViewModel() }
+        single<PushTokenManager> { PushTokenManagerImpl() }
     }
 
     override fun onCreate() {

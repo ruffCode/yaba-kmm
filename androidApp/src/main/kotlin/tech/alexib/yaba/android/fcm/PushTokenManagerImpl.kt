@@ -13,32 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.task
+package tech.alexib.yaba.android.fcm
 
-import android.content.Context
-import androidx.work.CoroutineWorker
-import androidx.work.Data
-import androidx.work.WorkerParameters
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import tech.alexib.yaba.data.repository.PushTokenRepository
+import tech.alexib.yaba.data.task.UserPushTokenWorker
+import tech.alexib.yaba.fcm.PushTokenManager
 
-class UserPushTokenWorker(
-    context: Context,
-    params: WorkerParameters
-) : CoroutineWorker(context, params), KoinComponent {
+class PushTokenManagerImpl : PushTokenManager, KoinComponent {
+    private val workManager: WorkManager by inject()
     private val pushTokenRepository: PushTokenRepository by inject()
 
-    companion object {
-        const val key = "token"
-        fun addToken(token: String) = Data.Builder().putString(key, token).build()
+    override fun saveToken(token: String) {
+        val work = OneTimeWorkRequestBuilder<UserPushTokenWorker>()
+            .setInputData(UserPushTokenWorker.addToken(token)).build()
+        workManager.enqueue(work)
     }
 
-    override suspend fun doWork(): Result {
-        val token = inputData.getString(key)
-        token?.let {
-            pushTokenRepository.save(it)
-        }
-        return Result.success()
+    override fun deleteToken(token: String) {
+        pushTokenRepository.delete(token)
     }
 }

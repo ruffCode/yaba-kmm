@@ -23,7 +23,7 @@
             android:name="firebase_analytics_collection_enabled"
             android:value="false" />
         <service
-            android:name=".FCMService"
+            android:name=".fcm.FCMService"
             android:directBootAware="true"
             android:exported="false">
             <intent-filter>
