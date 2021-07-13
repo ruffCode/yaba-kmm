@@ -23,7 +23,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -40,10 +41,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
 import com.google.accompanist.insets.statusBarsPadding
+import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.ui.components.TransactionItem
 import tech.alexib.yaba.android.ui.theme.YabaTheme
-import tech.alexib.yaba.android.util.longFormat
+import tech.alexib.yaba.android.util.format
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.model.TransactionStubs
@@ -83,7 +85,8 @@ private fun TransactionListScreen(
                 IconButton(
                     onClick = {
                         handleBack()
-                    }, modifier = Modifier
+                    },
+                    modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(top = 4.dp)
                 ) {
@@ -99,27 +102,51 @@ private fun TransactionListScreen(
         },
         modifier = Modifier.statusBarsPadding()
     ) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        TransactionList(transactions = transactions) {
+            onSelected(it)
+        }
+    }
+}
+
+@Composable
+fun TransactionList(transactions: List<Transaction>, onSelected: (Uuid) -> Unit) {
+    Card(
+        modifier = Modifier
+            .wrapContentHeight(Alignment.CenterVertically)
+            .padding(horizontal = 8.dp, vertical = 8.dp),
+        elevation = 3.dp,
+
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.surface)
+        ) {
             transactions.groupBy { it.date }.forEach { (date, transactions) ->
                 stickyHeader {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                            .background(MaterialTheme.colors.primary.copy(alpha = 0.9f))
-                    ) {
-                        Text(
-                            text = date.longFormat(),
-                            modifier = Modifier.padding(4.dp),
-                            color = MaterialTheme.colors.onPrimary
-                        )
-                    }
+                    TransactionDateHeader(date)
                 }
-                items(transactions) { transaction ->
-                    TransactionItem(transaction = transaction, onSelected)
+                itemsIndexed(transactions) { index, transaction ->
+                    val needsDivider = index != transactions.lastIndex
+                    TransactionItem(transaction = transaction, needsDivider, onSelected)
                 }
             }
         }
+    }
+}
+
+@Composable
+fun TransactionDateHeader(date: LocalDate) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.primary.copy(alpha = 0.9f))
+    ) {
+        Text(
+            text = date.format(),
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            color = MaterialTheme.colors.onPrimary
+        )
     }
 }
 

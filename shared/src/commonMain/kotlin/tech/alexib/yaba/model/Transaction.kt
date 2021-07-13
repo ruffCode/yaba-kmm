@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:UseSerializers(UuidSerializer::class)
+
 package tech.alexib.yaba.model
 
 import com.benasher44.uuid.Uuid
@@ -22,7 +24,9 @@ import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.decodeFromString
+import tech.alexib.yaba.util.UuidSerializer
 import tech.alexib.yaba.util.jSerializer
 
 @Serializable
@@ -33,6 +37,7 @@ enum class TransactionType {
     UNRESOLVED
 }
 
+@Serializable
 data class Transaction(
     val id: Uuid,
     val accountId: Uuid,
@@ -45,7 +50,9 @@ data class Transaction(
     val isoCurrencyCode: String?,
     val merchantName: String? = null,
     val pending: Boolean = false
-)
+) {
+    companion object {}
+}
 
 @Serializable
 data class TransactionDetail(
@@ -94,7 +101,7 @@ object TransactionStubs {
         transactionStub
     )
 
-// s [isoCurrencyCode, institutionName, accountName, accountMask
+    // s [isoCurrencyCode, institutionName, accountName, accountMask
     val detailStub = """
         {
         "id":"${uuid4()}",

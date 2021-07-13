@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.android.ui.transactions
+package tech.alexib.yaba.android.ui.accounts
 
-import androidx.lifecycle.ViewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import tech.alexib.yaba.data.repository.TransactionRepository
+import com.benasher44.uuid.Uuid
 
-class TransactionListScreenViewModel : ViewModel(), KoinComponent {
-    private val transactionRepository: TransactionRepository by inject()
-    val state = transactionRepository.getAll()
+sealed class AccountsScreenAction {
+    data class OnSelected(val accountId: Uuid, val itemId: Uuid) : AccountsScreenAction()
 }

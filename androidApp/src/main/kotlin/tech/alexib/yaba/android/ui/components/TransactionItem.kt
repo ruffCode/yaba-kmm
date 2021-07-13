@@ -48,13 +48,14 @@ import tech.alexib.yaba.model.TransactionStubs
 @Composable
 fun TransactionItem(
     transaction: Transaction,
-    onSelected: ((Uuid) -> Unit)? = null
+    needsDivider: Boolean = true,
+    onSelected: (Uuid) -> Unit
 ) {
     val modifier = Modifier
         .height(60.dp)
         .padding(horizontal = 8.dp, vertical = 4.dp)
         .clickable {
-            onSelected?.let { it(transaction.id) }
+            onSelected(transaction.id)
         }
 
     Box(
@@ -62,7 +63,9 @@ fun TransactionItem(
     ) {
         TransactionItemContent(transaction = transaction)
 
-        Divider(modifier = Modifier.align(Alignment.BottomCenter))
+        if (needsDivider) {
+            Divider(modifier = Modifier.align(Alignment.BottomCenter))
+        }
     }
 }
 
@@ -74,7 +77,7 @@ private fun TransactionItemContent(
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(vertical = 4.dp)
     ) {
         val (iconRef, nameRef, amountRef, pendingRef) = createRefs()
 
@@ -93,7 +96,7 @@ private fun TransactionItemContent(
         )
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
-                text = transaction.merchantName?: transaction.name,
+                text = transaction.merchantName ?: transaction.name,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.body2,
@@ -145,6 +148,6 @@ private fun TransactionItemContent(
 @Composable
 fun TransactionItemPreview() {
     YabaTheme(darkTheme = true) {
-        TransactionItem(transaction = TransactionStubs.transactionStub, null)
+        TransactionItem(transaction = TransactionStubs.transactionStub, false) {}
     }
 }

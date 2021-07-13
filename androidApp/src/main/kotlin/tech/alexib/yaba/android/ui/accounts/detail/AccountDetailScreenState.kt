@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.android.ui.transactions
+package tech.alexib.yaba.android.ui.accounts.detail
 
-import androidx.lifecycle.ViewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import tech.alexib.yaba.data.repository.TransactionRepository
+import androidx.compose.runtime.Immutable
+import tech.alexib.yaba.model.Account
+import tech.alexib.yaba.model.PlaidItem
+import tech.alexib.yaba.model.Transaction
 
-class TransactionListScreenViewModel : ViewModel(), KoinComponent {
-    private val transactionRepository: TransactionRepository by inject()
-    val state = transactionRepository.getAll()
+@Immutable
+data class AccountDetailScreenState(
+    val loading: Boolean = false,
+    val plaidItem: PlaidItem? = null,
+    val account: Account? = null,
+    val transactions: List<Transaction> = emptyList()
+) {
+    companion object {
+        val Empty = AccountDetailScreenState()
+    }
 }

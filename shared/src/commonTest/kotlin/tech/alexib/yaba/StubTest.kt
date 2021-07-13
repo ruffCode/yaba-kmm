@@ -26,18 +26,18 @@ class StubTest {
 
     @Test
     fun parsesPlaidItemWithAccountsStub() {
-      try {
+        try {
 
-          val itemWithAccounts: PlaidItemWithAccounts = jSerializer.decodeFromString(wellFargoStub)
-          assert(itemWithAccounts.name == "Wells Fargo")
-      }catch (e:Throwable){
-          when(e){
-              is SerializationException ->{
-                  println(e.printStackTrace())
-              }
-          }
-          println(e.message)
-          throw e
-      }
+            val itemWithAccounts: PlaidItemWithAccounts = jSerializer.decodeFromString(wellFargoStub)
+            assert(itemWithAccounts.name == "Wells Fargo")
+        } catch (e: Throwable) {
+            when (e) {
+                is SerializationException -> {
+                    println(e.printStackTrace())
+                }
+            }
+            println(e.message)
+            throw e
+        }
     }
 }

@@ -15,8 +15,12 @@
  */
 package tech.alexib.yaba.android.util
 
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toJavaLocalDate
+import tech.alexib.yaba.model.Transaction
 import java.text.DecimalFormat
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -28,3 +32,15 @@ fun LocalDate.longFormat(): String = localDateFormatter.format(this.toJavaLocalD
 fun LocalDate.shortFormat(): String = shotDateFormatter.format(this.toJavaLocalDate())
 
 val moneyFormat = DecimalFormat("#,###.00")
+
+fun LocalDate.format(): String {
+    val now = Clock.System.now()
+    val date = this.atStartOfDayIn(TimeZone.currentSystemDefault())
+    val diff = now.minus(date)
+    return when (diff.inWholeDays) {
+        in 0..30 -> this.shortFormat()
+        else -> this.longFormat()
+    }
+}
+
+fun Transaction.formattedDate() = this.date.format()

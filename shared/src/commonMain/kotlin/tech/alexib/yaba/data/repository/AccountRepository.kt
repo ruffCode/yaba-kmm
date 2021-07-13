@@ -36,6 +36,7 @@ interface AccountRepository {
     fun getAll(): Flow<List<Account>>
     fun availableCashBalance(): Flow<Double>
     fun currentCashBalance(): Flow<Double>
+    fun getById(id: Uuid): Flow<Account>
     suspend fun hide(accountId: Uuid)
     suspend fun show(accountId: Uuid)
     suspend fun updateByItemId(itemId: Uuid)
@@ -92,5 +93,9 @@ internal class AccountRepositoryImpl : AccountRepository, KoinComponent {
             is ErrorResult -> log.e { "Error updating accounts ${result.error}" }
             null -> log.e { "Error updating accounts: result was null" }
         }
+    }
+
+    override fun getById(id: Uuid): Flow<Account> = flow {
+        emitAll(accountDao.selectById(id))
     }
 }

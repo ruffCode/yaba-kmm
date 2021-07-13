@@ -44,7 +44,6 @@ import tech.alexib.yaba.fcm.PushTokenManager
 
 class MainApp : Application() {
 
-
     var appInfo: ApplicationInfo? = null
 
     private val serverUrl: String by lazy {

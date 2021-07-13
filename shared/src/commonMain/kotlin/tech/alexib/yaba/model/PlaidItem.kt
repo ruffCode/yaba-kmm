@@ -13,10 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:UseSerializers(UuidSerializer::class)
+
 package tech.alexib.yaba.model
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
+import kotlinx.serialization.decodeFromString
+import tech.alexib.yaba.data.stubs.chaseStub
+import tech.alexib.yaba.data.stubs.wellFargoStub
+import tech.alexib.yaba.util.UuidSerializer
+import tech.alexib.yaba.util.jSerializer
 
 interface PlaidItemBase {
     val id: Uuid
@@ -25,6 +34,7 @@ interface PlaidItemBase {
     val base64Logo: String
 }
 
+@Serializable
 data class PlaidItem(
     override val id: Uuid,
     override val plaidInstitutionId: String,
@@ -32,6 +42,7 @@ data class PlaidItem(
     override val base64Logo: String,
 ) : PlaidItemBase
 
+@Serializable
 data class PlaidItemWithAccounts(
     val plaidItem: PlaidItem,
     val accounts: List<Account>,
@@ -60,4 +71,15 @@ object PlaidItemStubs {
 
     val itemWithAccounts =
         PlaidItemWithAccounts(accounts = AccountStubs.accounts, plaidItem = TDBank)
+
+    private val wellFargoWithAccounts: PlaidItemWithAccounts = jSerializer.decodeFromString(
+        wellFargoStub
+    )
+
+    private val chaseWithAccounts: PlaidItemWithAccounts = jSerializer.decodeFromString(chaseStub)
+
+    val itemsWithAccounts: List<PlaidItemWithAccounts> = listOf(
+        wellFargoWithAccounts,
+        chaseWithAccounts
+    )
 }

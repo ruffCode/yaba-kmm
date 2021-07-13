@@ -68,6 +68,19 @@ fun BankLogo(modifier: Modifier = Modifier, logoBitmap: Bitmap) {
         )
     }
 }
+@Composable
+fun BankLogoSmall(modifier: Modifier = Modifier, logoBitmap: Bitmap) {
+    Box(modifier = modifier) {
+        Image(
+            logoBitmap.asImageBitmap(),
+            contentDescription = "Bank Logo",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+
+                .size(25.dp),
+        )
+    }
+}
 
 @Suppress("MaxLineLength")
 const val defaultLogoBase64 =

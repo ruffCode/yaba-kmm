@@ -89,9 +89,15 @@ SELECT *
 FROM UserTransasctionDetail
 WHERE id = ?;
 
-selectByAccontId:
+selectAllByAccountIdWithDetail:
 SELECT *
 FROM UserTransasctionDetail
+WHERE account_id = ?
+ORDER BY date DESC;
+
+selectAllByAccount:
+SELECT *
+FROM UserTransaction
 WHERE account_id = ?
 ORDER BY date DESC;
 
