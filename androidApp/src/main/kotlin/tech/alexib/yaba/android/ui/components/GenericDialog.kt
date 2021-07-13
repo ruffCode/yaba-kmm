@@ -65,7 +65,7 @@ fun GenericDialog(
             TextButton(
                 onClick = { negativeAction.onAction() },
 
-                ) {
+            ) {
                 Text(text = negativeAction.buttonText)
             }
         },

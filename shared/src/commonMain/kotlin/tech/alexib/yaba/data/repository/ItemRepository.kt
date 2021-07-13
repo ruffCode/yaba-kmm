@@ -21,13 +21,14 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.NewItemDataQuery
-import tech.alexib.yaba.data.db.ItemEntity
 import tech.alexib.yaba.data.api.ApolloApi
 import tech.alexib.yaba.data.api.ApolloResponse
 import tech.alexib.yaba.data.api.PlaidItemApi
@@ -35,6 +36,7 @@ import tech.alexib.yaba.data.api.dto.NewItemData
 import tech.alexib.yaba.data.api.dto.toAccountWithTransactions
 import tech.alexib.yaba.data.api.dto.toEntity
 import tech.alexib.yaba.data.api.safeQuery
+import tech.alexib.yaba.data.db.ItemEntity
 import tech.alexib.yaba.data.db.dao.AccountDao
 import tech.alexib.yaba.data.db.dao.InstitutionDao
 import tech.alexib.yaba.data.db.dao.ItemDao
@@ -69,7 +71,9 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
 
     override fun getAll(): Flow<List<PlaidItem>> = itemDao.selectAll(userIdProvider.userId.value)
 
-    override fun getById(id: Uuid): Flow<PlaidItem> = itemDao.selectById(id)
+    override fun getById(id: Uuid): Flow<PlaidItem> = flow {
+        emitAll(itemDao.selectById(id))
+    }
 
     override suspend fun getAllWithAccounts(): Flow<List<PlaidItemWithAccounts>> =
         withContext(backgroundDispatcher) {
@@ -114,7 +118,6 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
         return when (val newData = response.firstOrNull()) {
             is ApolloResponse.Success -> {
                 val data = newData.data
-//                userDao.insert(data.user)
                 institutionDao.insert(
                     Institution(
                         institutionId = data.item.plaidInstitutionId,
@@ -151,45 +154,6 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
                 log.d { "error fetching new item data: result was null" }
                 true
             }
-
-//        return when (val newData = plaidItemApi.newItemData(itemId).firstOrNull()) {
-//            is Success -> {
-//                val data = newData.data
-//                userDao.insert(data.user)
-//                institutionDao.insert(
-//                    Institution(
-//                        institutionId = data.item.plaidInstitutionId,
-//                        name = data.item.name,
-//                        logo = data.item.base64Logo,
-//                        primaryColor = "#095aa6"
-//                    )
-//                )
-//
-//                itemDao.insert(
-//                    with(data.item) {
-//                        ItemEntity(
-//                            id = id,
-//                            plaid_institution_id = plaidInstitutionId,
-//                            data.user.id
-//                        )
-//                    }
-//                )
-//
-//                val accounts = data.accounts.map {
-//                    it.account
-//                }
-//                val transactions = data.accounts.flatMap { it.transactions }
-//                accountDao.insert(accounts)
-//                transactionDao.insert(transactions)
-//                true
-//            }
-//            is ErrorResult -> {
-//                true
-//            }
-//            null -> {
-//                log.d { "error fetching new item data: result was null" }
-//                true
-//            }
         }
     }
 }

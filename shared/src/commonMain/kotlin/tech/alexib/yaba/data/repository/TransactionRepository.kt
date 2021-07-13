@@ -19,6 +19,7 @@ import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.firstOrNull
@@ -41,8 +42,9 @@ import tech.alexib.yaba.model.request.UpdateTransactionsRequest
 interface TransactionRepository {
     fun recentTransactions(): Flow<List<Transaction>>
     fun count(): Flow<Long>
-    fun selectAll(): Flow<List<Transaction>>
-    fun selectById(id: Uuid): Flow<TransactionDetail>
+    fun getAll(): Flow<List<Transaction>>
+    fun getById(id: Uuid): Flow<TransactionDetail>
+    fun getAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
     suspend fun updateTransactions(updateId: Uuid)
 }
 
@@ -66,10 +68,10 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
         emitAll(dao.count(userIdProvider.userId.value))
     }
 
-    override fun selectAll(): Flow<List<Transaction>> =
+    override fun getAll(): Flow<List<Transaction>> =
         flow { emitAll(dao.selectAll(userIdProvider.userId.value)) }
 
-    override fun selectById(id: Uuid): Flow<TransactionDetail> = flow {
+    override fun getById(id: Uuid): Flow<TransactionDetail> = flow {
         emitAll(dao.selectById(id))
     }
 
@@ -77,6 +79,10 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
         ids.forEach {
             dao.deleteById(it)
         }
+    }
+
+    override fun getAllByAccountId(accountId: Uuid): Flow<List<Transaction>> = flow {
+        emitAll(dao.selectAllByAccountId(accountId))
     }
 
     private fun getUpdate(updateId: Uuid): Flow<ApolloResponse<UpdateTransactionsRequest?>> =
@@ -90,7 +96,7 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
         }
 
     override suspend fun updateTransactions(updateId: Uuid) {
-
+        delay(1000)
         withContext(backgroundDispatcher) {
             when (val update = getUpdate(updateId).firstOrNull()) {
                 is ApolloResponse.Success -> {

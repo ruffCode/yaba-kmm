@@ -17,14 +17,13 @@ package tech.alexib.yaba.android.ui.transactions
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
@@ -137,13 +136,19 @@ private fun TransactionDetailScreen(
 
 @Composable
 private fun TransactionDetailScreenContent(transaction: TransactionDetail) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
 
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(align = Alignment.Top)
+            .padding(vertical = 30.dp, horizontal = 4.dp),
+        elevation = 3.dp
     ) {
-        item {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(16.dp)
+        ) {
             Icon(
                 imageVector = Icons.Outlined.ReceiptLong,
                 contentDescription = "receipt",
@@ -152,53 +157,104 @@ private fun TransactionDetailScreenContent(transaction: TransactionDetail) {
                     .size(150.dp)
                     .padding(4.dp)
             )
-        }
-        item {
             TransactionRow(
                 name = transaction.date.shortFormat(),
                 value = "$${moneyFormat.format(transaction.amount)}"
             )
-        }
-        transaction.merchantName?.let { merchantName ->
-            item { TransactionRow(name = "Name", value = merchantName) }
-        }
+            Divider()
+            transaction.merchantName?.let { merchantName ->
+                TransactionRow(name = "Name", value = merchantName)
+                Divider()
+            }
 
-        if (transaction.merchantName != transaction.name) {
-            item {
+            if (transaction.merchantName != transaction.name) {
                 TransactionRow(
                     name = transaction.merchantName?.let { "Details" } ?: "Name",
                     value = transaction.name
                 )
+                Divider()
             }
-        }
 
-        item {
             TransactionRow(
                 name = "Status",
                 value = if (transaction.pending == true) "Pending" else "Posted"
             )
-        }
-        item {
+            Divider()
             TransactionRow(
                 name = "Account",
                 value = transaction.label
             )
-        }
-        transaction.category?.let {
-            item {
+            Divider()
+            transaction.category?.let {
                 TransactionRow(name = "Category", value = it)
+                Divider()
             }
-        }
-        transaction.subcategory?.let {
-            item {
+            transaction.subcategory?.let {
                 TransactionRow(name = "Subcategory", value = it)
             }
         }
     }
+    // LazyColumn(
+    //     modifier = Modifier.fillMaxSize(),
+    //     contentPadding = PaddingValues(horizontal = 16.dp),
+    //     horizontalAlignment = Alignment.CenterHorizontally
+    // ) {
+    //     item {
+    //         Icon(
+    //             imageVector = Icons.Outlined.ReceiptLong,
+    //             contentDescription = "receipt",
+    //             tint = MoneyGreen,
+    //             modifier = Modifier
+    //                 .size(150.dp)
+    //                 .padding(4.dp)
+    //         )
+    //     }
+    //     item {
+    //         TransactionRow(
+    //             name = transaction.date.shortFormat(),
+    //             value = "$${moneyFormat.format(transaction.amount)}"
+    //         )
+    //     }
+    //     transaction.merchantName?.let { merchantName ->
+    //         item { TransactionRow(name = "Name", value = merchantName) }
+    //     }
+    //
+    //     if (transaction.merchantName != transaction.name) {
+    //         item {
+    //             TransactionRow(
+    //                 name = transaction.merchantName?.let { "Details" } ?: "Name",
+    //                 value = transaction.name
+    //             )
+    //         }
+    //     }
+    //
+    //     item {
+    //         TransactionRow(
+    //             name = "Status",
+    //             value = if (transaction.pending == true) "Pending" else "Posted"
+    //         )
+    //     }
+    //     item {
+    //         TransactionRow(
+    //             name = "Account",
+    //             value = transaction.label
+    //         )
+    //     }
+    //     transaction.category?.let {
+    //         item {
+    //             TransactionRow(name = "Category", value = it)
+    //         }
+    //     }
+    //     transaction.subcategory?.let {
+    //         item {
+    //             TransactionRow(name = "Subcategory", value = it)
+    //         }
+    //     }
+    // }
 }
 
 @Composable
-private fun TransactionRow(name: String, value: String) {
+fun TransactionRow(name: String, value: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -220,7 +276,6 @@ private fun TransactionRow(name: String, value: String) {
             )
         }
     }
-    Divider()
 }
 
 @Preview

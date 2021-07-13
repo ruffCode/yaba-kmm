@@ -22,8 +22,11 @@
         <meta-data
             android:name="firebase_analytics_collection_enabled"
             android:value="false" />
+        <meta-data
+            android:name="base_url"
+            android:value="${serverUrl}"/>
         <service
-            android:name=".FCMService"
+            android:name=".fcm.FCMService"
             android:directBootAware="true"
             android:exported="false">
             <intent-filter>

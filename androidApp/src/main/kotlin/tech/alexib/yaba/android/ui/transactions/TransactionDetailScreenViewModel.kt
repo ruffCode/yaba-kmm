@@ -34,7 +34,7 @@ class TransactionDetailScreenViewModel : ViewModel(), KoinComponent {
     private val loadingFLow = MutableStateFlow(false)
     private val transactionDetailFlow = transactionId.flatMapLatest {
         loadingFLow.emit(true)
-        if (it == null) emptyFlow() else repository.selectById(it).also {
+        if (it == null) emptyFlow() else repository.getById(it).also {
             loadingFLow.emit(false)
         }
     }

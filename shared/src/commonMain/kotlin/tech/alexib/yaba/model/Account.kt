@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:UseSerializers(UuidSerializer::class)
+
 package tech.alexib.yaba.model
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
+import tech.alexib.yaba.util.UuidSerializer
 
+@Serializable
 data class Account(
     val id: Uuid,
     val name: String,
@@ -31,6 +37,7 @@ data class Account(
     val institutionName: String
 )
 
+@Serializable
 enum class AccountType {
     DEPOSITORY,
     CREDIT,
@@ -38,6 +45,7 @@ enum class AccountType {
     LOAN
 }
 
+@Serializable
 enum class AccountSubtype {
     CHECKING,
     SAVINGS,

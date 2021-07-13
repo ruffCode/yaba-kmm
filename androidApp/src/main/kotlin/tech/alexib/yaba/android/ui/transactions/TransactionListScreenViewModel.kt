@@ -22,5 +22,5 @@ import tech.alexib.yaba.data.repository.TransactionRepository
 
 class TransactionListScreenViewModel : ViewModel(), KoinComponent {
     private val transactionRepository: TransactionRepository by inject()
-    val state = transactionRepository.selectAll()
+    val state = transactionRepository.getAll()
 }

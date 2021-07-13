@@ -25,14 +25,18 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.auth.SessionManagerAndroid
+import tech.alexib.yaba.fcm.PushTokenManager
 
 class SettingsScreenViewModel : ViewModel(), KoinComponent {
 
     private val sessionManager: SessionManagerAndroid by inject()
+    private val pushTokenManager: PushTokenManager by inject()
     private val log: Kermit by inject { parametersOf("SettingsScreenViewModel") }
 
     fun logout() {
         viewModelScope.launch {
+            deleteToken()
+            delay(100)
             sessionManager.logout()
             delay(300)
         }
@@ -41,15 +45,25 @@ class SettingsScreenViewModel : ViewModel(), KoinComponent {
     fun clearAppData() {
         viewModelScope.launch {
             sessionManager.clearAppData()
+            deleteToken()
             sessionManager.logout()
             delay(100)
         }
     }
 
-    init {
-
-        FirebaseMessaging.getInstance().token.addOnSuccessListener {
-            log.d { "tonken $it" }
+    private fun deleteToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            task.result?.let {
+                pushTokenManager.deleteToken(it)
+            }
+            FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener { deleteTask ->
+                if (deleteTask.isSuccessful) {
+                    log.d { "token cleared" }
+                }
+                if (deleteTask.exception != null) {
+                    log.e { "Error clearing token ${deleteTask.exception?.message}" }
+                }
+            }
         }
     }
 }

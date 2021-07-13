@@ -42,12 +42,14 @@ kotlin {
     sourceSets {
         all {
             languageSettings {
+                useExperimentalAnnotation("kotlin.RequiresOptIn")
                 useExperimentalAnnotation("com.apollographql.apollo.api.ApolloExperimental")
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 useExperimentalAnnotation("com.russhwolf.settings.ExperimentalSettingsApi")
                 useExperimentalAnnotation(
                     "com.russhwolf.settings.ExperimentalSettingsImplementation"
                 )
+                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
             }
         }
     }

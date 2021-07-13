@@ -145,7 +145,8 @@ fun TotalCashBalanceRow(
     ) {
         BalanceRow(
             balance = balance,
-            description = stringResource(id = R.string.current_cash_balance)
+            description = stringResource(id = R.string.current_cash_balance),
+            modifier = Modifier.padding(16.dp)
         )
     }
 }
@@ -153,12 +154,12 @@ fun TotalCashBalanceRow(
 @Composable
 fun BalanceRow(
     balance: Double,
-    description: String
+    description: String,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = modifier
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -182,7 +183,7 @@ private fun RecentTransactions(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(align = Alignment.Top)
-            .padding(16.dp)
+            .padding(4.dp)
             .clickable {
                 onSelectAllTransactions()
             },

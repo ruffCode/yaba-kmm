@@ -163,7 +163,7 @@ private fun ClearAppDataButton(
             .padding(16.dp)
             .fillMaxWidth(),
 
-        ) {
+    ) {
         Text(
             text = "Clear app data",
             style = MaterialTheme.typography.button,

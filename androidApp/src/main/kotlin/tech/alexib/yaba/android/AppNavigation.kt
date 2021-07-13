@@ -28,8 +28,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.navigation
 import com.benasher44.uuid.uuidFrom
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
+import tech.alexib.yaba.android.ui.accounts.detail.AccountDetailScreen
+import tech.alexib.yaba.android.ui.accounts.detail.AccountDetailScreenParams
+import tech.alexib.yaba.android.ui.accounts.AccountsScreen
 import tech.alexib.yaba.android.ui.auth.biometric.BiometricSetupScreen
 import tech.alexib.yaba.android.ui.auth.login.Login
 import tech.alexib.yaba.android.ui.auth.register.RegistrationScreen
@@ -46,6 +51,7 @@ import tech.alexib.yaba.android.ui.settings.plaid_items.PlaidItemDetailScreen
 import tech.alexib.yaba.android.ui.settings.plaid_items.PlaidItemsScreen
 import tech.alexib.yaba.android.ui.transactions.TransactionDetailScreen
 import tech.alexib.yaba.android.ui.transactions.TransactionListScreen
+import tech.alexib.yaba.util.jSerializer
 
 sealed class Route(val route: String) {
     object Auth : Route("auth")
@@ -57,6 +63,12 @@ sealed class Route(val route: String) {
         const val key = "transactionId"
         val argument =
             navArgument(key) { NavType.StringType }
+    }
+
+    object Accounts : Route("accounts")
+    object AccountDetail : Route("accountDetails") {
+        const val key = "accountParam"
+        val argument = navArgument(key) { NavType.StringType }
     }
 }
 
@@ -83,7 +95,8 @@ fun shouldShowBottomBar(navBackStackEntry: NavBackStackEntry?): Boolean {
         it.route in listOf(
             Route.Home.route,
             SettingsRoute.Main.route,
-            Route.Transactions.route
+            Route.Transactions.route,
+            Route.Accounts.route
         )
     } ?: false
 }
@@ -100,6 +113,8 @@ fun AppNavigation(
         addHome(navController, finishActivity)
         addAuthRoute(navController, authViewModel, finishActivity)
         addSettingsRoute(navController)
+        addAccounts(navController)
+        addAccountDetail(navController)
 
         addTransactions(navController)
         addTransactionDetail(navController)
@@ -374,6 +389,40 @@ private fun NavGraphBuilder.addPlaidLinkResult(navController: NavController) {
 
         PlaidLinkResultScreen(result = result) {
             navController.navigateHome()
+        }
+    }
+}
+
+private fun NavGraphBuilder.addAccounts(navController: NavController) {
+    composable(Route.Accounts.route) {
+        BackHandler {
+            navController.navigateHome()
+        }
+        AccountsScreen {
+            navController.currentBackStackEntry?.arguments?.putString(
+                Route.AccountDetail.key,
+                jSerializer.encodeToString(it)
+            )
+            navController.navigate(Route.AccountDetail.route)
+        }
+    }
+}
+
+private fun NavGraphBuilder.addAccountDetail(navController: NavController) {
+    composable(Route.AccountDetail.route, arguments = listOf(Route.AccountDetail.argument)) {
+        val paramString =
+            navController.previousBackStackEntry?.arguments?.getString(Route.AccountDetail.key)
+        checkNotNull(paramString) {
+            "AccountDetailParams required"
+        }
+        val params: AccountDetailScreenParams = jSerializer.decodeFromString(paramString)
+
+        AccountDetailScreen(params = params, onBack = { navController.handleBack() }) {
+            navController.currentBackStackEntry?.arguments?.putString(
+                Route.TransactionDetail.key,
+                it.toString()
+            )
+            navController.navigate(Route.TransactionDetail.route)
         }
     }
 }

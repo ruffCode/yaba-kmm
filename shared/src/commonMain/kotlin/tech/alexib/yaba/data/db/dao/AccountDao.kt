@@ -20,7 +20,6 @@ import com.benasher44.uuid.Uuid
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOne
-import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -36,7 +35,7 @@ internal interface AccountDao {
     suspend fun insert(account: AccountEntity)
     suspend fun insert(accounts: List<AccountEntity>)
     suspend fun selectAll(userId: Uuid): Flow<List<Account>>
-    suspend fun selectById(accountId: Uuid): Flow<Account?>
+    suspend fun selectById(accountId: Uuid): Flow<Account>
     suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
     suspend fun availableBalance(userId: Uuid): Flow<Double>
     suspend fun currentBalance(userId: Uuid): Flow<Double>
@@ -74,9 +73,9 @@ internal class AccountDaoImpl(
             .flowOn(backgroundDispatcher)
     }
 
-    override suspend fun selectById(accountId: Uuid): Flow<Account?> =
+    override suspend fun selectById(accountId: Uuid): Flow<Account> =
         accountQueries.selectById(accountId, accountMapper).asFlow()
-            .mapToOneOrNull()
+            .mapToOne()
             .flowOn(backgroundDispatcher)
 
     override suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>> =

@@ -15,16 +15,14 @@ only get fake data.
 
 ## Usage
 
-There are two flavors, prod and dev. Dev requires you to run the server locally (link below), prod
+There are two build types you can install, debug and staging, Staging requires you to run the server locally (link below), debug
 does not.
 
 Install your preferred flavor
 
 ````shell script
-./gradlew installProdDebug
-./gradlew installProdRelease
-./gradlew installDevDebug
-./gradlew installDevRelease 
+./gradlew installSandboxDebug
+./gradlew installSandboxStaging 
 ````
 
 Register with any email address you'd like, the format needs to be valid but nothing will be emailed

@@ -34,7 +34,6 @@ import tech.alexib.yaba.data.api.dto.toDto
 import tech.alexib.yaba.data.repository.DataResult
 import tech.alexib.yaba.data.repository.ErrorResult
 import tech.alexib.yaba.data.repository.Success
-import tech.alexib.yaba.data.repository.toDataResult
 
 internal interface AccountApi {
     suspend fun setHideAccount(hide: Boolean, accountId: Uuid)
@@ -55,10 +54,18 @@ internal class AccountApiImpl : AccountApi, KoinComponent {
 
     override fun accountById(id: Uuid): Flow<DataResult<AccountDto>> {
         val query = AccountByIdQuery(id)
-        val response = apolloApi.client().safeQuery(query) {
+        return apolloApi.client().safeQuery(query) {
             it.accountById.fragments.account.toDto()
+        }.map {
+            when (it) {
+                is ApolloResponse.Success -> Success(
+                    it.data
+                )
+                is ApolloResponse.Error -> ErrorResult(
+                    it.message
+                )
+            }
         }
-        return response.toDataResult()
     }
 
     override fun accountByIdWithTransactions(id: Uuid):
@@ -79,6 +86,11 @@ internal class AccountApiImpl : AccountApi, KoinComponent {
         val query = AccountsByItemIdQuery(itemId)
         return apolloApi.client().safeQuery(query) { data ->
             data.accountsByItemId.map { it.fragments.account.toDto() }
-        }.toDataResult()
+        }.map {
+            when (it) {
+                is ApolloResponse.Success -> Success(it.data)
+                is ApolloResponse.Error -> ErrorResult(it.message)
+            }
+        }
     }
 }

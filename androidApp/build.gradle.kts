@@ -1,3 +1,5 @@
+import util.getLocalProperty
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -6,6 +8,8 @@ plugins {
     kotlin("plugin.serialization")
     id("com.google.gms.google-services")
 }
+
+val hasReleaseKey: Boolean = project.rootProject.file("release/yaba-release.jks").exists()
 
 dependencies {
     implementation(project(":shared"))
@@ -61,30 +65,62 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        manifestPlaceholders["serverUrl"] = "\"https://yabasandbox.alexib.dev/graphql\""
+    }
+
+    signingConfigs {
+        register("release")
+        getByName("debug") {
+            storeFile = rootProject.file("release/debug.jks")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+    if (hasReleaseKey) {
+        signingConfigs["release"].apply {
+            keyAlias(getLocalProperty("yaba.key.alias"))
+            keyPassword(getLocalProperty("yaba.key.password"))
+            storePassword(getLocalProperty("yaba.store.password"))
+            storeFile(rootProject.file("release/yaba-release.jks"))
+        }
     }
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isShrinkResources = true
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig =
+                if (hasReleaseKey) signingConfigs.getByName("release") else
+                    signingConfigs.getByName("debug")
         }
         debug {
             isMinifyEnabled = false
             isDebuggable = true
             matchingFallbacks += "release"
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        create("staging") {
+            initWith(getByName("debug"))
+            manifestPlaceholders["serverUrl"] = "\"https://ruffrevival.ngrok.io/graphql\""
         }
     }
-    flavorDimensions("environment")
+    flavorDimensions.add("environment")
+
     productFlavors {
-        create("prod") {
-            dimension = "environment"
-            buildConfigField("String", "APOLLO_URL", "\"https://yabasandbox.alexib.dev/graphql\"")
-        }
         create("dev") {
             dimension = "environment"
-            buildConfigField("String", "APOLLO_URL", "\"https://ruffrevival.ngrok.io/graphql\"")
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+        }
+        create("sandbox") {
+            isDefault = true
+            dimension = "environment"
+            applicationIdSuffix = ".sandbox"
+            versionNameSuffix = "-sandbox"
         }
     }
 
@@ -110,8 +146,18 @@ android {
             "-Xuse-experimental=kotlin.ExperimentalStdlibApi",
             "-Xuse-experimental=androidx.compose.foundation.ExperimentalFoundationApi",
             "-Xuse-experimental=androidx.compose.material.ExperimentalMaterialApi",
-            "-Xuse-experimental=androidx.compose.animation.ExperimentalAnimationApi"
+            "-Xuse-experimental=androidx.compose.animation.ExperimentalAnimationApi",
+            "-Xuse-experimental=kotlin.time.ExperimentalTime"
         )
+    }
+    packagingOptions {
+        resources {
+            excludes.add("META-INF/*.version")
+            excludes.add("META-INF/proguard/*")
+            excludes.add("/*.properties")
+            excludes.add("fabric/*.properties")
+            excludes.add("META-INF/*.properties")
+        }
     }
     lint {
         lintConfig = rootProject.file(".lint/config.xml")

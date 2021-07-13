@@ -19,17 +19,15 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
-import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import tech.alexib.yaba.InsertTokenMutation
-import tech.alexib.yaba.data.api.ApolloApi
+import tech.alexib.yaba.data.repository.PushTokenRepository
 
 class UserPushTokenWorker(
     context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params), KoinComponent {
-    private val apolloApi: ApolloApi by inject()
+    private val pushTokenRepository: PushTokenRepository by inject()
 
     companion object {
         const val key = "token"
@@ -39,8 +37,7 @@ class UserPushTokenWorker(
     override suspend fun doWork(): Result {
         val token = inputData.getString(key)
         token?.let {
-            val mutation = InsertTokenMutation(it)
-            apolloApi.client().mutate(mutation).execute().firstOrNull()
+            pushTokenRepository.save(it)
         }
         return Result.success()
     }

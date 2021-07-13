@@ -42,7 +42,8 @@ internal interface TransactionDao {
     suspend fun insert(transactions: List<TransactionEntity>)
     suspend fun selectAll(userId: Uuid): Flow<List<Transaction>>
     suspend fun selectById(id: Uuid): Flow<TransactionDetail>
-    suspend fun selectByAccountId(accountId: Uuid): Flow<List<TransactionDetail>>
+    suspend fun selectAllByAccountIdWithDetail(accountId: Uuid): Flow<List<TransactionDetail>>
+    fun selectAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
     suspend fun selectByItemId(itemId: Uuid): Flow<List<TransactionDetail>>
     suspend fun deleteByItemId(itemId: Uuid)
     suspend fun deleteByAccountId(accountId: Uuid)
@@ -87,8 +88,8 @@ internal class TransactionDaoImpl(
         queries.selectById(id, transactionDetailMapper).asFlow().mapToOne()
             .flowOn(backgroundDispatcher)
 
-    override suspend fun selectByAccountId(accountId: Uuid): Flow<List<TransactionDetail>> {
-        return queries.selectByAccontId(accountId, transactionDetailMapper).asFlow()
+    override suspend fun selectAllByAccountIdWithDetail(accountId: Uuid): Flow<List<TransactionDetail>> {
+        return queries.selectAllByAccountIdWithDetail(accountId, transactionDetailMapper).asFlow()
             .mapToList()
             .flowOn(backgroundDispatcher)
     }
@@ -102,6 +103,10 @@ internal class TransactionDaoImpl(
             queries.deleteByItemId(itemId)
         }
     }
+
+    override fun selectAllByAccountId(accountId: Uuid): Flow<List<Transaction>> =
+        queries.selectAllByAccount(accountId, transactionMapper).asFlow().mapToList()
+            .flowOn(backgroundDispatcher)
 
     override suspend fun selectRecent(userId: Uuid): Flow<List<Transaction>> =
         queries.selectRecent(userId, transactionMapper).asFlow().mapToList()
@@ -123,19 +128,19 @@ internal class TransactionDaoImpl(
     }
 
     private val transactionMapper = {
-            id: Uuid,
-            account_id: Uuid,
-            _: Uuid,
-            _: Uuid?,
-            category: String?,
-            subcategory: String?,
-            type: TransactionType,
-            name: String,
-            merchant_name: String?,
-            date: LocalDate,
-            amount: Double,
-            iso_currency_code: String?,
-            pending: Boolean?,
+        id: Uuid,
+        account_id: Uuid,
+        _: Uuid,
+        _: Uuid?,
+        category: String?,
+        subcategory: String?,
+        type: TransactionType,
+        name: String,
+        merchant_name: String?,
+        date: LocalDate,
+        amount: Double,
+        iso_currency_code: String?,
+        pending: Boolean?,
         ->
         Transaction(
             id = id,
