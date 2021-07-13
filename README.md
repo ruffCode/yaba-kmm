@@ -35,6 +35,7 @@ the credentials are:
 username: user_good
 password: pass_good
 pin: credential_good (when required)
+MFA code: 1234 (when required)
 ```
 
 Please see [Plaid sandbox test credentials](https://plaid.com/docs/sandbox/test-credentials/) for

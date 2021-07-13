@@ -32,7 +32,6 @@ import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.db.TransactionEntity
 import tech.alexib.yaba.data.db.TransactionQueries
 import tech.alexib.yaba.data.db.YabaDb
-import tech.alexib.yaba.data.db.sqldelight.transactionWithContext
 import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.model.TransactionDetail
 import tech.alexib.yaba.model.TransactionType
@@ -65,7 +64,7 @@ internal class TransactionDaoImpl(
     }
 
     override suspend fun insert(transactions: List<TransactionEntity>) {
-        database.transactionWithContext(backgroundDispatcher) {
+        withContext(backgroundDispatcher) {
             transactions.forEach {
                 queries.insert(it)
             }
@@ -128,19 +127,19 @@ internal class TransactionDaoImpl(
     }
 
     private val transactionMapper = {
-        id: Uuid,
-        account_id: Uuid,
-        _: Uuid,
-        _: Uuid?,
-        category: String?,
-        subcategory: String?,
-        type: TransactionType,
-        name: String,
-        merchant_name: String?,
-        date: LocalDate,
-        amount: Double,
-        iso_currency_code: String?,
-        pending: Boolean?,
+            id: Uuid,
+            account_id: Uuid,
+            _: Uuid,
+            _: Uuid?,
+            category: String?,
+            subcategory: String?,
+            type: TransactionType,
+            name: String,
+            merchant_name: String?,
+            date: LocalDate,
+            amount: Double,
+            iso_currency_code: String?,
+            pending: Boolean?,
         ->
         Transaction(
             id = id,

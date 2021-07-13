@@ -5,9 +5,11 @@ email TEXT NOT NULL
 );
 
 insert:
-INSERT OR REPLACE
-INTO UserEntity
-VALUES ?;
+INSERT INTO UserEntity
+VALUES ?
+    ON CONFLICT(id)
+        DO UPDATE SET
+        email = excluded.email;
 
 selectById:
 SELECT * FROM UserEntity

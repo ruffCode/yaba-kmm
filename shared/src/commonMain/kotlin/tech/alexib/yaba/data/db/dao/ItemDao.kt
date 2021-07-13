@@ -49,6 +49,7 @@ internal class ItemDaoImpl(
     private val queries: ItemEntityQueries = database.itemEntityQueries
 
     private val log: Kermit by inject { parametersOf("ItemDao") }
+
     init {
         ensureNeverFrozen()
     }
@@ -86,13 +87,12 @@ internal class ItemDaoImpl(
     }
 
     private val itemMapper = {
-        id: Uuid,
-        plaid_institution_id: String,
-        _: Uuid?,
-        name: String,
-        logo: String,
+            id: Uuid,
+            plaid_institution_id: String,
+            _: Uuid?,
+            name: String,
+            logo: String,
         ->
-        log.d { "mapping item $id" }
         PlaidItem(
             id = id,
             plaidInstitutionId = plaid_institution_id,

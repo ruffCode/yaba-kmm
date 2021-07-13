@@ -39,8 +39,13 @@ FROM
 
 
 insertAccount:
-INSERT OR REPLACE INTO AccountEntity
-VALUES ?;
+INSERT INTO AccountEntity
+VALUES ?
+ON CONFLICT(id)
+    DO UPDATE SET
+        current_balance = excluded.current_balance,
+        available_balance = excluded.available_balance,
+        hidden = excluded.hidden;
 
 selectAll:
 SELECT * FROM UserAccount

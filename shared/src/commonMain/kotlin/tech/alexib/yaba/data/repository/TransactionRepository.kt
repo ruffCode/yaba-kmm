@@ -96,7 +96,6 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
         }
 
     override suspend fun updateTransactions(updateId: Uuid) {
-        delay(1000)
         withContext(backgroundDispatcher) {
             when (val update = getUpdate(updateId).firstOrNull()) {
                 is ApolloResponse.Success -> {
@@ -104,12 +103,15 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
                         val itemId = update.data.added?.firstOrNull()?.itemId
                         update.data.added?.let {
                             dao.insert(it.toEntities())
+                            log.d { "updateTransactions inserted ${it.size}" }
                         }
                         update.data.removed?.let {
+                            log.d { "updateTransactions deleted ${it.size}" }
                             delete(it)
                         }
                         itemId?.let {
                             accountRepository.updateByItemId(it)
+                            log.d { "updateTransactions updateByItemId $it" }
                         }
                     }
                 }

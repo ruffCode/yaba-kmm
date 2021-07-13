@@ -61,11 +61,11 @@ internal class AccountDaoImpl(
     }
 
     override suspend fun insert(accounts: List<AccountEntity>) {
-        database.transactionWithContext(backgroundDispatcher) {
-            accounts.forEach {
-                accountQueries.insertAccount(it)
-            }
-        }
+       withContext(backgroundDispatcher){
+           accounts.forEach {
+               accountQueries.insertAccount(it)
+           }
+       }
     }
 
     override suspend fun selectAll(userId: Uuid): Flow<List<Account>> {

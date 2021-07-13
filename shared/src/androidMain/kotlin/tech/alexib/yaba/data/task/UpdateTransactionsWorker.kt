@@ -21,6 +21,7 @@ import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
+import kotlinx.coroutines.delay
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import tech.alexib.yaba.data.repository.TransactionRepository
@@ -43,17 +44,9 @@ class UpdateTransactionsWorker(
 
         requestString?.let {
             val updateId = uuidFrom(it)
+            delay(2000)
             transactionRepository.updateTransactions(updateId)
         }
         return Result.success()
     }
 }
-
-// object W {
-//
-//     fun doIt(workManager: WorkManager) {
-//         val work = OneTimeWorkRequestBuilder<UpdateTransactionsWorker>()
-//             .setInputData(UpdateTransactionsWorker.addIds(emptyList())).build()
-//         workManager.enqueue(work)
-//     }
-// }
