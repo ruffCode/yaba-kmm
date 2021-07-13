@@ -17,12 +17,15 @@ package tech.alexib.yaba.android
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.util.Log
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import tech.alexib.yaba.AppInfo
 import tech.alexib.yaba.android.fcm.PushTokenManagerImpl
+import tech.alexib.yaba.android.ui.accounts.detail.AccountDetailScreenViewModel
 import tech.alexib.yaba.android.ui.accounts.AccountsScreenViewModel
 import tech.alexib.yaba.android.ui.auth.biometric.BiometricSetupScreenViewModel
 import tech.alexib.yaba.android.ui.auth.login.LoginScreenViewModel
@@ -41,12 +44,22 @@ import tech.alexib.yaba.fcm.PushTokenManager
 
 class MainApp : Application() {
 
-    private val apolloUrl: String = BuildConfig.APOLLO_URL
+
+    var appInfo: ApplicationInfo? = null
+
+    private val serverUrl: String by lazy {
+        appInfo?.metaData?.getString("serverUrl") ?: "https://yabasandbox.alexib.dev/graphql"
+    }
+
+    private val isSandbox: Boolean by lazy {
+        appInfo?.metaData?.getBoolean("isSandbox") ?: true
+    }
 
     private val appModule = module {
         single<Context> { this@MainApp }
         single<AppInfo> { AndroidAppInfo }
-        single(named("serverUrl")) { apolloUrl }
+        single(named("serverUrl")) { serverUrl }
+        single(named("isSandbox")) { isSandbox }
         single {
             { Log.i("Startup", "Hello from Android/Kotlin!") }
         }
@@ -65,10 +78,17 @@ class MainApp : Application() {
         viewModel { TransactionDetailScreenViewModel() }
         single<PushTokenManager> { PushTokenManagerImpl() }
         viewModel { AccountsScreenViewModel() }
+        viewModel { AccountDetailScreenViewModel() }
     }
 
     override fun onCreate() {
         super.onCreate()
+
+        try {
+            appInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
         initKoin(appModule)
     }
 }

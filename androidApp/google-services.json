@@ -57,6 +57,64 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096237098026:android:e9fac932a35c600a8a0f53",
+        "android_client_info": {
+          "package_name": "tech.alexib.yaba.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096237098026-i7t9ec4dpf8g8pg8asdhobe7voa95k5i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwwaLURa7WVx9cOUzCzz0pamn3uHH8SIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096237098026-i7t9ec4dpf8g8pg8asdhobe7voa95k5i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096237098026:android:c3e3374f64e3c9718a0f53",
+        "android_client_info": {
+          "package_name": "tech.alexib.yaba.sandbox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096237098026-i7t9ec4dpf8g8pg8asdhobe7voa95k5i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwwaLURa7WVx9cOUzCzz0pamn3uHH8SIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096237098026-i7t9ec4dpf8g8pg8asdhobe7voa95k5i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
