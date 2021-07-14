@@ -69,6 +69,7 @@ fun Username(
 fun Username(
     usernameState: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
+    modifier: Modifier = Modifier,
     imeAction: ImeAction = ImeAction.Next,
     onImeAction: () -> Unit = {},
 ) {
@@ -83,7 +84,7 @@ fun Username(
                 )
             }
         },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(),
         textStyle = MaterialTheme.typography.body2,
 
