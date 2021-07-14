@@ -22,8 +22,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 import tech.alexib.yaba.android.AppNavigation
 import tech.alexib.yaba.android.YabaBottomBar
 
@@ -33,16 +31,10 @@ fun MainAppLayout(
 ) {
     val navController = rememberNavController()
 
-    val insetsPadding = rememberInsetsPaddingValues(
-        insets = LocalWindowInsets.current.navigationBars
-    )
     Scaffold(
         bottomBar = {
             YabaBottomBar(
                 navController,
-                modifier = Modifier.padding(
-                    insetsPadding
-                )
             )
         },
 

@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import tech.alexib.yaba.data.db.AccountEntity
 import tech.alexib.yaba.data.db.YabaDb
-import tech.alexib.yaba.data.db.sqldelight.transactionWithContext
 import tech.alexib.yaba.model.Account
 import tech.alexib.yaba.model.AccountSubtype
 import tech.alexib.yaba.model.AccountType
@@ -61,11 +60,11 @@ internal class AccountDaoImpl(
     }
 
     override suspend fun insert(accounts: List<AccountEntity>) {
-       withContext(backgroundDispatcher){
-           accounts.forEach {
-               accountQueries.insertAccount(it)
-           }
-       }
+        withContext(backgroundDispatcher) {
+            accounts.forEach {
+                accountQueries.insertAccount(it)
+            }
+        }
     }
 
     override suspend fun selectAll(userId: Uuid): Flow<List<Account>> {

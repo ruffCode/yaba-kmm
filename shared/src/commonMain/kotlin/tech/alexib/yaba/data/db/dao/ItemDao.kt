@@ -87,11 +87,11 @@ internal class ItemDaoImpl(
     }
 
     private val itemMapper = {
-            id: Uuid,
-            plaid_institution_id: String,
-            _: Uuid?,
-            name: String,
-            logo: String,
+        id: Uuid,
+        plaid_institution_id: String,
+        _: Uuid?,
+        name: String,
+        logo: String,
         ->
         PlaidItem(
             id = id,

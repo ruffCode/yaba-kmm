@@ -37,6 +37,12 @@ data class Account(
     val institutionName: String
 )
 
+fun List<Account>.availableCashBalance() =
+    this.filter { it.type == AccountType.DEPOSITORY }.sumOf { it.availableBalance }
+
+fun List<Account>.currentCashBalance() =
+    this.filter { it.type == AccountType.DEPOSITORY }.sumOf { it.currentBalance }
+
 @Serializable
 enum class AccountType {
     DEPOSITORY,

@@ -256,7 +256,7 @@ fun LoginScreenPreview() {
         }
     }
 }
-//Credit to Bryan Herbst https://bryanherbst.com/2021/04/13/compose-autofill/
+// Credit to Bryan Herbst https://bryanherbst.com/2021/04/13/compose-autofill/
 @SuppressLint("UnnecessaryComposedModifier")
 @ExperimentalComposeUiApi
 fun Modifier.autofill(
