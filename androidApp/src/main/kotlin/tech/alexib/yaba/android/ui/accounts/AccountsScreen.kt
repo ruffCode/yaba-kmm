@@ -125,8 +125,11 @@ fun AccountsList(itemsWithAccounts: List<PlaidItemWithAccounts>, onSelected: (Uu
                     )
                 }
                 Money(
-                    amount = itemsWithAccounts.flatMap { it.accounts }
-                        .sumOf { it.currentBalance }
+                    amount = itemsWithAccounts.flatMap {
+                        it.accounts.filter { account ->
+                            account.type == AccountType.DEPOSITORY
+                        }
+                    }.sumOf { it.currentBalance }
                 )
                 AddSpace()
             }

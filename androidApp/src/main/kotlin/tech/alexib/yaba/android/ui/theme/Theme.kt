@@ -16,24 +16,26 @@
 package tech.alexib.yaba.android.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.compositeOver
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
     primaryVariant = Purple700,
     secondary = Teal200
-)
+).withBrandedSurface()
 
 private val LightColorPalette = lightColors(
     primary = BlueSlate,
-    primaryVariant = Purple700,
+    primaryVariant = BlueSlateLight,
     secondary = Teal200,
     error = ErrorDark,
     onError = ErrorLight,
-    background = BlueGray
+    // background = BlueGray
 
     /* Other default colors to override
     background = Color.White,
@@ -43,6 +45,10 @@ private val LightColorPalette = lightColors(
     onBackground = Color.Black,
     onSurface = Color.Black,
     */
+)
+// Credit to Chris Banes
+fun Colors.withBrandedSurface() = copy(
+    surface = primary.copy(alpha = 0.08f).compositeOver(this.surface),
 )
 
 @Composable

@@ -15,6 +15,7 @@
  */
 package tech.alexib.yaba.android.ui.auth.login
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,9 +40,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.AutofillNode
+import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalAutofill
+import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -163,7 +173,14 @@ private fun LoginScreen(
                 email = value
                 actioner(LoginScreenAction.SetEmail(value.text))
             },
-            onImeAction = { focusRequester.requestFocus() }
+            onImeAction = { focusRequester.requestFocus() },
+            modifier = Modifier.autofill(
+                autofillTypes = listOf(AutofillType.EmailAddress, AutofillType.Username),
+                onFill = { value ->
+                    email = TextFieldValue(value)
+                    actioner(LoginScreenAction.SetEmail(value))
+                }
+            )
         )
         AddSpace(8.dp)
 
@@ -174,7 +191,15 @@ private fun LoginScreen(
                 password = value
                 actioner(LoginScreenAction.SetPassword(value.text))
             },
-            modifier = Modifier.focusRequester(focusRequester),
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .autofill(
+                    autofillTypes = listOf(AutofillType.Password),
+                    onFill = { value ->
+                        password = TextFieldValue(value)
+                        actioner(LoginScreenAction.SetPassword(value))
+                    }
+                ),
             onImeAction = { actioner(LoginScreenAction.Login) }
         )
         AddSpace()
@@ -230,4 +255,29 @@ fun LoginScreenPreview() {
         LoginScreen(state = LoginScreenState.Empty) {
         }
     }
+}
+// Credit to Bryan Herbst https://bryanherbst.com/2021/04/13/compose-autofill/
+@SuppressLint("UnnecessaryComposedModifier")
+@ExperimentalComposeUiApi
+fun Modifier.autofill(
+    autofillTypes: List<AutofillType>,
+    onFill: ((String) -> Unit),
+) = composed {
+    val autofill = LocalAutofill.current
+    val autofillNode = AutofillNode(onFill = onFill, autofillTypes = autofillTypes)
+    LocalAutofillTree.current += autofillNode
+
+    this
+        .onGloballyPositioned {
+            autofillNode.boundingBox = it.boundsInWindow()
+        }
+        .onFocusChanged { focusState ->
+            autofill?.run {
+                if (focusState.isFocused) {
+                    requestAutofillForNode(autofillNode)
+                } else {
+                    cancelAutofillForNode(autofillNode)
+                }
+            }
+        }
 }

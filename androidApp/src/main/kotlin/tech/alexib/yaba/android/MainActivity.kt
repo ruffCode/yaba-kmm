@@ -18,11 +18,12 @@ package tech.alexib.yaba.android
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.remember
 import androidx.core.view.WindowCompat
 import com.google.accompanist.insets.ProvideWindowInsets
 import tech.alexib.yaba.android.ui.MainAppLayout
-import tech.alexib.yaba.android.ui.theme.BlueSlate
+import tech.alexib.yaba.android.ui.theme.SysLight
 import tech.alexib.yaba.android.ui.theme.SystemUiController
 import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.data.auth.activityForBio
@@ -35,7 +36,9 @@ class MainActivity : AppCompatActivity() {
         setContent {
             ProvideWindowInsets(consumeWindowInsets = false) {
                 val systemUiController = remember { SystemUiController(window) }
-                systemUiController.setSystemBarsColor(BlueSlate)
+                if (!isSystemInDarkTheme()) {
+                    systemUiController.setSystemBarsColor(SysLight)
+                }
                 YabaTheme {
                     MainAppLayout {
                         finish()

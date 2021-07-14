@@ -116,7 +116,7 @@ private fun Home(
                     onClick = {
                         actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(16.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.link_first_institution),

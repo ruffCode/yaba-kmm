@@ -43,6 +43,7 @@ dependencies {
     implementation("com.plaid.link:sdk-core:3.4.0")
     implementation(Lib.Accompanist.coil)
     implementation(Lib.Accompanist.insets)
+    implementation(Lib.Accompanist.insetsUi)
     implementation(Lib.uuid)
     implementation(platform(Lib.Firebase.bom))
     implementation(Lib.Firebase.analytics)
@@ -147,7 +148,8 @@ android {
             "-Xuse-experimental=androidx.compose.foundation.ExperimentalFoundationApi",
             "-Xuse-experimental=androidx.compose.material.ExperimentalMaterialApi",
             "-Xuse-experimental=androidx.compose.animation.ExperimentalAnimationApi",
-            "-Xuse-experimental=kotlin.time.ExperimentalTime"
+            "-Xuse-experimental=kotlin.time.ExperimentalTime",
+            "-Xuse-experimental=androidx.compose.ui.ExperimentalComposeUiApi"
         )
     }
     packagingOptions {
