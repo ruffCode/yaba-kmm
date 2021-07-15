@@ -7,28 +7,13 @@ fragment Institution on Institution{
 
 query UserTransactions{
     transactionsByUser{
-        type
-        amount
-        date
-        accountId
-        itemId
-        id
-        category
-        subcategory
+        ...Transaction
     }
 }
 
 query UserAccounts{
     accountsByUser{
-        id
-        name
-        currentBalance
-        availableBalance
-        mask
-        itemId
-        type
-        subtype
-        hidden
+        ...Account
     }
 }
 
