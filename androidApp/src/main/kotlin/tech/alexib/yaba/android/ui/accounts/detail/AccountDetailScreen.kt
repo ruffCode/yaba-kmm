@@ -207,7 +207,6 @@ private fun AccountDetailHeader(account: Account, modifier: Modifier = Modifier)
                 Divider()
             }
 
-
             YabaRow(name = "Institution", value = account.institutionName)
         }
     }

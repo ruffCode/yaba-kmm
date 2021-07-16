@@ -50,7 +50,6 @@ import tech.alexib.yaba.android.ui.components.LoadingScreen
 import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.base64ToBitmap
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
-import tech.alexib.yaba.model.PlaidItemStubs
 import tech.alexib.yaba.model.PlaidItemStubs.itemsWithAccounts
 import tech.alexib.yaba.model.PlaidItemWithAccounts
 
