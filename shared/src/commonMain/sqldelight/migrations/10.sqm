@@ -1,0 +1,153 @@
+import com.benasher44.uuid.Uuid;
+import kotlinx.datetime.LocalDate;
+import tech.alexib.yaba.model.AccountSubtype;
+import tech.alexib.yaba.model.AccountType;
+import tech.alexib.yaba.model.TransactionType;
+
+PRAGMA foreign_keys= off;
+
+BEGIN TRANSACTION;
+
+DROP VIEW IF EXISTS UserAccount;
+DROP VIEW IF EXISTS UserTransaction;
+DROP VIEW IF EXISTS UserTransasctionDetail;
+
+
+CREATE TABLE temp_accounts
+(
+    id                TEXT AS Uuid PRIMARY KEY NOT NULL,
+    name              TEXT                     NOT NULL,
+    mask              TEXT                     NOT NULL,
+    current_balance   REAL AS Double           NOT NULL,
+    available_balance REAL AS Double,
+    credit_limit      REAL AS Double,
+    item_id           TEXT AS Uuid             NOT NULL,
+    type              TEXT AS AccountType      NOT NULL,
+    subtype           TEXT AS AccountSubtype   NOT NULL,
+    hidden            INTEGER AS Boolean       NOT NULL DEFAULT 1,
+    CONSTRAINT fk_account_item
+        FOREIGN KEY (item_id) REFERENCES ItemEntity (id)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+);
+
+CREATE TABLE temp_transactions
+(
+    id                TEXT AS Uuid            NOT NULL PRIMARY KEY ON CONFLICT REPLACE,
+    name              TEXT                    NOT NULL,
+    type              TEXT AS TransactionType NOT NULL,
+    amount            REAL AS Double          NOT NULL,
+    date              INTEGER AS LocalDate    NOT NULL,
+    account_id        TEXT AS Uuid            NOT NULL,
+    item_id           TEXT AS Uuid            NOT NULL,
+    category          TEXT,
+    subcategory       TEXT,
+    iso_currency_code TEXT,
+    pending           INTEGER AS Boolean DEFAULT 1,
+    merchant_name     TEXT,
+    CONSTRAINT fk_transaction_account
+        FOREIGN KEY (account_id) REFERENCES temp_accounts (id)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE,
+    CONSTRAINT fk_transaction_item
+        FOREIGN KEY (item_id) REFERENCES ItemEntity (id)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+);
+
+
+INSERT INTO temp_accounts (id, name, mask, current_balance, available_balance, item_id, type, subtype, hidden)
+SELECT id,
+       name,
+       mask,
+       current_balance,
+       available_balance,
+       item_id,
+       type,
+       subtype,
+       hidden
+FROM AccountEntity;
+
+
+INSERT INTO temp_transactions (id, name, type, amount, date, account_id, item_id, category, subcategory,
+                               iso_currency_code, pending, merchant_name)
+SELECT id,
+       name,
+       type,
+       amount,
+       date,
+       account_id,
+       item_id,
+       category,
+       subcategory,
+       iso_currency_code,
+       pending,
+       merchant_name
+FROM TransactionEntity;
+
+DROP TABLE AccountEntity;
+DROP TABLE TransactionEntity;
+
+ALTER TABLE temp_transactions RENAME TO TransactionEntity;
+ALTER TABLE temp_accounts RENAME TO AccountEntity;
+
+CREATE VIEW UserAccount
+AS
+SELECT a.id,
+       a.item_id,
+       i.user_id,
+       a.name,
+       a.mask,
+       a.current_balance,
+       a.available_balance,
+       a.credit_limit,
+       a.type,
+       a.subtype,
+       a.hidden,
+       i.name AS institutionName
+FROM AccountEntity a
+         LEFT JOIN itemWithLogo i ON i.id = a.item_id;
+
+CREATE VIEW UserTransaction
+AS
+SELECT t.id,
+       t.account_id,
+       t.item_id,
+       a.user_id,
+       t.category,
+       t.subcategory,
+       t.type,
+       t.name,
+       t.merchant_name,
+       t.date,
+       t.amount,
+       t.iso_currency_code,
+       t.pending
+FROM TransactionEntity t
+         LEFT JOIN UserAccount a ON t.account_id = a.id;
+
+CREATE VIEW UserTransasctionDetail
+AS
+SELECT t.id,
+       t.account_id,
+       t.item_id,
+       a.user_id,
+       t.category,
+       t.subcategory,
+       t.type,
+       t.name,
+       t.iso_currency_code,
+       t.date,
+       t.amount,
+       t.pending,
+       t.merchant_name,
+       a.name AS accountName,
+       a.mask,
+       a.institutionName
+FROM TransactionEntity t
+         LEFT JOIN UserAccount a ON t.account_id = a.id;
+
+COMMIT;
+
+PRAGMA foreign_keys= on;
+

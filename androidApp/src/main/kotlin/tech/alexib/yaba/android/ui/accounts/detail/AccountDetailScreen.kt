@@ -194,10 +194,20 @@ private fun AccountDetailHeader(account: Account, modifier: Modifier = Modifier)
                 modifier = Modifier.padding(8.dp)
             )
             Divider()
-            YabaRow(name = "Available balance") {
-                Money(amount = account.availableBalance)
+            account.availableBalance?.let {
+                YabaRow(name = "Available balance") {
+                    Money(amount = it)
+                }
+                Divider()
             }
-            Divider()
+            account.creditLimit?.let {
+                YabaRow(name = "Total limit") {
+                    Money(amount = it)
+                }
+                Divider()
+            }
+
+
             YabaRow(name = "Institution", value = account.institutionName)
         }
     }

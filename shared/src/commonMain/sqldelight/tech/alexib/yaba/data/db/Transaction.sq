@@ -15,9 +15,11 @@ subcategory TEXT,
 iso_currency_code TEXT,
 pending INTEGER AS Boolean DEFAULT 1,
 merchant_name TEXT,
+CONSTRAINT fk_transaction_account
 FOREIGN KEY(account_id) REFERENCES AccountEntity(id)
 ON DELETE CASCADE
 ON UPDATE CASCADE,
+CONSTRAINT fk_transaction_item
 FOREIGN KEY(item_id) REFERENCES ItemEntity(id)
 ON DELETE CASCADE
 ON UPDATE CASCADE
@@ -43,7 +45,7 @@ SELECT
 FROM TransactionEntity t
            LEFT JOIN UserAccount a ON t.account_id = a.id;
 
-CREATE VIEW UserTransasctionDetail
+CREATE VIEW UserTransactionDetail
 AS
 SELECT
     t.id,
@@ -86,12 +88,12 @@ LIMIT 5;
 
 selectById:
 SELECT *
-FROM UserTransasctionDetail
+FROM UserTransactionDetail
 WHERE id = ?;
 
 selectAllByAccountIdWithDetail:
 SELECT *
-FROM UserTransasctionDetail
+FROM UserTransactionDetail
 WHERE account_id = ?
 ORDER BY date DESC;
 
@@ -103,7 +105,7 @@ ORDER BY date DESC;
 
 selectByItemId:
 SELECT *
-FROM UserTransasctionDetail
+FROM UserTransactionDetail
 WHERE item_id = ?
 ORDER BY date DESC;
 

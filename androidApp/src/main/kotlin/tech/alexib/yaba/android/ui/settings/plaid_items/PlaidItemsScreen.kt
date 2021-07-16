@@ -51,6 +51,7 @@ import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.base64ToBitmap
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.model.PlaidItemStubs
+import tech.alexib.yaba.model.PlaidItemStubs.itemsWithAccounts
 import tech.alexib.yaba.model.PlaidItemWithAccounts
 
 sealed class PlaidItemsScreenAction {
@@ -211,10 +212,7 @@ fun PlaidItemsScreenPreview() {
     YabaTheme {
         PlaidItemsScreen(
             state = PlaidItemsScreenState(
-                items = listOf(
-                    PlaidItemStubs.itemWithAccounts,
-                    PlaidItemStubs.itemWithAccounts
-                )
+                items = itemsWithAccounts
             )
         ) {
         }

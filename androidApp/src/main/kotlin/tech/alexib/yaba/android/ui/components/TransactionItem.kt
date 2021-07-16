@@ -148,6 +148,6 @@ private fun TransactionItemContent(
 @Composable
 fun TransactionItemPreview() {
     YabaTheme(darkTheme = true) {
-        TransactionItem(transaction = TransactionStubs.transactionStub, false) {}
+        TransactionItem(transaction = TransactionStubs.transaction, false) {}
     }
 }

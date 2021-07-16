@@ -151,15 +151,9 @@ fun AccountsList(itemsWithAccounts: List<PlaidItemWithAccounts>, onSelected: (Uu
                     val logoBitmap = base64ToBitmap(item.base64Logo)
                     items(item.accounts) { account ->
 
-                        val balance = when (account.type) {
-                            AccountType.CREDIT -> account.availableBalance
-                            AccountType.DEPOSITORY -> account.currentBalance
-                            AccountType.INVESTMENT -> account.currentBalance
-                            AccountType.LOAN -> account.currentBalance
-                        }
                         Surface(onClick = { onSelected(account.id, account.itemId) }) {
                             AccountItem(
-                                balance = balance,
+                                balance = account.currentBalance,
                                 logo = logoBitmap,
                                 label = "${account.name} - ${account.mask}"
                             )

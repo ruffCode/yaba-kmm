@@ -15,7 +15,7 @@
  */
 package tech.alexib.yaba.data.stubs
 
-val wellFargoStub = """
+internal val wellFargoStub = """
  {
   "plaidItem": {
     "id": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
@@ -28,7 +28,8 @@ val wellFargoStub = """
       "id": "3cceb823-43ce-4c68-a6bb-bd5f812e4fd8",
       "name": "Plaid Credit Card",
       "currentBalance": 410,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": 2000,
       "mask": "3333",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "CREDIT",
@@ -52,7 +53,8 @@ val wellFargoStub = """
       "id": "8f56f2aa-08ca-4369-80b1-50b211bcda1e",
       "name": "Plaid IRA",
       "currentBalance": 320.76,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": null,
       "mask": "5555",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "INVESTMENT",
@@ -64,7 +66,8 @@ val wellFargoStub = """
       "id": "73eedc86-e063-4aeb-83c5-b21952be8cbf",
       "name": "Plaid 401k",
       "currentBalance": 23631.9805,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": null,
       "mask": "6666",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "INVESTMENT",
@@ -100,7 +103,8 @@ val wellFargoStub = """
       "id": "6c1ca3c5-e19e-4ac7-9d0d-b9347de0410a",
       "name": "Plaid CD",
       "currentBalance": 1000,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": null,
       "mask": "2222",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "DEPOSITORY",
@@ -112,7 +116,8 @@ val wellFargoStub = """
       "id": "da350987-7918-412e-a33e-507c72d1d0d4",
       "name": "Plaid Student Loan",
       "currentBalance": 65262,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": null,
       "mask": "7777",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "LOAN",
@@ -124,7 +129,8 @@ val wellFargoStub = """
       "id": "d803258d-2631-43d4-a3a5-eab7e1bd3cf2",
       "name": "Plaid Mortgage",
       "currentBalance": 56302.06,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": null,
       "mask": "8888",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "LOAN",
@@ -136,7 +142,7 @@ val wellFargoStub = """
 }
 """.trimIndent()
 
-val chaseStub = """
+internal val chaseStub = """
   {
   "plaidItem": {
     "id": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
@@ -149,7 +155,8 @@ val chaseStub = """
       "id": "3cceb823-43ce-4c68-a6bb-bd5f812e4fd8",
       "name": "Plaid Credit Card",
       "currentBalance": 410,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": 2000,
       "mask": "3333",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "CREDIT",
@@ -173,7 +180,8 @@ val chaseStub = """
       "id": "8f56f2aa-08ca-4369-80b1-50b211bcda1e",
       "name": "Plaid IRA",
       "currentBalance": 320.76,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": null,
       "mask": "5555",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "INVESTMENT",
@@ -185,7 +193,8 @@ val chaseStub = """
       "id": "73eedc86-e063-4aeb-83c5-b21952be8cbf",
       "name": "Plaid 401k",
       "currentBalance": 23631.9805,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": null,
       "mask": "6666",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "INVESTMENT",
@@ -221,7 +230,8 @@ val chaseStub = """
       "id": "6c1ca3c5-e19e-4ac7-9d0d-b9347de0410a",
       "name": "Plaid CD",
       "currentBalance": 1000,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": null,
       "mask": "2222",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "DEPOSITORY",
@@ -233,7 +243,8 @@ val chaseStub = """
       "id": "da350987-7918-412e-a33e-507c72d1d0d4",
       "name": "Plaid Student Loan",
       "currentBalance": 65262,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": null,
       "mask": "7777",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "LOAN",
@@ -245,7 +256,8 @@ val chaseStub = """
       "id": "d803258d-2631-43d4-a3a5-eab7e1bd3cf2",
       "name": "Plaid Mortgage",
       "currentBalance": 56302.06,
-      "availableBalance": 0,
+      "availableBalance": null,
+      "creditLimit": null,
       "mask": "8888",
       "itemId": "7042c7e9-4f7c-4d17-bb54-0c64895a26dd",
       "type": "LOAN",

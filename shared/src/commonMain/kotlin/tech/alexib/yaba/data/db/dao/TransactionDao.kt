@@ -87,7 +87,8 @@ internal class TransactionDaoImpl(
         queries.selectById(id, transactionDetailMapper).asFlow().mapToOne()
             .flowOn(backgroundDispatcher)
 
-    override suspend fun selectAllByAccountIdWithDetail(accountId: Uuid): Flow<List<TransactionDetail>> {
+    override suspend fun selectAllByAccountIdWithDetail(accountId: Uuid):
+        Flow<List<TransactionDetail>> {
         return queries.selectAllByAccountIdWithDetail(accountId, transactionDetailMapper).asFlow()
             .mapToList()
             .flowOn(backgroundDispatcher)

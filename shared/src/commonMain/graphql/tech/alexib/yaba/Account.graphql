@@ -14,6 +14,7 @@ fragment Account on Account{
     name
     currentBalance
     availableBalance
+    creditLimit
     mask
     itemId
     type
@@ -23,15 +24,7 @@ fragment Account on Account{
 }
 
 fragment AccountWithTransactions on Account{
-    id
-    name
-    currentBalance
-    availableBalance
-    mask
-    itemId
-    type
-    subtype
-    hidden
+   ...Account
     transactions{
         ...Transaction
     }

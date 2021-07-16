@@ -154,7 +154,7 @@ fun TransactionDateHeader(date: LocalDate) {
 @Composable
 private fun TransactionItemPreview() {
     YabaTheme(darkTheme = true) {
-        TransactionItem(transaction = TransactionStubs.transactionStub) {}
+        TransactionItem(transaction = TransactionStubs.transaction) {}
     }
 }
 

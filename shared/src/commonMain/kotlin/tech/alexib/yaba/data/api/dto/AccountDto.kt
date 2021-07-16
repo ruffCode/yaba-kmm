@@ -24,7 +24,8 @@ internal data class AccountDto(
     val id: Uuid,
     val name: String,
     val currentBalance: Double,
-    val availableBalance: Double,
+    val availableBalance: Double? = null,
+    val creditLimit: Double? = null,
     val mask: String,
     val itemId: Uuid,
     val type: AccountType,
@@ -43,6 +44,7 @@ internal fun tech.alexib.yaba.fragment.Account.toDto(): AccountDto = AccountDto(
     mask = mask,
     availableBalance = availableBalance,
     currentBalance = currentBalance,
+    creditLimit = creditLimit,
     itemId = itemId as Uuid,
     type = AccountType.valueOf(type.name),
     subtype = AccountSubtype.valueOf(subtype.name),
@@ -54,6 +56,7 @@ internal fun AccountDto.toEntity(): AccountEntity = AccountEntity(
     name = name,
     current_balance = currentBalance,
     available_balance = availableBalance,
+    credit_limit = creditLimit,
     mask = mask,
     item_id = itemId,
     type = type,
@@ -65,16 +68,6 @@ internal fun List<AccountDto>.toEntities(): List<AccountEntity> = this.map { it.
 
 internal fun tech.alexib.yaba.fragment.AccountWithTransactions.toAccountWithTransactions() =
     AccountWithTransactionsDto(
-        account = AccountDto(
-            id = id as Uuid,
-            name = name,
-            mask = mask,
-            availableBalance = availableBalance,
-            currentBalance = currentBalance,
-            itemId = itemId as Uuid,
-            type = AccountType.valueOf(type.name),
-            subtype = AccountSubtype.valueOf(subtype.name),
-            hidden = hidden
-        ),
+        account = this.fragments.account.toDto(),
         transactions = transactions.map { it.fragments.transaction.toDto() }
     )
