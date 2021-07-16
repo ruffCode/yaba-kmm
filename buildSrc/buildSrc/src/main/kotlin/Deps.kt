@@ -72,7 +72,7 @@ object Lib {
     object KotlinX {
 
         object Serialization {
-            private const val version = "1.2.1"
+            private const val version = "1.2.2"
             const val core = "org.jetbrains.kotlinx:kotlinx-serialization-core:$version"
             const val json = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version"
         }
@@ -111,7 +111,6 @@ object Lib {
         const val coroutineExtensions = "com.squareup.sqldelight:coroutines-extensions:$version"
         const val androidDriver = "com.squareup.sqldelight:android-driver:$version"
         const val iosDriver = "com.squareup.sqldelight:native-driver:$version"
-
     }
 
     object Arrow {
@@ -167,7 +166,7 @@ object Version {
     const val sqlDelight = "1.5.0"
     const val apollo = "2.5.9"
     const val arrow = "0.13.2"
-    const val compose = "1.0.0-rc01"
+    const val compose = "1.0.0-rc02"
     const val androidTools = "7.1.0-alpha02"
     const val coroutines = "1.5.0-native-mt"
 }
