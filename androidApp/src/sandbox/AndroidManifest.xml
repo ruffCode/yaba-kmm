@@ -3,6 +3,7 @@
     package="tech.alexib.yaba.android">
 
     <application>
+
         <meta-data
             android:name="isSandbox"
             android:value="true" />

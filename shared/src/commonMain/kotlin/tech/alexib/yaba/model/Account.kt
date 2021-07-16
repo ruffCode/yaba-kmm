@@ -44,9 +44,6 @@ fun List<Account>.availableCashBalance() =
 fun List<Account>.currentCashBalance() =
     this.filter { it.type == AccountType.DEPOSITORY }.sumOf { it.currentBalance }
 
-@JvmName("availableCashBalanceDepositoryAccount")
-fun List<DepositoryAccount>.availableCashBalance() = this.sumOf { it.availableBalance ?: 0.0 }
-
 @Serializable
 enum class AccountType {
     DEPOSITORY,

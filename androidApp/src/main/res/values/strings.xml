@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">yaba - KMM</string>
+    <string name="app_name">yaba</string>
     <string name="transaction_notification_channel_id" translatable="false">new_transaction</string>
     <string name="transactions_updated_channel_id" translatable="false">transactions_updated</string>
     <string name="loading_data">Hang on while we fetch your data</string>
