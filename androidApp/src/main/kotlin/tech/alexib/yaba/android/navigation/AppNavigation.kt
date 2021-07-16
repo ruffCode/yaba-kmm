@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.android
+package tech.alexib.yaba.android.navigation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
@@ -32,9 +32,9 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
+import tech.alexib.yaba.android.ui.accounts.AccountsScreen
 import tech.alexib.yaba.android.ui.accounts.detail.AccountDetailScreen
 import tech.alexib.yaba.android.ui.accounts.detail.AccountDetailScreenParams
-import tech.alexib.yaba.android.ui.accounts.AccountsScreen
 import tech.alexib.yaba.android.ui.auth.biometric.BiometricSetupScreen
 import tech.alexib.yaba.android.ui.auth.login.Login
 import tech.alexib.yaba.android.ui.auth.register.RegistrationScreen
@@ -54,49 +54,55 @@ import tech.alexib.yaba.android.ui.transactions.TransactionListScreen
 import tech.alexib.yaba.util.jSerializer
 
 sealed class Route(val route: String) {
-    object Auth : Route("auth")
-    object Home : Route("home")
+    object HomeFeed : Route("home")
     object Settings : Route("settings")
-    object PlaidLink : Route("plaid")
     object Transactions : Route("transactions")
-    object TransactionDetail : Route("transactionDetail") {
+    object Accounts : Route("accounts")
+}
+
+sealed class NestedRoute(val route: String) {
+
+    object HomeFeed : NestedRoute("feedMain")
+
+    object Settings : NestedRoute("settingsMain")
+    object LinkedInstitutions : NestedRoute("linkedInstitutions")
+    object InstitutionDetail : NestedRoute("institutionDetail")
+
+    object Transactions : NestedRoute("transactionsList")
+    object TransactionDetail : NestedRoute("transactionDetail") {
         const val key = "transactionId"
         val argument =
             navArgument(key) { NavType.StringType }
     }
 
-    object Accounts : Route("accounts")
-    object AccountDetail : Route("accountDetails") {
+    object Accounts : NestedRoute("accountsList")
+    object AccountDetail : NestedRoute("accountDetails") {
         const val key = "accountParam"
         val argument = navArgument(key) { NavType.StringType }
     }
 }
 
 sealed class AuthRoute(val route: String) {
+    object Auth : AuthRoute("auth")
     object Splash : AuthRoute("splash")
     object Login : AuthRoute("login")
     object Registration : AuthRoute("registration")
     object BiometricSetup : AuthRoute("biometricSetup")
 }
 
-sealed class SettingsRoute(val route: String) {
-    object Main : SettingsRoute("settingsMain")
-    object LinkedInstitutions : SettingsRoute("linkedInstitutions")
-    object InstitutionDetail : SettingsRoute("institutionDetail")
-}
-
 sealed class PlaidLinkRoute(val route: String) {
-    object Launcher : PlaidLinkRoute("plaidLinkLauncher")
+    object PlaidLink : PlaidLinkRoute("plaid")
+    object PlaidLauncher : PlaidLinkRoute("plaidLinkLauncher")
     object PlaidLinkResult : PlaidLinkRoute("plaidLinkResult")
 }
 
 fun shouldShowBottomBar(navBackStackEntry: NavBackStackEntry?): Boolean {
     return navBackStackEntry?.destination?.hierarchy?.any {
         it.route in listOf(
-            Route.Home.route,
-            SettingsRoute.Main.route,
-            Route.Transactions.route,
-            Route.Accounts.route
+            NestedRoute.HomeFeed.route,
+            NestedRoute.Settings.route,
+            NestedRoute.Transactions.route,
+            NestedRoute.Accounts.route
         )
     } ?: false
 }
@@ -108,18 +114,25 @@ fun AppNavigation(
 ) {
     val authViewModel = getViewModel<SplashScreenViewModel> { parametersOf(navController) }
 
-    NavHost(navController = navController, startDestination = Route.Auth.route) {
+    NavHost(navController = navController, startDestination = AuthRoute.Auth.route) {
 
-        addHome(navController, finishActivity)
+        addHomeFeedRoute(navController, finishActivity)
         addAuthRoute(navController, authViewModel, finishActivity)
         addSettingsRoute(navController)
-        addAccounts(navController)
-        addAccountDetail(navController)
+        addAccountsRoute(navController)
 
-        addTransactions(navController)
-        addTransactionDetail(navController)
+        addTransactionsRoute(navController)
 
         addPlaidLinkLauncherRoute(navController)
+    }
+}
+
+private fun NavGraphBuilder.addHomeFeedRoute(
+    navController: NavController,
+    finishActivity: () -> Unit
+) {
+    navigation(NestedRoute.HomeFeed.route, Route.HomeFeed.route) {
+        addHome(navController, finishActivity)
     }
 }
 
@@ -129,7 +142,7 @@ private fun NavGraphBuilder.addAuthRoute(
     finishActivity: () -> Unit
 ) {
     navigation(
-        route = Route.Auth.route,
+        route = AuthRoute.Auth.route,
         startDestination = AuthRoute.Splash.route
     ) {
         addSplash(splashScreenViewModel)
@@ -139,6 +152,34 @@ private fun NavGraphBuilder.addAuthRoute(
     }
 }
 
+private fun NavGraphBuilder.addSettingsRoute(
+    navController: NavController
+) {
+    navigation(
+        NestedRoute.Settings.route,
+        Route.Settings.route
+    ) {
+        addSettingsMain(navController)
+        addLinkedInstitutions(navController)
+        addInstitutionDetail(navController)
+    }
+}
+
+private fun NavGraphBuilder.addPlaidLinkLauncherRoute(navController: NavController) {
+    navigation(PlaidLinkRoute.PlaidLauncher.route, PlaidLinkRoute.PlaidLink.route) {
+        addPlaidLinkLauncher(navController)
+        addPlaidLinkResult(navController)
+    }
+}
+
+private fun NavGraphBuilder.addTransactionsRoute(navController: NavController) {
+    navigation(NestedRoute.Transactions.route, Route.Transactions.route) {
+        addTransactionsList(navController)
+        addTransactionDetail(navController)
+    }
+}
+
+// -------------Auth routes
 private fun NavGraphBuilder.addSplash(
     splashScreenViewModel: SplashScreenViewModel
 ) {
@@ -193,50 +234,25 @@ private fun NavGraphBuilder.addBiometricSetup(
     }
 }
 
-private fun NavController.handleBack() {
-    if (this.currentBackStackEntry != null) {
-        this.popBackStack()
-    }
-}
-
-private fun NavController.navigateHome() {
-    val navController = this
-    navController.navigate(Route.Home.route) {
-        popUpTo(navController.graph.startDestinationId)
-        launchSingleTop = true
-    }
-}
-
-private fun NavGraphBuilder.addSettingsRoute(
-    navController: NavController
-) {
-    navigation(
-        SettingsRoute.Main.route,
-        Route.Settings.route
-    ) {
-        addSettingsMain(navController)
-        addLinkedInstitutions(navController)
-        addInstitutionDetail(navController)
-    }
-}
+// ----------------Settings routes
 
 private fun NavGraphBuilder.addSettingsMain(
     navController: NavController
 ) {
-    composable(SettingsRoute.Main.route) {
+    composable(NestedRoute.Settings.route) {
         BackHandler {
             navController.handleBack()
         }
         SettingsScreen { navDestination ->
             when (navDestination) {
                 is SettingsScreenAction.NavDestination.Auth -> navController.navigate(
-                    AuthRoute.Splash.route
+                    AuthRoute.Auth.route
                 ) {
                     launchSingleTop = true
                 }
                 is SettingsScreenAction.NavDestination.LinkedInstitutions ->
                     navController.navigate(
-                        SettingsRoute.LinkedInstitutions.route
+                        NestedRoute.LinkedInstitutions.route
                     )
             }
         }
@@ -246,7 +262,7 @@ private fun NavGraphBuilder.addSettingsMain(
 private fun NavGraphBuilder.addLinkedInstitutions(
     navController: NavController
 ) {
-    composable(SettingsRoute.LinkedInstitutions.route) {
+    composable(NestedRoute.LinkedInstitutions.route) {
         BackHandler {
             navController.handleBack()
         }
@@ -258,10 +274,10 @@ private fun NavGraphBuilder.addLinkedInstitutions(
                     "plaidItemDetail",
                     item
                 )
-                navController.navigate(SettingsRoute.InstitutionDetail.route)
+                navController.navigate(NestedRoute.InstitutionDetail.route)
             }
         ) {
-            navController.navigate(PlaidLinkRoute.Launcher.route) {
+            navController.navigate(PlaidLinkRoute.PlaidLink.route) {
                 launchSingleTop = true
             }
         }
@@ -270,7 +286,7 @@ private fun NavGraphBuilder.addLinkedInstitutions(
 
 private fun NavGraphBuilder.addInstitutionDetail(navController: NavController) {
     composable(
-        SettingsRoute.InstitutionDetail.route,
+        NestedRoute.InstitutionDetail.route,
         arguments =
         listOf(
             navArgument("itemId") {
@@ -293,13 +309,13 @@ private fun NavGraphBuilder.addInstitutionDetail(navController: NavController) {
 }
 
 private fun NavGraphBuilder.addHome(navController: NavController, finishActivity: () -> Unit) {
-    composable(Route.Home.route) {
+    composable(NestedRoute.HomeFeed.route) {
         BackHandler {
             finishActivity()
         }
         Home(
             navigateToPlaidLinkScreen = {
-                navController.navigate(PlaidLinkRoute.Launcher.route) {
+                navController.navigate(PlaidLinkRoute.PlaidLink.route) {
                     launchSingleTop = true
                 }
             },
@@ -310,49 +326,43 @@ private fun NavGraphBuilder.addHome(navController: NavController, finishActivity
     }
 }
 
-private fun NavGraphBuilder.addTransactions(navController: NavController) {
-    composable(Route.Transactions.route) {
+// --------------------Transactions
+private fun NavGraphBuilder.addTransactionsList(navController: NavController) {
+    composable(NestedRoute.Transactions.route) {
         BackHandler {
             navController.navigateHome()
         }
         TransactionListScreen(onBack = { navController.navigateHome() }) {
             navController.currentBackStackEntry?.arguments?.putString(
-                Route.TransactionDetail.key,
+                NestedRoute.TransactionDetail.key,
                 it.toString()
             )
-            navController.navigate(Route.TransactionDetail.route)
+            navController.navigate(NestedRoute.TransactionDetail.route)
         }
     }
 }
 
 private fun NavGraphBuilder.addTransactionDetail(navController: NavController) {
     composable(
-        Route.TransactionDetail.route,
-        arguments = listOf(Route.TransactionDetail.argument)
+        NestedRoute.TransactionDetail.route,
+        arguments = listOf(NestedRoute.TransactionDetail.argument)
     ) {
         val param: String? =
             navController.previousBackStackEntry?.arguments?.getString(
-                Route.TransactionDetail.key
+                NestedRoute.TransactionDetail.key
             )
         checkNotNull(param) {
             "transactionId was null"
         }
-
         TransactionDetailScreen(uuidFrom(param)) {
             navController.handleBack()
         }
     }
 }
 
-private fun NavGraphBuilder.addPlaidLinkLauncherRoute(navController: NavController) {
-    navigation(PlaidLinkRoute.Launcher.route, Route.PlaidLink.route) {
-        addPlaidLinkLauncher(navController)
-        addPlaidLinkResult(navController)
-    }
-}
-
+// ---------- Plaid Link
 private fun NavGraphBuilder.addPlaidLinkLauncher(navController: NavController) {
-    composable(PlaidLinkRoute.Launcher.route) {
+    composable(PlaidLinkRoute.PlaidLauncher.route) {
         BackHandler {
             navController.handleBack()
         }
@@ -380,7 +390,7 @@ private fun NavGraphBuilder.addPlaidLinkResult(navController: NavController) {
             navController.navigateHome()
         }
         val result: PlaidLinkScreenResult? =
-            navController.previousBackStackEntry?.arguments?.getParcelable<PlaidLinkScreenResult>(
+            navController.previousBackStackEntry?.arguments?.getParcelable(
                 "plaidItem"
             )
         checkNotNull(result) {
@@ -393,25 +403,39 @@ private fun NavGraphBuilder.addPlaidLinkResult(navController: NavController) {
     }
 }
 
+private fun NavGraphBuilder.addAccountsRoute(
+    navController: NavController
+) {
+    navigation(NestedRoute.Accounts.route, Route.Accounts.route) {
+        addAccounts(navController)
+        addAccountDetail(navController)
+        addTransactionDetail(navController)
+    }
+}
+
 private fun NavGraphBuilder.addAccounts(navController: NavController) {
-    composable(Route.Accounts.route) {
+    composable(NestedRoute.Accounts.route) {
         BackHandler {
-            navController.navigateHome()
+            navController.handleBack()
         }
         AccountsScreen {
             navController.currentBackStackEntry?.arguments?.putString(
-                Route.AccountDetail.key,
+                NestedRoute.AccountDetail.key,
                 jSerializer.encodeToString(it)
             )
-            navController.navigate(Route.AccountDetail.route)
+            navController.navigate(NestedRoute.AccountDetail.route)
         }
     }
 }
 
 private fun NavGraphBuilder.addAccountDetail(navController: NavController) {
-    composable(Route.AccountDetail.route, arguments = listOf(Route.AccountDetail.argument)) {
-        val paramString =
-            navController.previousBackStackEntry?.arguments?.getString(Route.AccountDetail.key)
+    composable(
+        NestedRoute.AccountDetail.route,
+        arguments = listOf(NestedRoute.AccountDetail.argument)
+    ) {
+        val paramString = navController.previousBackStackEntry?.arguments
+            ?.getString(NestedRoute.AccountDetail.key)
+
         checkNotNull(paramString) {
             "AccountDetailParams required"
         }
@@ -419,10 +443,24 @@ private fun NavGraphBuilder.addAccountDetail(navController: NavController) {
 
         AccountDetailScreen(params = params, onBack = { navController.handleBack() }) {
             navController.currentBackStackEntry?.arguments?.putString(
-                Route.TransactionDetail.key,
+                NestedRoute.TransactionDetail.key,
                 it.toString()
             )
-            navController.navigate(Route.TransactionDetail.route)
+            navController.navigate(NestedRoute.TransactionDetail.route)
         }
+    }
+}
+
+private fun NavController.handleBack() {
+    if (this.currentBackStackEntry != null) {
+        this.popBackStack()
+    }
+}
+
+private fun NavController.navigateHome() {
+    val navController = this
+    navController.navigate(Route.HomeFeed.route) {
+        popUpTo(navController.graph.startDestinationId)
+        launchSingleTop = true
     }
 }
