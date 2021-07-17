@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.db
+package tech.alexib.yaba.data.settings
 
 import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
@@ -22,7 +22,7 @@ import com.russhwolf.settings.coroutines.FlowSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-interface AppSettings {
+interface AuthSettings {
     fun userId(): Flow<Uuid?>
     fun showOnboarding(): Flow<Boolean>
     fun token(): Flow<String?>
@@ -34,7 +34,7 @@ interface AppSettings {
 
     class Impl(
         private val flowSettings: FlowSettings
-    ) : AppSettings {
+    ) : AuthSettings {
 
         init {
             ensureNeverFrozen()

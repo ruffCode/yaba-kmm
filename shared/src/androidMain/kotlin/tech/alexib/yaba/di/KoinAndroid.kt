@@ -33,7 +33,7 @@ import tech.alexib.yaba.data.auth.BiometricsManager
 import tech.alexib.yaba.data.auth.BiometricsManagerAndroid
 import tech.alexib.yaba.data.auth.CipherWrapper
 import tech.alexib.yaba.data.auth.SessionManagerAndroid
-import tech.alexib.yaba.data.db.AppSettings
+import tech.alexib.yaba.data.settings.AuthSettings
 import tech.alexib.yaba.data.db.DriverFactory
 import java.io.File
 
@@ -50,7 +50,7 @@ actual val platformModule: Module = module {
     single { CipherWrapper() }
     single { SessionManagerAndroid(get(), get()) }
     single<BiometricsManager> { BiometricsManagerAndroid() }
-    single<AppSettings> { AppSettings.Impl(get()) }
+    single<AuthSettings> { AuthSettings.Impl(get()) }
     single<BiometricSettings> { BiometricSettings.Impl(get(), get()) }
     single<SqlDriver> { DriverFactory(get(), getWith("SqlDelight")).createDriver() }
     single { WorkManager.getInstance(get()) }

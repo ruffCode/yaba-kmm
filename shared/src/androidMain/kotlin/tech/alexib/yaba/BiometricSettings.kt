@@ -15,22 +15,13 @@
  */
 package tech.alexib.yaba
 
-import android.content.Context
 import androidx.biometric.BiometricPrompt
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
-import co.touchlab.kermit.Kermit
 import com.russhwolf.settings.coroutines.FlowSettings
-import com.russhwolf.settings.datastore.DataStoreSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.auth.EncryptionManager
-import tech.alexib.yaba.data.db.AppSettings
+import tech.alexib.yaba.data.settings.AuthSettings
 
 internal interface BiometricSettings {
     suspend fun setBioEnabled(enabled: Boolean)
@@ -44,7 +35,7 @@ internal interface BiometricSettings {
 
     class Impl(
         private val flowSettings: FlowSettings,
-        private val appSettings: AppSettings,
+        private val authSettings: AuthSettings,
     ) : BiometricSettings {
         private val encryptionManager = EncryptionManager
 
@@ -56,7 +47,7 @@ internal interface BiometricSettings {
             if (!enabled) {
                 clearBioToken()
             } else {
-                val token = appSettings.token().firstOrNull()
+                val token = authSettings.token().firstOrNull()
                 if (!token.isNullOrEmpty()) {
                     setBioToken(token)
                 }
@@ -83,7 +74,7 @@ internal interface BiometricSettings {
             if (encryptedToken.isNotBlank()) {
                 val decryptedToken = encryptedToken.decrypt()
                 if (decryptedToken.isNotEmpty()) {
-                    appSettings.setToken(decryptedToken)
+                    authSettings.setToken(decryptedToken)
                 }
             }
         }

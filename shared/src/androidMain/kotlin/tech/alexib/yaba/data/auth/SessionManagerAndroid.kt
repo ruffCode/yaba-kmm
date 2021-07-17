@@ -23,14 +23,14 @@ import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.data.db.AppSettings
+import tech.alexib.yaba.data.settings.AuthSettings
 import tech.alexib.yaba.data.repository.AuthApiRepository
 import tech.alexib.yaba.data.repository.AuthResult
 import tech.alexib.yaba.data.repository.UserRepository
 import tech.alexib.yaba.model.response.AuthResponse
 
 class SessionManagerAndroid(
-    private val yabaAppSettings: AppSettings,
+    private val authSettings: AuthSettings,
     private val biometricsManager: BiometricsManager
 ) : SessionManager, BiometricsManager by biometricsManager, KoinComponent {
 
@@ -42,15 +42,15 @@ class SessionManagerAndroid(
         ensureNeverFrozen()
     }
 
-    override fun isLoggedIn(): Flow<Boolean> = yabaAppSettings.token().map { !it.isNullOrEmpty() }
+    override fun isLoggedIn(): Flow<Boolean> = authSettings.token().map { !it.isNullOrEmpty() }
 
     override suspend fun setToken(token: String) {
-        yabaAppSettings.setToken(token)
+        authSettings.setToken(token)
     }
 
     override suspend fun logout() {
-        yabaAppSettings.clearAuthToken()
-        yabaAppSettings.clearUserId()
+        authSettings.clearAuthToken()
+        authSettings.clearUserId()
     }
 
     override suspend fun login(email: String, password: String): AuthResult {
@@ -78,19 +78,18 @@ class SessionManagerAndroid(
         } else AuthResult.Error("Authentication Error")
     }
 
-    override fun isShowOnBoarding(): Flow<Boolean> = yabaAppSettings.showOnboarding()
+    override fun isShowOnBoarding(): Flow<Boolean> = authSettings.showOnboarding()
 
     @Suppress("EmptyFunctionBlock")
     override fun startLogoutTimer() {
     }
 
     suspend fun clearAppData() {
-        yabaAppSettings.clearAppSettings()
-        biometricsManager.clear()
+        authSettings.clearAppSettings()
         userRepository.deleteCurrentUser()
     }
 
     override suspend fun setUserId(userId: Uuid) {
-        yabaAppSettings.setUserId(userId)
+        authSettings.setUserId(userId)
     }
 }
