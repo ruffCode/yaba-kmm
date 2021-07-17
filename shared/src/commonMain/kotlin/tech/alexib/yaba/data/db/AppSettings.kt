@@ -18,68 +18,68 @@ package tech.alexib.yaba.data.db
 import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.coroutines.FlowSettings
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 
-@ExperimentalSettingsApi
-abstract class AppSettings {
+interface AppSettings {
+    fun userId(): Flow<Uuid?>
+    fun showOnboarding(): Flow<Boolean>
+    fun token(): Flow<String?>
+    suspend fun clearAuthToken()
+    suspend fun clearAppSettings()
+    suspend fun setUserId(userId: Uuid)
+    suspend fun setToken(token: String)
+    suspend fun clearUserId()
 
-    protected abstract val flowSettings: FlowSettings
+    class Impl(
+        private val flowSettings: FlowSettings
+    ) : AppSettings {
 
-    fun userId(): Flow<Uuid?> = flowSettings.getStringOrNullFlow(USER_ID).map { userId ->
-        if (!userId.isNullOrEmpty()) {
-            uuidFrom(userId)
-        } else null
-    }
+        init {
+            ensureNeverFrozen()
+        }
+        override fun userId(): Flow<Uuid?> =
+            flowSettings.getStringOrNullFlow(USER_ID).map { userId ->
+                if (!userId.isNullOrEmpty()) {
+                    uuidFrom(userId)
+                } else null
+            }
 
-    init {
-        ensureNeverFrozen()
-    }
+        override fun showOnboarding(): Flow<Boolean> =
+            flowSettings.getBooleanFlow(SHOW_ONBOARDING, true)
 
-    fun showOnboarding(): Flow<Boolean> = flowSettings.getBooleanFlow(SHOW_ONBOARDING, true)
-    fun isLoggedIn(): Flow<Boolean> = token().map { !it.isNullOrEmpty() }
+        override fun token(): Flow<String?> = flowSettings.getStringOrNullFlow(AUTH_TOKEN)
 
-    fun token(): Flow<String?> = flowSettings.getStringOrNullFlow(AUTH_TOKEN)
+        override suspend fun clearAuthToken() {
+            flowSettings.putString(AUTH_TOKEN, "")
+        }
 
-    private val authTokenFlow = MutableStateFlow<String?>(null)
+        override suspend fun clearAppSettings() {
+            flowSettings.clear()
+        }
 
-    val authToken: StateFlow<String?>
-        get() = authTokenFlow
+        override suspend fun setUserId(userId: Uuid) {
+            flowSettings.putString(USER_ID, userId.toString())
+        }
 
-    suspend fun clearAuthToken() {
-        flowSettings.putString(AUTH_TOKEN, "")
-        authTokenFlow.emit(null)
-    }
+        override suspend fun setToken(token: String) {
+            flowSettings.putString(AUTH_TOKEN, token)
+            setShowOnboarding(false)
+        }
 
-    private suspend fun setShowOnboarding(show: Boolean) {
-        flowSettings.putBoolean(SHOW_ONBOARDING, show)
-    }
+        override suspend fun clearUserId() {
+            flowSettings.putString(USER_ID, "")
+        }
 
-    suspend fun clearAppSettings() {
-        flowSettings.clear()
-    }
+        private suspend fun setShowOnboarding(show: Boolean) {
+            flowSettings.putBoolean(SHOW_ONBOARDING, show)
+        }
 
-    suspend fun setUserId(userId: Uuid) {
-        flowSettings.putString(USER_ID, userId.toString())
-    }
-
-    suspend fun setToken(token: String) {
-        authTokenFlow.value = token
-        flowSettings.putString(AUTH_TOKEN, token)
-        setShowOnboarding(false)
-    }
-
-    suspend fun clearUserId() {
-        flowSettings.putString(USER_ID, "")
-    }
-
-    companion object {
-        private const val AUTH_TOKEN = "AUTH_TOKEN"
-        private const val USER_ID = "USER_ID"
-        private const val SHOW_ONBOARDING = "SHOW_ONBOARDING"
+        companion object {
+            private const val AUTH_TOKEN = "AUTH_TOKEN"
+            private const val USER_ID = "USER_ID"
+            private const val SHOW_ONBOARDING = "SHOW_ONBOARDING"
+        }
     }
 }
