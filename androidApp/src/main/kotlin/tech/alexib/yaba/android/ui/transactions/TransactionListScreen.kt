@@ -37,12 +37,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
-import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.getViewModel
+import tech.alexib.yaba.android.R
 import tech.alexib.yaba.android.ui.components.TransactionItem
 import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.format
@@ -90,17 +92,16 @@ private fun TransactionListScreen(
                         .align(Alignment.TopStart)
                         .padding(top = 4.dp)
                 ) {
-                    Icon(Icons.Filled.ArrowBack, "Back arrow")
+                    Icon(Icons.Filled.ArrowBack, stringResource(R.string.back_arrow))
                 }
                 Text(
-                    text = "Transactions",
+                    text = stringResource(R.string.transactions),
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(12.dp)
                 )
             }
         },
-        modifier = Modifier.statusBarsPadding()
     ) {
         TransactionList(transactions = transactions) {
             onSelected(it)
@@ -109,7 +110,10 @@ private fun TransactionListScreen(
 }
 
 @Composable
-fun TransactionList(transactions: List<Transaction>, onSelected: (Uuid) -> Unit) {
+fun TransactionList(
+    transactions: List<Transaction>,
+    onSelected: (Uuid) -> Unit
+) {
     Card(
         modifier = Modifier
             .wrapContentHeight(Alignment.CenterVertically)

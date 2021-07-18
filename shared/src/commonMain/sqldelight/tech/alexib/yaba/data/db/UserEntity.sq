@@ -8,8 +8,8 @@ insert:
 INSERT INTO UserEntity
 VALUES ?
     ON CONFLICT(id)
-        DO UPDATE SET
-        email = excluded.email;
+        DO UPDATE
+        SET email = excluded.email;
 
 selectById:
 SELECT * FROM UserEntity

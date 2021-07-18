@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.android.ui.settings
+package tech.alexib.yaba.di
 
-import tech.alexib.yaba.data.settings.Theme
+import org.koin.dsl.module
+import tech.alexib.yaba.data.settings.AppSettings
+import tech.alexib.yaba.data.settings.AuthSettings
 
-sealed class SettingsScreenAction {
-    object Logout : SettingsScreenAction()
-    data class Navigate(val destination: NavDestination) : SettingsScreenAction()
-    object ClearAppData : SettingsScreenAction()
-    data class ChangeTheme(val theme: Theme) : SettingsScreenAction()
-
-    sealed class NavDestination {
-        object Auth : NavDestination()
-        object LinkedInstitutions : NavDestination()
-    }
+internal val settingsModule = module {
+    single<AuthSettings> { AuthSettings.Impl(get()) }
+    single<AppSettings> { AppSettings.Impl(get()) }
 }

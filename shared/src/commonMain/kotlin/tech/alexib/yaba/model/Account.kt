@@ -44,9 +44,6 @@ fun List<Account>.availableCashBalance() =
 fun List<Account>.currentCashBalance() =
     this.filter { it.type == AccountType.DEPOSITORY }.sumOf { it.currentBalance }
 
-@JvmName("availableCashBalanceDepositoryAccount")
-fun List<DepositoryAccount>.availableCashBalance() = this.sumOf { it.availableBalance ?: 0.0 }
-
 @Serializable
 enum class AccountType {
     DEPOSITORY,
@@ -56,16 +53,16 @@ enum class AccountType {
 }
 
 @Serializable
-enum class AccountSubtype {
-    CHECKING,
-    SAVINGS,
-    CD,
-    CREDIT_CARD,
-    MONEY_MARKET,
-    IRA,
-    FOUR_HUNDRED_ONE_K,
-    STUDENT,
-    MORTGAGE
+enum class AccountSubtype(val text:String) {
+    CHECKING("Checking"),
+    SAVINGS("Savings"),
+    CD("CD"),
+    CREDIT_CARD("Credit card"),
+    MONEY_MARKET("Money market"),
+    IRA("IRA"),
+    FOUR_HUNDRED_ONE_K("401k"),
+    STUDENT("Student Loan"),
+    MORTGAGE("Mortgage")
 }
 
 sealed class AccountModel {

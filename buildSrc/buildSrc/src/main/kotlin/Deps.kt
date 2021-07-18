@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 @file:SuppressWarnings()
+
 object Lib {
     const val kermit = "co.touchlab:kermit:0.1.9"
     const val stately = "co.touchlab:stately-common:1.1.7"
@@ -34,12 +35,6 @@ object Lib {
         const val analytics = "com.google.firebase:firebase-analytics-ktx"
         const val messagingDirectBoot = "com.google.firebase:firebase-messaging-directboot"
         const val cloudMessaging = "com.google.firebase:firebase-messaging-ktx"
-    }
-
-    object OKHTTP {
-        private const val version = "4.9.0"
-        const val core = "com.squareup.okhttp3:okhttp:$version"
-        const val logging = "com.squareup.okhttp3:logging-interceptor:$version"
     }
 
     object Apollo {
@@ -72,7 +67,7 @@ object Lib {
     object KotlinX {
 
         object Serialization {
-            private const val version = "1.2.1"
+            private const val version = "1.2.2"
             const val core = "org.jetbrains.kotlinx:kotlinx-serialization-core:$version"
             const val json = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version"
         }
@@ -87,7 +82,6 @@ object Lib {
             val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test"
         }
     }
-
 
     object Ktor {
         const val bom = "io.ktor:ktor-bom:1.6.0"
@@ -111,7 +105,7 @@ object Lib {
         const val coroutineExtensions = "com.squareup.sqldelight:coroutines-extensions:$version"
         const val androidDriver = "com.squareup.sqldelight:android-driver:$version"
         const val iosDriver = "com.squareup.sqldelight:native-driver:$version"
-
+        const val gradlePlugin = "com.squareup.sqldelight:gradle-plugin:$version"
     }
 
     object Arrow {
@@ -159,7 +153,6 @@ object Lib {
         const val constraintLayoutCompose =
             "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08"
     }
-
 }
 
 object Version {
@@ -167,11 +160,10 @@ object Version {
     const val sqlDelight = "1.5.0"
     const val apollo = "2.5.9"
     const val arrow = "0.13.2"
-    const val compose = "1.0.0-rc01"
+    const val compose = "1.0.0-rc02"
     const val androidTools = "7.1.0-alpha02"
     const val coroutines = "1.5.0-native-mt"
 }
-
 
 object GradleVersions {
     const val DETEKT = "1.17.1"
@@ -184,8 +176,7 @@ object GradleVersions {
     const val SPOTLESS = "5.14.1"
 }
 
-
-object GradlePlugins{
+object GradlePlugins {
 
     const val DETEKT = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.17.1"
     const val FIREBASE_CRASHLYTICS = "com.google.firebase:firebase-crashlytics-gradle:2.7.0"

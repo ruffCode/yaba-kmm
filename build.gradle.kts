@@ -96,8 +96,8 @@ allprojects {
         }
     }
 }
-
-afterEvaluate {
-    // We install the hook at the first occasion
-    tasks["clean"].dependsOn(tasks.getByName("addKtlintFormatGitPreCommitHook"))
-}
+//
+// afterEvaluate {
+//     // We install the hook at the first occasion
+//     tasks["clean"].dependsOn(tasks.getByName("addKtlintFormatGitPreCommitHook"))
+// }

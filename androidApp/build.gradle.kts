@@ -55,7 +55,7 @@ dependencies {
 
 android {
     compileSdk = 30
-    buildToolsVersion = "30.0.3"
+    buildToolsVersion = "31.0.0"
     defaultConfig {
         applicationId = "tech.alexib.yaba"
         minSdk = 29
@@ -104,19 +104,21 @@ android {
             matchingFallbacks += "release"
             signingConfig = signingConfigs.getByName("debug")
         }
-        create("staging") {
-            initWith(getByName("debug"))
-            manifestPlaceholders["serverUrl"] = "\"https://ruffrevival.ngrok.io/graphql\""
+        if (project.hasProperty("localServerUrl")) {
+            create("staging") {
+                initWith(getByName("debug"))
+                manifestPlaceholders["serverUrl"] = project.property("localServerUrl") as String
+            }
         }
     }
     flavorDimensions.add("environment")
 
     productFlavors {
-        create("dev") {
-            dimension = "environment"
-            applicationIdSuffix = ".dev"
-            versionNameSuffix = "-dev"
-        }
+        // create("dev") {
+        //     dimension = "environment"
+        //     applicationIdSuffix = ".dev"
+        //     versionNameSuffix = "-dev"
+        // }
         create("sandbox") {
             isDefault = true
             dimension = "environment"
@@ -154,11 +156,7 @@ android {
     }
     packagingOptions {
         resources {
-            excludes.add("META-INF/*.version")
-            excludes.add("META-INF/proguard/*")
-            excludes.add("/*.properties")
-            excludes.add("fabric/*.properties")
-            excludes.add("META-INF/*.properties")
+            excludes.add("META-INF/*")
         }
     }
     lint {

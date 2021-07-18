@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">yaba - KMM</string>
+    <string name="app_name">yaba</string>
     <string name="transaction_notification_channel_id" translatable="false">new_transaction</string>
     <string name="transactions_updated_channel_id" translatable="false">transactions_updated</string>
     <string name="loading_data">Hang on while we fetch your data</string>
@@ -8,4 +8,6 @@
     <string name="view_all_transactions">View all transactions</string>
     <string name="hide_password">hide password</string>
     <string name="show_password">show password</string>
+    <string name="back_arrow">Back arrow</string>
+    <string name="transactions">Transactions</string>
 </resources>

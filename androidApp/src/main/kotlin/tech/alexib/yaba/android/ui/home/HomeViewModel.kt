@@ -33,6 +33,7 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.Initializer
 import tech.alexib.yaba.data.repository.AccountRepository
+import tech.alexib.yaba.data.repository.ItemRepository
 import tech.alexib.yaba.data.repository.TransactionRepository
 import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.util.ObservableLoadingCounter
@@ -41,7 +42,8 @@ import tech.alexib.yaba.util.collectInto
 // !!TODO Placeholder/early prototype - hoping to extract this type of logic
 private class HomeDataLoader(
     accountRepository: AccountRepository,
-    transactionRepository: TransactionRepository
+    transactionRepository: TransactionRepository,
+    itemRepository: ItemRepository
 ) {
     private val recentTransactionsParam = MutableStateFlow<Unit?>(null)
     private val currentBalanceParam = MutableStateFlow<Unit?>(null)
@@ -56,6 +58,10 @@ private class HomeDataLoader(
         if (it == null) emptyFlow()
         else accountRepository.currentCashBalance()
     }
+    private val userItemCountFlow: Flow<Long> = currentBalanceParam.flatMapLatest {
+        if (it == null) emptyFlow()
+        else itemRepository.userItemsCount()
+    }
 
     fun observeRecentTransactions(): Flow<List<Transaction>> {
         return recentTransactionFlow
@@ -63,6 +69,10 @@ private class HomeDataLoader(
 
     fun observeCurrentBalance(): Flow<Double> {
         return currentBalanceFlow
+    }
+
+    fun observeUserItemCount(): Flow<Long> {
+        return userItemCountFlow
     }
 
     operator fun invoke() {
@@ -78,17 +88,20 @@ class HomeViewModel(
     private val homeDataLoaderState = ObservableLoadingCounter()
     private val accountRepository: AccountRepository by inject()
     private val transactionRepository: TransactionRepository by inject()
+    private val itemRepository: ItemRepository by inject()
     private val log: Kermit by inject { parametersOf("HomeViewModel") }
     private val scope = viewModelScope
-    private val homeDataLoader = HomeDataLoader(accountRepository, transactionRepository)
+    private val homeDataLoader =
+        HomeDataLoader(accountRepository, transactionRepository, itemRepository)
 
     val state: Flow<HomeScreenState> =
         combine(
             homeDataLoaderState.observable,
             homeDataLoader.observeCurrentBalance().distinctUntilChanged(),
-            homeDataLoader.observeRecentTransactions().distinctUntilChanged()
-        ) { loadingState, cashBalance, recentTransactions ->
-            HomeScreenState(loadingState, cashBalance, recentTransactions)
+            homeDataLoader.observeRecentTransactions().distinctUntilChanged(),
+            homeDataLoader.observeUserItemCount().distinctUntilChanged(),
+        ) { loadingState, cashBalance, recentTransactions, userItemCount ->
+            HomeScreenState(loadingState, cashBalance, recentTransactions, userItemCount)
         }
 
     init {

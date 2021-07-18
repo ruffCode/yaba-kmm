@@ -32,11 +32,11 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.data.db.AppSettings
+import tech.alexib.yaba.data.settings.AuthSettings
 
 internal class UserIdProvider : KoinComponent {
 
-    private val appSettings: AppSettings by inject()
+    private val authSettings: AuthSettings by inject()
     private val backgroundDispatcher: CoroutineDispatcher by inject()
     private val userIdFlow = MutableStateFlow<Uuid>(defaultUserId)
     private val log: Kermit by inject { parametersOf("UserIdProvider") }
@@ -47,7 +47,7 @@ internal class UserIdProvider : KoinComponent {
         ensureNeverFrozen()
 
         CoroutineScope(backgroundDispatcher).launch {
-            appSettings.userId().distinctUntilChanged().collectLatest { userId ->
+            authSettings.userId().distinctUntilChanged().collectLatest { userId ->
                 log.d { "userId set $userId" }
                 userId?.let { userIdFlow.emit(it) }
             }

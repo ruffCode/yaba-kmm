@@ -30,7 +30,8 @@ fun initKoin(appModule: Module): KoinApplication {
             apiModule,
             repositoryModule,
             platformModule,
-            dbModule
+            dbModule,
+            settingsModule
         )
     }
 

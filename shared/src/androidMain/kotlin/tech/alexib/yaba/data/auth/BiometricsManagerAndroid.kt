@@ -47,7 +47,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.BiometricSettings
-import tech.alexib.yaba.data.db.AppSettings
+import tech.alexib.yaba.data.settings.AuthSettings
 import tech.alexib.yaba.data.repository.AuthApiRepository
 import tech.alexib.yaba.data.repository.AuthResult
 import java.util.concurrent.Executor
@@ -58,7 +58,7 @@ class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
 
     private val log: Kermit by inject { parametersOf("BiometricsManagerAndroid") }
     private val biometricSettings: BiometricSettings by inject()
-    private val appSettings: AppSettings by inject()
+    private val authSettings: AuthSettings by inject()
     private val appContext: Context by inject()
     private val authApiRepository: AuthApiRepository by inject()
     private var executor: Executor? = null
@@ -71,13 +71,9 @@ class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
 
     override val isBioEnabled: Flow<Boolean> = biometricSettings.isBioEnabled()
 
-    fun canAuthenticate(): Boolean {
+    private fun canAuthenticate(): Boolean {
         val manager: BiometricManager = BiometricManager.from(appContext)
         return manager.canAuthenticate(BIOMETRIC_STRONG) == BIOMETRIC_SUCCESS
-    }
-
-    override suspend fun clear() {
-        biometricSettings.clear()
     }
 
     override fun shouldPromptSetupBiometrics(): Flow<Boolean> {
@@ -175,7 +171,7 @@ class BiometricsManagerAndroid : BiometricsManager, KoinComponent {
             biometricSettings.handleUnsuccessfulBioLogin()
             false
         } else {
-            appSettings.setUserId(tokenVerificationResponse.id)
+            authSettings.setUserId(tokenVerificationResponse.id)
             true
         }
         return if (tokenIsValid) AuthResult.Success else AuthResult.Error("Unauthorized")

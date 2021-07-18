@@ -24,7 +24,6 @@ interface BiometricsManager {
     fun shouldPromptSetupBiometrics(): Flow<Boolean>
     val bioToken: Flow<String?>
     val isBioEnabled: Flow<Boolean>
-    suspend fun clear()
     suspend fun setBioEnabled(enabled: Boolean)
     suspend fun handleBiometricAuthResult(
         result: BiometricAuthResult,

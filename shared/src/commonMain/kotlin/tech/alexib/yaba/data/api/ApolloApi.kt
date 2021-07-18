@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import tech.alexib.yaba.data.db.AppSettings
+import tech.alexib.yaba.data.settings.AuthSettings
 import tech.alexib.yaba.type.CustomType
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
@@ -47,7 +47,7 @@ internal class ApolloApi(
     log: Kermit,
 ) : KoinComponent, TokenProvider {
 
-    private val appSettings: AppSettings by inject()
+    private val authSettings: AuthSettings by inject()
 
     @Suppress("CanBePrimaryConstructorProperty")
     private val log = log
@@ -85,7 +85,7 @@ internal class ApolloApi(
 
     fun client() = apolloClient
 
-    override suspend fun currentToken(): String = appSettings.token().firstOrNull() ?: ""
+    override suspend fun currentToken(): String = authSettings.token().firstOrNull() ?: ""
 
     override suspend fun refreshToken(previousToken: String): String = ""
 }

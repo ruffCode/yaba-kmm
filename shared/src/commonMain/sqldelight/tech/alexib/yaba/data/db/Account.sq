@@ -56,6 +56,10 @@ selectAll:
 SELECT * FROM UserAccount
 WHERE user_id = ?;
 
+selectAllNotHidden:
+SELECT * FROM UserAccount
+WHERE user_id = ? AND hidden = 'false';
+
 selectById:
 SELECT * FROM UserAccount
 WHERE id = ?;
