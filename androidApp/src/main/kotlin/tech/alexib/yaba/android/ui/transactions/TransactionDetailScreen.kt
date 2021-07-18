@@ -48,7 +48,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
-import com.google.accompanist.insets.statusBarsPadding
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.ui.components.LoadingScreenWithCrossFade
 import tech.alexib.yaba.android.ui.theme.MoneyGreen
@@ -126,7 +125,6 @@ private fun TransactionDetailScreen(
                 )
             }
         },
-        modifier = Modifier.statusBarsPadding()
     ) {
         LoadingScreenWithCrossFade(loadingState = state.loading) {
             if (state.transaction != null) TransactionDetailScreenContent(state.transaction)
