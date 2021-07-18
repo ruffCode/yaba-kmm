@@ -14,23 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "1096237098026-cuot1to9549hscc8jjgf6jvik0t1v3ot.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "tech.alexib.yaba",
-            "certificate_hash": "947c6bd989ef035186d314e6b5fecf2d77ed3d4d"
-          }
-        },
-        {
-          "client_id": "1096237098026-hi599n496g11k4he097athan4h6onb6b.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "tech.alexib.yaba",
-            "certificate_hash": "99928c58f38de279bf11f92f09097616e3c82c1b"
-          }
-        },
-        {
-          "client_id": "1096237098026-vcer6begu731ts7nitrkecv3ondvapsm.apps.googleusercontent.com",
+          "client_id": "1096237098026-58pfb5bbhcpkqo5r4eja7rc5lk8ok7np.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "tech.alexib.yaba",
@@ -67,6 +51,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1096237098026-vffg1er8kvn69soomottbhfk0euu1luo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.alexib.yaba.dev",
+            "certificate_hash": "7e78019bac6be50e43697baf7ef4dc7b7e0aece4"
+          }
+        },
+        {
           "client_id": "1096237098026-i7t9ec4dpf8g8pg8asdhobe7voa95k5i.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -95,6 +87,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1096237098026-4acvm3qh5p8agfqs761fhg73cubjngd3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.alexib.yaba.sandbox",
+            "certificate_hash": "7e78019bac6be50e43697baf7ef4dc7b7e0aece4"
+          }
+        },
+        {
+          "client_id": "1096237098026-e75035dpk88donq86ja717pgmn8fd5jf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.alexib.yaba.sandbox",
+            "certificate_hash": "a9e9a2b0e1c25603687e367ec89c87455f7761d6"
+          }
+        },
         {
           "client_id": "1096237098026-i7t9ec4dpf8g8pg8asdhobe7voa95k5i.apps.googleusercontent.com",
           "client_type": 3

@@ -16,15 +16,6 @@
 package tech.alexib.yaba.android.ui.settings
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.TweenSpec
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,7 +45,6 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -161,7 +151,8 @@ private fun Settings(
 
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        YabaLogo(size = 250)
+
+                        YabaLogo(size = 250, modifier = Modifier.padding(top = 40.dp))
                     }
                 }
 
@@ -263,7 +254,6 @@ fun SettingsScreenPreview() {
         }
     }
 }
-
 
 @Composable
 private fun ThemeButtonRadioGroup(selectedTheme: Theme, setTheme: (Theme) -> Unit) {
