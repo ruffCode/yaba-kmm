@@ -16,20 +16,21 @@
 package tech.alexib.yaba.android
 
 import android.annotation.SuppressLint
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Kermit
 import com.google.accompanist.insets.ProvideWindowInsets
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.named
 import tech.alexib.yaba.android.ui.MainAppLayout
 import tech.alexib.yaba.android.ui.theme.SysDark
 import tech.alexib.yaba.android.ui.theme.SysLight
@@ -39,10 +40,19 @@ import tech.alexib.yaba.data.auth.activityForBio
 import tech.alexib.yaba.data.settings.AppSettings
 import tech.alexib.yaba.data.settings.Theme
 
+@JvmInline
+value class IsSandbox(val value: Boolean)
+
+val LocalIsSandBoxProvider = staticCompositionLocalOf<IsSandbox>() {
+    error("IsSandbox not provided")
+}
+
 class MainActivity : AppCompatActivity(), KoinComponent {
 
     private val appSettings: AppSettings by inject()
     private val log: Kermit by inject { parametersOf("MainActivity") }
+    private val isSandBox: Boolean by inject(named("isSandbox"))
+
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,16 +72,20 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                 Theme.LIGHT -> false
                 else -> isSystemInDarkTheme()
             }
-            ProvideWindowInsets(consumeWindowInsets = false) {
-                val systemUiController = remember { SystemUiController(window) }
-                if (!useDarkTheme) {
-                    systemUiController.setSystemBarsColor(SysLight)
-                } else {
-                    systemUiController.setSystemBarsColor(SysDark)
-                }
-                YabaTheme(useDarkTheme) {
-                    MainAppLayout {
-                        finish()
+            CompositionLocalProvider(
+                LocalIsSandBoxProvider provides IsSandbox(isSandBox)
+            ) {
+                ProvideWindowInsets(consumeWindowInsets = false) {
+                    val systemUiController = remember { SystemUiController(window) }
+                    if (!useDarkTheme) {
+                        systemUiController.setSystemBarsColor(SysLight)
+                    } else {
+                        systemUiController.setSystemBarsColor(SysDark)
+                    }
+                    YabaTheme(useDarkTheme) {
+                        MainAppLayout {
+                            finish()
+                        }
                     }
                 }
             }

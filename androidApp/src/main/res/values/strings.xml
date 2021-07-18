@@ -10,4 +10,6 @@
     <string name="show_password">show password</string>
     <string name="back_arrow">Back arrow</string>
     <string name="transactions">Transactions</string>
+    <string name="sandbox_instructions_heading">Please do not enter your real credentials as they will not work, use the credentials below instead</string>
+    <string name="multifactor_instructions">If asked to use multi-factor authentication, choose any method and enter 1234 for the code</string>
 </resources>

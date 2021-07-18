@@ -17,17 +17,41 @@ package tech.alexib.yaba.android.ui.plaid
 
 import android.os.Parcelable
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.Button
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.benasher44.uuid.Uuid
 import com.plaid.link.PlaidActivityResultContract
 import com.plaid.link.result.LinkResult
 import kotlinx.parcelize.Parcelize
 import org.koin.androidx.compose.getViewModel
+import tech.alexib.yaba.android.LocalIsSandBoxProvider
+import tech.alexib.yaba.android.R
+import tech.alexib.yaba.android.ui.AddSpace
 import tech.alexib.yaba.android.ui.components.LoadingScreen
 import tech.alexib.yaba.android.ui.components.defaultLogoBase64
+import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.model.response.PlaidItemCreateResponse
 
@@ -87,6 +111,7 @@ private fun PlaidLinkScreen(
     viewModel: PlaidLinkViewModel,
     actioner: (PlaidLinkScreenAction) -> Unit
 ) {
+    val isSandbox = LocalIsSandBoxProvider.current
     Box {
         when (state) {
             PlaidLinkResult.Empty -> PlaidLinkHandler(
@@ -98,8 +123,16 @@ private fun PlaidLinkScreen(
                     )
                 },
                 content = { linkLauncher ->
-                    viewModel.linkInstitution { config ->
-                        linkLauncher.launch(config)
+                    if (isSandbox.value) {
+                        SandboxInstructions(modifier = Modifier.align(Alignment.Center)) {
+                            viewModel.linkInstitution { config ->
+                                linkLauncher.launch(config)
+                            }
+                        }
+                    } else {
+                        viewModel.linkInstitution { config ->
+                            linkLauncher.launch(config)
+                        }
                     }
                 }
             )
@@ -152,3 +185,82 @@ private fun PlaidItemCreateResponse.toPlaidItem(): PlaidLinkScreenResult =
             )
         }
     )
+
+@Composable
+fun SandboxInstructions(modifier: Modifier = Modifier, onProceed: () -> Unit) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(16.dp)
+                .wrapContentHeight()
+                .align(Alignment.Center)
+        ) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                Text(
+                    text = "This is a sandbox version of yaba",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.h5
+                        .copy(color = MaterialTheme.colors.primary),
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                Text(
+                    text = stringResource(R.string.sandbox_instructions_heading),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.h6
+                        .copy(color = MaterialTheme.colors.primary),
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+            AddSpace(30.dp)
+
+            Surface(elevation = 3.dp, modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                        Text(
+                            text = "Username: user_good",
+                            style = MaterialTheme.typography.body1.copy(fontSize = 20.sp)
+                        )
+                    }
+
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                        Text(
+                            text = "Password:  pass_good",
+                            style = MaterialTheme.typography.body1.copy(fontSize = 20.sp)
+                        )
+                    }
+                }
+            }
+
+            AddSpace()
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                Text(
+                    text = stringResource(R.string.multifactor_instructions),
+                    style = MaterialTheme.typography.body1.merge(),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+
+            Button(
+                onClick = onProceed,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp, vertical = 40.dp)
+            ) {
+                Text(text = "OK")
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun SandboxInstructionsPreview() {
+    YabaTheme {
+        SandboxInstructions {}
+    }
+}
