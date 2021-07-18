@@ -136,7 +136,7 @@ private fun BiometricSetupScreen(
                 actioner(BiometricSetupScreenAction.PromptSetup)
             }
             NotNowButton {
-                actioner(BiometricSetupScreenAction.PromptSetup)
+                actioner(BiometricSetupScreenAction.Decline)
             }
         }
     }

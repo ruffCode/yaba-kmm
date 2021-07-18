@@ -133,7 +133,10 @@ private fun Home(
                 }
             }
 
-            SlideInContent(visible = state.currentCashBalance != null && state.userItemCount != 0L) {
+            SlideInContent(
+                visible = state.currentCashBalance != null &&
+                    state.userItemCount != 0L
+            ) {
                 TotalCashBalanceRow(state.currentCashBalance)
                 AddSpace()
             }

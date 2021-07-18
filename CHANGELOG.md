@@ -13,3 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sentry
 - function to generate android version code
 
+## [v1.0.2-alpha] - 2021-07-18
+### Fixed
+- Fix screen padding issues
+- Fix biometric setup screen decline action
+
+### Added
+- Enabled "enableResourceOptimizations" gradle option

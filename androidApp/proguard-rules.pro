@@ -17,11 +17,11 @@
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 -keepattributes SourceFile,LineNumberTable
-
+-keepattributes LocalVariableTable, LocalVariableTypeTable
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 -renamesourcefileattribute SourceFile
-
+-optimizations !method/removal/parameter
 # Repackage classes into the top-level.
 -repackageclasses
 -keep class * implements android.os.Parcelable {
@@ -53,3 +53,5 @@
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
 }
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+-keepnames class * extends okhttp3.Interceptor { *; }
