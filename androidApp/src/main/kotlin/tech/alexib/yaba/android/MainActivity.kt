@@ -27,7 +27,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Kermit
 import com.google.accompanist.insets.ProvideWindowInsets
-import io.sentry.Sentry
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf

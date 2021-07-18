@@ -48,8 +48,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.parcelize.Parcelize
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.ui.components.BankLogo

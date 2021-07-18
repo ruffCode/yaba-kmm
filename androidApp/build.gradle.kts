@@ -53,6 +53,7 @@ dependencies {
     implementation(Lib.Jetpack.work)
     implementation(Lib.Jetpack.workMultiProcess)
     implementation("io.sentry:sentry-android:5.0.1")
+    coreLibraryDesugaring(Lib.desugar)
 }
 
 android {

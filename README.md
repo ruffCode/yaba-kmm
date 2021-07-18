@@ -23,6 +23,8 @@ only get fake data.
 Register with any email address you'd like, the format needs to be valid but nothing will be emailed
 to you.
 
+####*You can also grab the latest signed APK from the releases tab.*####
+
 ### Linking financial institutions
 
 When linking a financial institution use the sandbox credentials below. If prompted for an MFA method, 

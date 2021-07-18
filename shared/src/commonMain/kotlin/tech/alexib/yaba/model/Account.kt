@@ -53,7 +53,7 @@ enum class AccountType {
 }
 
 @Serializable
-enum class AccountSubtype(val text:String) {
+enum class AccountSubtype(val text: String) {
     CHECKING("Checking"),
     SAVINGS("Savings"),
     CD("CD"),
