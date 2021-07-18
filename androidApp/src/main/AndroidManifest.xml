@@ -25,7 +25,10 @@
             android:value="false" />
         <meta-data
             android:name="base_url"
-            android:value="${serverUrl}"/>
+            android:value="${serverUrl}" />
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="https://c88ec458703c475ea3ed62e68bb93ee8@o921828.ingest.sentry.io/5869695" />
         <service
             android:name=".fcm.FCMService"
             android:directBootAware="true"
@@ -48,7 +51,6 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
-            tools:node="merge">
-        </provider>
+            tools:node="merge"></provider>
     </application>
 </manifest> 

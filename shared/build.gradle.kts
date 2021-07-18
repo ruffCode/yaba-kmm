@@ -129,12 +129,12 @@ kotlin {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = AndroidConfig.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = 29
-        targetSdk = 30
+        minSdk = AndroidConfig.minSdk
+        targetSdk = AndroidConfig.targetSdk
     }
     lint {
         lintConfig = rootProject.file(".lint/config.xml")

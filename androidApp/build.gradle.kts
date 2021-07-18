@@ -7,6 +7,7 @@ plugins {
     id("kotlin-parcelize")
     kotlin("plugin.serialization")
     id("com.google.gms.google-services")
+    id("io.sentry.android.gradle") version "2.0.1"
 }
 
 val hasReleaseKey: Boolean = project.rootProject.file("release/yaba-release.jks").exists()
@@ -51,17 +52,18 @@ dependencies {
     implementation(Lib.Firebase.messagingDirectBoot)
     implementation(Lib.Jetpack.work)
     implementation(Lib.Jetpack.workMultiProcess)
+    implementation("io.sentry:sentry-android:5.0.1")
 }
 
 android {
-    compileSdk = 30
+    compileSdk = AndroidConfig.compileSdk
     buildToolsVersion = "31.0.0"
     defaultConfig {
         applicationId = "tech.alexib.yaba"
-        minSdk = 29
-        targetSdk = 30
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = AndroidConfig.minSdk
+        targetSdk = AndroidConfig.targetSdk
+        versionCode = AndroidConfig.versionCode
+        versionName = AndroidConfig.versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -174,4 +176,23 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         jvmTarget = "11"
     }
+}
+
+sentry {
+// Enables or disables the automatic upload of mapping files
+    // during a build.  If you disable this, you'll need to manually
+    // upload the mapping files with sentry-cli when you do a release.
+    autoUpload.set(true)
+
+    // Disables or enables the automatic configuration of Native Symbols
+    // for Sentry. This executes sentry-cli automatically so
+    // you don't need to do it manually.
+    // Default is disabled.
+    uploadNativeSymbols.set(true)
+
+    // Does or doesn't include the source code of native code for Sentry.
+    // This executes sentry-cli with the --include-sources param. automatically so
+    // you don't need to do it manually.
+    // Default is disabled.
+    includeNativeSources.set(true)
 }

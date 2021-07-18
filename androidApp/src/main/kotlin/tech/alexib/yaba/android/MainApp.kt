@@ -20,13 +20,15 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.util.Log
+import io.sentry.SentryLevel
+import io.sentry.android.core.SentryAndroid
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import tech.alexib.yaba.AppInfo
 import tech.alexib.yaba.android.fcm.PushTokenManagerImpl
-import tech.alexib.yaba.android.ui.accounts.detail.AccountDetailScreenViewModel
 import tech.alexib.yaba.android.ui.accounts.AccountsScreenViewModel
+import tech.alexib.yaba.android.ui.accounts.detail.AccountDetailScreenViewModel
 import tech.alexib.yaba.android.ui.auth.biometric.BiometricSetupScreenViewModel
 import tech.alexib.yaba.android.ui.auth.login.LoginScreenViewModel
 import tech.alexib.yaba.android.ui.auth.register.RegisterScreenViewModel
@@ -89,6 +91,13 @@ class MainApp : Application() {
             e.printStackTrace()
         }
         initKoin(appModule)
+        SentryAndroid.init(this) { options ->
+            options.setBeforeSend { event, _ ->
+                if (SentryLevel.DEBUG == event.level) {
+                    null
+                } else event
+            }
+        }
     }
 }
 

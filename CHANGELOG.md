@@ -4,14 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v1.0.1-alpha] - 2021-07-18
+#### Initial release
 ### Added
-- Settings screen
-- Logout button
-- Bottom app bar
-
-## [1.0.0] - 2021-06-18
-### Added
-- Login flow
-- Registration flow
+- Sentry
+- function to generate android version code
 
