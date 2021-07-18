@@ -55,7 +55,7 @@ dependencies {
 
 android {
     compileSdk = 30
-    buildToolsVersion = "30.0.3"
+    buildToolsVersion = "31.0.0"
     defaultConfig {
         applicationId = "tech.alexib.yaba"
         minSdk = 29

@@ -37,6 +37,7 @@ import tech.alexib.yaba.model.PlaidItem
 internal interface ItemDao {
     suspend fun insert(item: ItemEntity)
     suspend fun insert(items: List<ItemEntity>)
+    fun count(userId: Uuid): Flow<Long>
     fun selectAll(userId: Uuid): Flow<List<PlaidItem>>
     fun selectById(id: Uuid): Flow<PlaidItem>
     suspend fun deleteById(id: Uuid)
@@ -68,6 +69,10 @@ internal class ItemDaoImpl(
                 item
             )
         }
+    }
+
+    override fun count(userId: Uuid): Flow<Long> {
+        return queries.count(userId).asFlow().mapToOne().flowOn(backgroundDispatcher)
     }
 
     override fun selectAll(userId: Uuid): Flow<List<PlaidItem>> {

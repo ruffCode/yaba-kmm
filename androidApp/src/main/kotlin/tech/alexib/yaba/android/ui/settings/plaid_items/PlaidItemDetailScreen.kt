@@ -96,9 +96,9 @@ fun PlaidItemDetailScreen(
                 }
             }
         },
-        modifier = Modifier
-            .statusBarsPadding()
-            .navigationBarsPadding()
+        // modifier = Modifier
+        //     .statusBarsPadding()
+        //     .navigationBarsPadding()
     ) {
         PlaidItemDetailScreen(
             item = item,
@@ -115,30 +115,29 @@ private fun PlaidItemDetailScreen(
     setAccountHidden: (Boolean, Uuid) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+        LazyColumn(
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 60.dp, start = 16.dp, end = 16.dp)
+                .padding(top = 20.dp, start = 16.dp, end = 16.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(Alignment.CenterVertically),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-                    Text(text = item.name, style = MaterialTheme.typography.h4)
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(Alignment.CenterVertically),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                        Text(text = item.name, style = MaterialTheme.typography.h4)
+                    }
                 }
             }
-            LazyColumn(
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(item.accounts) { account ->
-                    AccountItemDetail(account) { accountId, hidden ->
-                        setAccountHidden(hidden, accountId)
-                    }
+            items(item.accounts) { account ->
+                AccountItemDetail(account) { accountId, hidden ->
+                    setAccountHidden(hidden, accountId)
                 }
             }
         }
@@ -178,7 +177,7 @@ fun AccountItemDetail(account: PlaidItemDetail.Account, onChange: (Uuid, Boolean
             }
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                 Text(
-                    text = account.subtype.name,
+                    text = account.subtype.text,
                     style = MaterialTheme.typography.body1
                 )
             }

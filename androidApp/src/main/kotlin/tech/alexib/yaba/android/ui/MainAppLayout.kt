@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -28,11 +29,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.insets.statusBarsPadding
 import tech.alexib.yaba.android.YabaBottomBar
 import tech.alexib.yaba.android.navigation.AppNavigation
 import tech.alexib.yaba.android.navigation.Route
@@ -43,7 +47,8 @@ fun MainAppLayout(
     finishActivity: () -> Unit
 ) {
     val navController = rememberNavController()
-
+    val configuration = LocalConfiguration.current
+    val width = configuration.screenWidthDp
     Scaffold(
         bottomBar = {
             val selectedRoute by navController.currentRouteAsState()
@@ -54,9 +59,9 @@ fun MainAppLayout(
                     onSelected = { selected ->
                         navController.navigate(selected.route) {
                             launchSingleTop = true
-                            restoreState = true
+                            // restoreState = true
                             popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+                                // saveState = true
                             }
                         }
                     },
@@ -64,7 +69,9 @@ fun MainAppLayout(
                 )
             }
         },
-
+        modifier = Modifier
+            .width(width.dp)
+            .statusBarsPadding()
     ) { contentPadding ->
         Box(
             modifier = Modifier

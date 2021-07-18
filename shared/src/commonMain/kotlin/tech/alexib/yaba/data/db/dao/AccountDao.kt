@@ -34,6 +34,7 @@ internal interface AccountDao {
     suspend fun insert(account: AccountEntity)
     suspend fun insert(accounts: List<AccountEntity>)
     suspend fun selectAll(userId: Uuid): Flow<List<Account>>
+    suspend fun selectAllNotHidden(userId: Uuid): Flow<List<Account>>
     suspend fun selectById(accountId: Uuid): Flow<Account>
     suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
     suspend fun availableBalance(userId: Uuid): Flow<Double>
@@ -65,6 +66,11 @@ internal class AccountDaoImpl(
                 accountQueries.insertAccount(it)
             }
         }
+    }
+
+    override suspend fun selectAllNotHidden(userId: Uuid): Flow<List<Account>> {
+        return accountQueries.selectAllNotHidden(userId, accountMapper).asFlow().mapToList()
+            .flowOn(backgroundDispatcher)
     }
 
     override suspend fun selectAll(userId: Uuid): Flow<List<Account>> {

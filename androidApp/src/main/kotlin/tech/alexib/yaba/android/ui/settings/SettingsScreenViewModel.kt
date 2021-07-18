@@ -18,25 +18,40 @@ package tech.alexib.yaba.android.ui.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Kermit
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.ktx.messaging
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.auth.SessionManagerAndroid
+import tech.alexib.yaba.data.settings.AppSettings
+import tech.alexib.yaba.data.settings.Theme
 import tech.alexib.yaba.fcm.PushTokenManager
 
 class SettingsScreenViewModel : ViewModel(), KoinComponent {
 
+    private val appSettings: AppSettings by inject()
     private val sessionManager: SessionManagerAndroid by inject()
     private val pushTokenManager: PushTokenManager by inject()
     private val log: Kermit by inject { parametersOf("SettingsScreenViewModel") }
 
+    val state: Flow<SettingsScreenState> = appSettings.theme().mapLatest {
+        SettingsScreenState(it)
+    }.distinctUntilChanged()
+
     fun logout() {
         viewModelScope.launch {
             deleteToken()
-            delay(100)
+            delay(300)
             sessionManager.logout()
             delay(300)
         }
@@ -44,26 +59,31 @@ class SettingsScreenViewModel : ViewModel(), KoinComponent {
 
     fun clearAppData() {
         viewModelScope.launch {
-            sessionManager.clearAppData()
             deleteToken()
+            delay(300)
+            sessionManager.clearAppData()
             sessionManager.logout()
             delay(100)
         }
     }
 
-    private fun deleteToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            task.result?.let {
-                pushTokenManager.deleteToken(it)
-            }
-            FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener { deleteTask ->
-                if (deleteTask.isSuccessful) {
-                    log.d { "token cleared" }
-                }
-                if (deleteTask.exception != null) {
-                    log.e { "Error clearing token ${deleteTask.exception?.message}" }
+    private suspend fun deleteToken() {
+        withContext(Dispatchers.Default) {
+            val instance = FirebaseMessaging.getInstance()
+            instance.token.addOnCompleteListener { task ->
+                task.result?.let {
+                    pushTokenManager.deleteToken(it)
+                    Firebase.messaging.isAutoInitEnabled = false
+                    Firebase.analytics.setAnalyticsCollectionEnabled(false)
+                    Firebase.messaging.deleteToken()
                 }
             }
+        }
+    }
+
+    fun setTheme(theme: Theme) {
+        viewModelScope.launch {
+            appSettings.setTheme(theme)
         }
     }
 }

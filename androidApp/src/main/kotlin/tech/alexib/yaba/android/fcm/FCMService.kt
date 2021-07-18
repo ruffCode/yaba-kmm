@@ -34,6 +34,7 @@ class FCMService : FirebaseMessagingService(), KoinComponent {
     private val pushTokenManager: PushTokenManager by inject()
     private val workManager: WorkManager by inject()
     override fun onNewToken(token: String) {
+        log.d { "new token" }
         saveToken(token)
     }
 
@@ -42,6 +43,7 @@ class FCMService : FirebaseMessagingService(), KoinComponent {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
+        log.d { "message received" }
         message.getTransactionUpdatedId()?.let { updateId ->
             val work = OneTimeWorkRequestBuilder<UpdateTransactionsWorker>()
                 .setInputData(UpdateTransactionsWorker.addData(updateId)).build()

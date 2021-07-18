@@ -26,11 +26,11 @@ import androidx.compose.ui.unit.dp
 import tech.alexib.yaba.android.R
 
 @Composable
-fun YabaLogo(size: Int = 500) {
+fun YabaLogo(modifier: Modifier = Modifier, size: Int = 500) {
     Image(
         contentScale = ContentScale.Fit,
         contentDescription = "yaba logo",
-        modifier = Modifier.width(size.dp),
+        modifier = modifier.width(size.dp),
         bitmap = ImageBitmap.imageResource(id = R.drawable.yaba_bg_bl),
     )
 }

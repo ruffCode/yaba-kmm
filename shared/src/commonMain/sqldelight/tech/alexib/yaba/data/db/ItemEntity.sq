@@ -24,6 +24,11 @@ insert:
 INSERT OR IGNORE INTO ItemEntity
 VALUES ?;
 
+count:
+SELECT COUNT(*)
+FROM itemWithLogo
+WHERE user_id = ?;
+
 selectAll:
 SELECT *
 FROM itemWithLogo

@@ -15,45 +15,47 @@
  */
 package tech.alexib.yaba.android.ui.accounts.detail
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Card
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.benasher44.uuid.Uuid
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.ui.AddSpace
 import tech.alexib.yaba.android.ui.components.BankLogoSmall
 import tech.alexib.yaba.android.ui.components.Money
+import tech.alexib.yaba.android.ui.components.SlideInContent
+import tech.alexib.yaba.android.ui.components.TransactionItem
 import tech.alexib.yaba.android.ui.components.YabaRow
-import tech.alexib.yaba.android.ui.transactions.TransactionList
+import tech.alexib.yaba.android.ui.transactions.TransactionDateHeader
 import tech.alexib.yaba.android.util.base64ToBitmap
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.model.Account
@@ -89,7 +91,8 @@ private fun AccountDetailScreen(
     AccountDetailScreen(state = state) { action ->
         when (action) {
             is AccountDetailScreenAction.NavigateBack -> onBack()
-            is AccountDetailScreenAction.OnTransactionSelected -> onTransactionSelected(action.transactionId)
+            is AccountDetailScreenAction.OnTransactionSelected ->
+                onTransactionSelected(action.transactionId)
         }
     }
 }
@@ -125,42 +128,58 @@ private fun AccountDetailScreen(
                 }
             }
         },
-        modifier = Modifier.statusBarsPadding()
     ) {
-        Column(
+
+        LazyColumn(
             modifier = Modifier
-                .navigationBarsPadding(true)
-
+                .fillMaxSize()
         ) {
-            AnimatedVisibility(
-                visible = state.account != null,
-                enter = slideInVertically(
-                    initialOffsetY = { -40 }
-                ) + expandVertically(
-                    expandFrom = Alignment.Top
-                ) + fadeIn(initialAlpha = 0.3f),
-                exit = slideOutVertically() + shrinkVertically() + fadeOut()
-            ) {
-                val modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 4.dp)
 
-                state.account?.let {
-                    AccountDetailHeader(account = it, modifier)
+            item {
+                SlideInContent(visible = state.account != null) {
+                    val modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 4.dp)
+
+                    state.account?.let {
+                        AccountDetailHeader(account = it, modifier)
+                    }
                 }
             }
+            if (state.transactions.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .heightIn(50.dp)
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                            Text(
+                                text = "There are no transactions available for this account",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.body1.merge(),
+                                modifier = Modifier.paddingFromBaseline(top = 30.dp)
+                            )
+                        }
+                    }
+                }
+            } else {
+                state.transactions.groupBy { it.date }.forEach { (date, transactions) ->
+                    stickyHeader {
+                        TransactionDateHeader(date)
+                    }
+                    itemsIndexed(transactions) { index, transaction ->
+                        val needsDivider = index != transactions.lastIndex
+                        TransactionItem(
+                            transaction = transaction,
+                            needsDivider,
 
-            AnimatedVisibility(
-                visible = state.transactions.isNotEmpty(),
-                enter = slideInVertically(
-                    initialOffsetY = { -40 }
-                ) + expandVertically(
-                    expandFrom = Alignment.Top
-                ) + fadeIn(initialAlpha = 0.3f),
-                exit = slideOutVertically() + shrinkVertically() + fadeOut()
-            ) {
-                TransactionList(state.transactions) {
-                    actioner(AccountDetailScreenAction.OnTransactionSelected(it))
+                        ) {
+                            actioner(AccountDetailScreenAction.OnTransactionSelected(it))
+                        }
+                    }
                 }
             }
         }

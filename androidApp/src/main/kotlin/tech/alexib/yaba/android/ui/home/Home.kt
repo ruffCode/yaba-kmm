@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
@@ -45,6 +47,7 @@ import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.R
 import tech.alexib.yaba.android.ui.AddSpace
 import tech.alexib.yaba.android.ui.components.LoadingScreenWithCrossFade
+import tech.alexib.yaba.android.ui.components.SlideInContent
 import tech.alexib.yaba.android.ui.components.TransactionItem
 import tech.alexib.yaba.android.ui.theme.MoneyGreen
 import tech.alexib.yaba.android.util.moneyFormat
@@ -54,8 +57,9 @@ import tech.alexib.yaba.model.Transaction
 @Immutable
 data class HomeScreenState(
     val loading: Boolean = false,
-    val currentCashBalance: Double = 0.0,
-    val recentTransactions: List<Transaction> = emptyList()
+    val currentCashBalance: Double? = null,
+    val recentTransactions: List<Transaction> = emptyList(),
+    val userItemCount: Long? = null
 ) {
     companion object {
         val Empty = HomeScreenState()
@@ -105,27 +109,36 @@ private fun Home(
 ) {
     LoadingScreenWithCrossFade(state.loading) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             AddSpace()
 
-            if (state.currentCashBalance == 0.0) {
+            SlideInContent(visible = state.userItemCount == 0L) {
                 Button(
                     onClick = {
                         actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
                     },
-                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.link_first_institution),
                         style = MaterialTheme.typography.button
                     )
                 }
-            } else {
+            }
+
+            SlideInContent(visible = state.currentCashBalance != null && state.userItemCount != 0L) {
                 TotalCashBalanceRow(state.currentCashBalance)
                 AddSpace()
+            }
+
+            SlideInContent(visible = state.recentTransactions.isNotEmpty()) {
                 RecentTransactions(transactions = state.recentTransactions) {
                     actioner(HomeScreenAction.NavigateToTransactionsScreen)
                 }
@@ -136,7 +149,7 @@ private fun Home(
 
 @Composable
 fun TotalCashBalanceRow(
-    balance: Double
+    balance: Double?
 ) {
     Card(
         modifier = Modifier
@@ -144,7 +157,7 @@ fun TotalCashBalanceRow(
         elevation = 3.dp
     ) {
         BalanceRow(
-            balance = balance,
+            balance = balance ?: 0.0,
             description = stringResource(id = R.string.current_cash_balance),
             modifier = Modifier.padding(16.dp)
         )

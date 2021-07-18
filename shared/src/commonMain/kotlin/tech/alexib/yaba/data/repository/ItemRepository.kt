@@ -52,6 +52,7 @@ interface ItemRepository {
     suspend fun getAllWithAccounts(): Flow<List<PlaidItemWithAccounts>>
     suspend fun newItemData(itemId: Uuid): Boolean
     suspend fun unlinkItem(id: Uuid)
+    fun userItemsCount(): Flow<Long>
 }
 
 internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
@@ -73,6 +74,10 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
 
     override fun getById(id: Uuid): Flow<PlaidItem> = flow {
         emitAll(itemDao.selectById(id))
+    }
+
+    override fun userItemsCount(): Flow<Long> = flow {
+        emitAll(itemDao.count(userIdProvider.userId.value))
     }
 
     override suspend fun getAllWithAccounts(): Flow<List<PlaidItemWithAccounts>> =

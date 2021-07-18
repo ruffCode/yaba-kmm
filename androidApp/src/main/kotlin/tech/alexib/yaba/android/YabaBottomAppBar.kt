@@ -30,16 +30,11 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.ui.BottomNavigation
 import tech.alexib.yaba.android.navigation.Route
-import tech.alexib.yaba.android.navigation.shouldShowBottomBar
 
 @Composable
 fun YabaBottomBar(
@@ -118,99 +113,4 @@ private fun RowScope.NavItem(
         onClick = { onSelected(route) },
         selected = selected
     )
-}
-
-@Composable
-fun YabaBottomBar(navController: NavHostController, modifier: Modifier = Modifier) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination
-
-    if (shouldShowBottomBar(navBackStackEntry)) {
-        BottomNavigation(
-            backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.97f),
-            contentColor = contentColorFor(MaterialTheme.colors.surface),
-            contentPadding = rememberInsetsPaddingValues(LocalWindowInsets.current.navigationBars),
-            modifier = modifier,
-        ) {
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        if (currentRoute?.route == Route.HomeFeed.route) Icons.Filled.Home
-                        else Icons.Outlined.Home,
-                        contentDescription = "home"
-                    )
-                },
-                selected = currentRoute?.route == Route.HomeFeed.route,
-
-                onClick = {
-                    navController.navigate(Route.HomeFeed.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-            )
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        if (currentRoute?.route == Route.Accounts.route)
-                            Icons.Filled.AccountBalance
-                        else Icons.Outlined.AccountBalance,
-                        contentDescription = null
-                    )
-                },
-                selected = currentRoute?.route == Route.Accounts.route,
-                onClick = {
-                    navController.navigate(Route.Accounts.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-            )
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        if (currentRoute?.route == Route.Transactions.route)
-                            Icons.Filled.Search else
-                            Icons.Outlined.Search,
-                        contentDescription = "Transactions"
-                    )
-                },
-                selected = currentRoute?.route == Route.Transactions.route,
-                onClick = {
-                    navController.navigate(Route.Transactions.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
-            )
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        if (currentRoute?.route == Route.Settings.route)
-                            Icons.Filled.Settings else Icons.Outlined.Settings,
-                        contentDescription = "Setting"
-                    )
-                },
-                selected = currentRoute?.route == Route.Settings.route,
-                onClick = {
-                    navController.navigate(Route.Settings.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
-            )
-        }
-    }
 }

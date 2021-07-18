@@ -99,10 +99,10 @@ sealed class PlaidLinkRoute(val route: String) {
 fun shouldShowBottomBar(navBackStackEntry: NavBackStackEntry?): Boolean {
     return navBackStackEntry?.destination?.hierarchy?.any {
         it.route in listOf(
-            NestedRoute.HomeFeed.route,
-            NestedRoute.Settings.route,
-            NestedRoute.Transactions.route,
-            NestedRoute.Accounts.route
+            Route.HomeFeed.route,
+            Route.Settings.route,
+            Route.Transactions.route,
+            Route.Accounts.route
         )
     } ?: false
 }

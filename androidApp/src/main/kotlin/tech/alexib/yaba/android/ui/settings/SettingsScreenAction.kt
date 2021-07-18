@@ -15,10 +15,13 @@
  */
 package tech.alexib.yaba.android.ui.settings
 
+import tech.alexib.yaba.data.settings.Theme
+
 sealed class SettingsScreenAction {
     object Logout : SettingsScreenAction()
     data class Navigate(val destination: NavDestination) : SettingsScreenAction()
     object ClearAppData : SettingsScreenAction()
+    data class ChangeTheme(val theme: Theme) : SettingsScreenAction()
 
     sealed class NavDestination {
         object Auth : NavDestination()

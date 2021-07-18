@@ -23,8 +23,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
 import com.google.accompanist.insets.statusBarsPadding
 import org.koin.androidx.compose.getViewModel
+import tech.alexib.yaba.android.ui.components.LoadingScreenWithCrossFade
 import tech.alexib.yaba.android.ui.theme.MoneyGreen
 import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.moneyFormat
@@ -126,11 +128,16 @@ private fun TransactionDetailScreen(
         },
         modifier = Modifier.statusBarsPadding()
     ) {
-        when {
-            state.loading -> CircularProgressIndicator()
-            state.transaction != null -> TransactionDetailScreenContent(state.transaction)
-            else -> Text(text = "Nothing here")
+        LoadingScreenWithCrossFade(loadingState = state.loading) {
+            if (state.transaction != null) TransactionDetailScreenContent(state.transaction)
+            else Text(text = "Nothing here")
         }
+        //     when {
+        //         state.loading -> CircularProgressIndicator()
+        //         state.transaction != null -> TransactionDetailScreenContent(state.transaction)
+        //         else -> Text(text = "Nothing here")
+        //     }
+        // }
     }
 }
 
@@ -142,12 +149,16 @@ private fun TransactionDetailScreenContent(transaction: TransactionDetail) {
             .fillMaxWidth()
             .wrapContentHeight(align = Alignment.Top)
             .padding(vertical = 30.dp, horizontal = 4.dp),
+
         elevation = 3.dp
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+
         ) {
             Icon(
                 imageVector = Icons.Outlined.ReceiptLong,
@@ -194,63 +205,6 @@ private fun TransactionDetailScreenContent(transaction: TransactionDetail) {
             }
         }
     }
-    // LazyColumn(
-    //     modifier = Modifier.fillMaxSize(),
-    //     contentPadding = PaddingValues(horizontal = 16.dp),
-    //     horizontalAlignment = Alignment.CenterHorizontally
-    // ) {
-    //     item {
-    //         Icon(
-    //             imageVector = Icons.Outlined.ReceiptLong,
-    //             contentDescription = "receipt",
-    //             tint = MoneyGreen,
-    //             modifier = Modifier
-    //                 .size(150.dp)
-    //                 .padding(4.dp)
-    //         )
-    //     }
-    //     item {
-    //         TransactionRow(
-    //             name = transaction.date.shortFormat(),
-    //             value = "$${moneyFormat.format(transaction.amount)}"
-    //         )
-    //     }
-    //     transaction.merchantName?.let { merchantName ->
-    //         item { TransactionRow(name = "Name", value = merchantName) }
-    //     }
-    //
-    //     if (transaction.merchantName != transaction.name) {
-    //         item {
-    //             TransactionRow(
-    //                 name = transaction.merchantName?.let { "Details" } ?: "Name",
-    //                 value = transaction.name
-    //             )
-    //         }
-    //     }
-    //
-    //     item {
-    //         TransactionRow(
-    //             name = "Status",
-    //             value = if (transaction.pending == true) "Pending" else "Posted"
-    //         )
-    //     }
-    //     item {
-    //         TransactionRow(
-    //             name = "Account",
-    //             value = transaction.label
-    //         )
-    //     }
-    //     transaction.category?.let {
-    //         item {
-    //             TransactionRow(name = "Category", value = it)
-    //         }
-    //     }
-    //     transaction.subcategory?.let {
-    //         item {
-    //             TransactionRow(name = "Subcategory", value = it)
-    //         }
-    //     }
-    // }
 }
 
 @Composable
