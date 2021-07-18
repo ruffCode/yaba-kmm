@@ -1,6 +1,7 @@
 ![yaba logo](./assets/yaba.png)
 
 # yaba (yet another budgeting app)
+![yaba logo](./assets/dark.gif) ![yaba logo](./assets/light.gif)
 
 ## Kotlin Multiplatform Mobile
 
@@ -27,7 +28,7 @@ to you.
 
 ### Linking financial institutions
 
-When linking a financial institution use the sandbox credentials below. If prompted for an MFA method, 
+When linking a financial institution use the sandbox credentials below. If prompted for an MFA method,
 choose any of them and enter 1234 for the code. Bank of America does prompt for MFA so take note when linking.
 
 ```
@@ -43,7 +44,7 @@ MFA credentials if the institution you are attempting to link requires them.
 ### Using a local server
 
 * Clone or fork the backend from [https://github.com/ruffCode/yaba-server](https://github.com/ruffCode/yaba-server)
-* Enable staging build type by uncommenting "localServerUrl" in `gradle.properties` and insert the url of your local 
+* Enable staging build type by uncommenting "localServerUrl" in `gradle.properties` and insert the url of your local
   instance
 * If using an insecure host, change the domain value in `staging/res/xms/network-security-config.xml`
 * Install ```./gradlew installSandboxStaging ```
