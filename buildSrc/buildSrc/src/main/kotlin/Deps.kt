@@ -157,11 +157,11 @@ object Lib {
 
 object Version {
     const val kotlin = "1.5.10"
-    const val sqlDelight = "1.5.0"
+    const val sqlDelight = "1.5.1"
     const val apollo = "2.5.9"
     const val arrow = "0.13.2"
     const val compose = "1.0.0-rc02"
-    const val androidTools = "7.1.0-alpha02"
+    const val androidTools = "7.1.0-alpha03"
     const val coroutines = "1.5.0-native-mt"
 }
 
