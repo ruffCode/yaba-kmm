@@ -21,9 +21,9 @@ import kotlinx.coroutines.flow.first
 import tech.alexib.yaba.data.api.ApolloResponse
 import tech.alexib.yaba.data.api.AuthApi
 import tech.alexib.yaba.model.User
-import tech.alexib.yaba.model.response.AuthResponse
 import tech.alexib.yaba.model.request.UserLoginInput
 import tech.alexib.yaba.model.request.UserRegisterInput
+import tech.alexib.yaba.model.response.AuthResponse
 
 sealed class AuthResult {
     object Success : AuthResult()

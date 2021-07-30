@@ -23,10 +23,10 @@ import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.data.settings.AuthSettings
 import tech.alexib.yaba.data.repository.AuthApiRepository
 import tech.alexib.yaba.data.repository.AuthResult
 import tech.alexib.yaba.data.repository.UserRepository
+import tech.alexib.yaba.data.settings.AuthSettings
 import tech.alexib.yaba.model.response.AuthResponse
 
 class SessionManagerAndroid(

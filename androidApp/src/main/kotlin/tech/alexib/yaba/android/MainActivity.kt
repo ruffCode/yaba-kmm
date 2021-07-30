@@ -16,6 +16,8 @@
 package tech.alexib.yaba.android
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -58,13 +60,13 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         super.onCreate(savedInstanceState)
         activityForBio = this
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        // val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
-        //
-        // if (layout == Configuration.SCREENLAYOUT_SIZE_SMALL || layout ==
-        //     Configuration.SCREENLAYOUT_SIZE_NORMAL
-        // ) {
-        //     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        // }
+         val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
+
+         if (layout == Configuration.SCREENLAYOUT_SIZE_SMALL || layout ==
+             Configuration.SCREENLAYOUT_SIZE_NORMAL
+         ) {
+             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+         }
         setContent {
             val themeState = appSettings.theme().collectAsState(initial = Theme.SYSTEM)
             val useDarkTheme = when (themeState.value) {

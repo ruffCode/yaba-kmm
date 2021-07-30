@@ -47,9 +47,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.BiometricSettings
-import tech.alexib.yaba.data.settings.AuthSettings
 import tech.alexib.yaba.data.repository.AuthApiRepository
 import tech.alexib.yaba.data.repository.AuthResult
+import tech.alexib.yaba.data.settings.AuthSettings
 import java.util.concurrent.Executor
 
 lateinit var activityForBio: FragmentActivity

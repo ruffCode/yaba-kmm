@@ -33,8 +33,8 @@ import tech.alexib.yaba.data.auth.BiometricsManager
 import tech.alexib.yaba.data.auth.BiometricsManagerAndroid
 import tech.alexib.yaba.data.auth.CipherWrapper
 import tech.alexib.yaba.data.auth.SessionManagerAndroid
-import tech.alexib.yaba.data.settings.AuthSettings
 import tech.alexib.yaba.data.db.DriverFactory
+import tech.alexib.yaba.data.settings.AuthSettings
 import java.io.File
 
 actual val platformModule: Module = module {

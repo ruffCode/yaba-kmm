@@ -22,9 +22,9 @@ import tech.alexib.yaba.LoginMutation
 import tech.alexib.yaba.RegisterMutation
 import tech.alexib.yaba.VerifyTokenQuery
 import tech.alexib.yaba.model.User
-import tech.alexib.yaba.model.response.AuthResponse
 import tech.alexib.yaba.model.request.UserLoginInput
 import tech.alexib.yaba.model.request.UserRegisterInput
+import tech.alexib.yaba.model.response.AuthResponse
 
 interface AuthApi {
     suspend fun login(userLoginInput: UserLoginInput): Flow<ApolloResponse<AuthResponse>>

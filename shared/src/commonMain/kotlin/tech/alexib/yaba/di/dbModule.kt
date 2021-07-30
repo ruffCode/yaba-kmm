@@ -16,8 +16,8 @@
 package tech.alexib.yaba.di
 
 import org.koin.dsl.module
-import tech.alexib.yaba.data.db.YabaDb
 import tech.alexib.yaba.data.db.YabaDatabase
+import tech.alexib.yaba.data.db.YabaDb
 import tech.alexib.yaba.data.db.dao.AccountDao
 import tech.alexib.yaba.data.db.dao.AccountDaoImpl
 import tech.alexib.yaba.data.db.dao.InstitutionDao
