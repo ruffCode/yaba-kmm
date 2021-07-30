@@ -21,6 +21,9 @@ object Lib {
     const val statelyConcurrency = "co.touchlab:stately-concurrency:1.1.4"
     const val desugar = "com.android.tools:desugar_jdk_libs:1.1.5"
     const val uuid = "com.benasher44:uuid:0.3.0"
+    const val turbine = "app.cash.turbine:turbine:0.5.2"
+    const val junit = "junit:junit:4.13.2"
+    const val robolectric = "org.robolectric:robolectric:4.6.1"
 
     object Koin {
         private const val version = "3.1.2"
@@ -77,26 +80,24 @@ object Lib {
         object Coroutines {
             private const val version = Version.coroutines
             const val bom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:$version"
-            val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core"
-            val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android"
-            val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test"
+            val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+            val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
+            val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
         }
     }
 
-    object Ktor {
-        const val bom = "io.ktor:ktor-bom:1.6.0"
+    object AndroidXTest {
+        val core = "androidx.test:core:${Version.AndroidX.test}"
+        val junit = "androidx.test.ext:junit:${Version.AndroidX.test_ext}"
+        val runner = "androidx.test:runner:${Version.AndroidX.test}"
+        val rules = "androidx.test:rules:${Version.AndroidX.test}"
+    }
 
-        const val clientCore = "io.ktor:ktor-client-core"
-        const val clientJson = "io.ktor:ktor-client-json"
-        const val clientLogging = "io.ktor:ktor-client-logging"
-        const val clientSerialization = "io.ktor:ktor-client-serialization"
-        const val clientAndroid = "io.ktor:ktor-client-android"
-        const val clientEncoding = "io.ktor:ktor-client-encoding"
-//        val clientApache = "io.ktor:ktor-client-apache:${Versions.ktor}"
-//        val slf4j = "org.slf4j:slf4j-simple:${Versions.slf4j}"
-//        val clientIos = "io.ktor:ktor-client-ios:${Versions.ktor}"
-//        val clientCio = "io.ktor:ktor-client-cio:${Versions.ktor}"
-//        val clientJs = "io.ktor:ktor-client-js:${Versions.ktor}"
+    object KotlinTest {
+        val common = "org.jetbrains.kotlin:kotlin-test-common:${Version.kotlin}"
+        val annotations = "org.jetbrains.kotlin:kotlin-test-annotations-common:${Version.kotlin}"
+        val jvm = "org.jetbrains.kotlin:kotlin-test:${Version.kotlin}"
+        val junit = "org.jetbrains.kotlin:kotlin-test-junit:${Version.kotlin}"
     }
 
     object SqlDelight {
@@ -106,6 +107,7 @@ object Lib {
         const val androidDriver = "com.squareup.sqldelight:android-driver:$version"
         const val iosDriver = "com.squareup.sqldelight:native-driver:$version"
         const val gradlePlugin = "com.squareup.sqldelight:gradle-plugin:$version"
+        const val jvm = "com.squareup.sqldelight:sqlite-driver:$version"
     }
 
     object Arrow {
@@ -122,14 +124,19 @@ object Lib {
     }
 
     object Accompanist {
-        private const val version = "0.13.0"
+        private const val version = "0.15.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val insetsUi = "com.google.accompanist:accompanist-insets-ui:$version"
     }
 
-    object Activity {
-        const val activityCompose = "androidx.activity:activity-compose:1.3.0-rc01"
+
+    object AndroidX {
+        const val activity = "androidx.activity:activity-compose:1.3.0"
+        const val constrainLayout =
+            "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08"
+        const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
+        const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha04"
     }
 
     object Compose {
@@ -142,17 +149,18 @@ object Lib {
         const val iconsExtended = "androidx.compose.material:material-icons-extended:$version"
         const val material = "androidx.compose.material:material:$version"
         const val runtime = "androidx.compose.runtime:runtime:$version"
-        const val tooling = "androidx.compose.ui:ui-tooling:1.0.0-beta09"
+        const val tooling = "androidx.compose.ui:ui-tooling:$version"
         const val preview = "androidx.compose.ui:ui-tooling-preview:$version"
         const val ui = "androidx.compose.ui:ui:$version"
         const val uiUtil = "androidx.compose.ui:ui-util:$version"
         const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
     }
 
-    object ConstraintLayout {
-        const val constraintLayoutCompose =
-            "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08"
+    object Moko {
+        const val resourcesGenerator = "dev.icerock.moko:resources-generator:0.16.1"
+        const val mobileMultiplatform = "dev.icerock:mobile-multiplatform:0.12.0"
     }
+
 }
 
 object Version {
@@ -161,27 +169,31 @@ object Version {
     const val apollo = "2.5.9"
     const val arrow = "0.13.2"
     const val compose = "1.0.0"
-    const val androidTools = "7.1.0-alpha05"
     const val coroutines = "1.5.1-native-mt"
+    const val ktLint = "0.41.0"
+
+    object AndroidX {
+        val test = "1.3.0"
+        val test_ext = "1.1.2"
+    }
 }
 
 object GradleVersions {
-    const val DETEKT = "1.17.1"
-    const val FIREBASE_CRASHLYTICS = "2.7.0"
-    const val FIREBASE_PERFORMANCE = "1.4.0"
-    const val GOOGLE_SERVICES = "4.3.8"
-    const val KTLINT = "0.41.0"
-
-    const val SONARQUBE = "3.0"
-    const val SPOTLESS = "5.14.1"
+    const val detekt = "1.17.1"
+    const val androidTools = "7.1.0-alpha05"
+    const val ktLint = "10.1.0"
+    const val spotless = "5.14.1"
+    const val googleServices = "4.3.8"
 }
 
 object GradlePlugins {
-
-    const val DETEKT = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.17.1"
-    const val FIREBASE_CRASHLYTICS = "com.google.firebase:firebase-crashlytics-gradle:2.7.0"
-    const val FIREBASE_PERFORMANCE = "com.google.firebase:perf-plugin:1.4.0"
-    const val GOOGLE_SERVICES = "com.google.gms:google-services:4.3.8"
-    const val SPOTLESS = "com.diffplug.spotless:spotless-plugin-gradle:5.14.1"
-    const val KTLINT = "org.jlleitschuh.gradle:ktlint-gradle:10.1.0"
+    const val detekt = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${GradleVersions.detekt}"
+    const val googleServices = "com.google.gms:google-services:${GradleVersions.googleServices}"
+    const val spotless = "com.diffplug.spotless:spotless-plugin-gradle:${GradleVersions.spotless}"
+    const val ktLint = "org.jlleitschuh.gradle:ktlint-gradle:${GradleVersions.ktLint}"
+    const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.kotlin}"
+    const val android = "com.android.tools.build:gradle:${GradleVersions.androidTools}"
+    const val serialization = "org.jetbrains.kotlin:kotlin-serialization:${Version.kotlin}"
+    const val apollo = "com.apollographql.apollo:apollo-gradle-plugin:${Version.apollo}"
+    const val sqlDelight = "com.squareup.sqldelight:gradle-plugin:${Version.sqlDelight}"
 }
