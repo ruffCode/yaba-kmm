@@ -22,3 +22,12 @@ gradleEnterprise {
 rootProject.name = "Yaba_KMM"
 include(":androidApp")
 include(":shared")
+include(":base")
+include(":data")
+include(":data:domain")
+
+include(":data:network")
+
+
+include(":data:db")
+
