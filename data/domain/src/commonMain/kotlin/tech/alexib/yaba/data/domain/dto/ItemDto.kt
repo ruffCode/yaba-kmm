@@ -18,15 +18,6 @@ package tech.alexib.yaba.data.domain.dto
 import com.benasher44.uuid.Uuid
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import tech.alexib.yaba.core.model.PlaidItem
-import tech.alexib.yaba.core.model.User
-
-@Serializable
-data class NewItemData(
-    val user: User,
-    val item: PlaidItem,
-    val accounts: List<AccountWithTransactionsDto>
-)
 
 @Serializable
 data class ItemDto(
@@ -36,11 +27,3 @@ data class ItemDto(
     @Contextual
     val userId: Uuid
 )
-
-// internal fun ItemDto.toEntity(): ItemEntity = ItemEntity(
-//     id = id,
-//     plaid_institution_id = plaidInstitutionId,
-//     user_id = userId
-// )
-//
-// internal fun List<ItemDto>.toEntities(): List<ItemEntity> = this.map { it.toEntity() }

@@ -29,7 +29,7 @@ import tech.alexib.yaba.model.Institution
 
 internal interface InstitutionDao {
     suspend fun insert(institution: Institution)
-    suspend fun selectAll(): Flow<List<Institution>>
+//    suspend fun selectAll(): Flow<List<Institution>>
 }
 
 internal class InstitutionDaoImpl(
@@ -55,10 +55,10 @@ internal class InstitutionDaoImpl(
         }
     }
 
-    override suspend fun selectAll(): Flow<List<Institution>> {
-        return queries.selectAll(institutionMapper).asFlow().mapToList()
-            .flowOn(backgroundDispatcher)
-    }
+//    override suspend fun selectAll(): Flow<List<Institution>> {
+//        return queries.selectAll(institutionMapper).asFlow().mapToList()
+//            .flowOn(backgroundDispatcher)
+//    }
 
     private val institutionMapper = {
         id: String,

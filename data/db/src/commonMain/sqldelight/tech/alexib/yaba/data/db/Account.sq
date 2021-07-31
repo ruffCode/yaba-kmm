@@ -1,0 +1,91 @@
+import com.benasher44.uuid.Uuid;
+import tech.alexib.yaba.model.AccountSubtype;
+import tech.alexib.yaba.model.AccountType;
+
+
+CREATE TABLE AccountEntity (
+id TEXT AS Uuid PRIMARY KEY NOT NULL,
+name TEXT NOT NULL,
+mask TEXT NOT NULL,
+current_balance REAL AS Double NOT NULL,
+available_balance REAL AS Double,
+credit_limit REAL AS Double,
+item_id TEXT AS Uuid NOT NULL,
+type TEXT AS AccountType NOT NULL,
+subtype TEXT AS AccountSubtype NOT NULL,
+hidden INTEGER AS Boolean NOT NULL DEFAULT 1,
+    CONSTRAINT fk_account_item
+FOREIGN KEY (item_id) REFERENCES ItemEntity(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+
+CREATE VIEW UserAccount
+AS
+SELECT
+    a.id,
+    a.item_id,
+    i.user_id,
+    a.name,
+    a.mask,
+    a.current_balance,
+    a.available_balance,
+    a.credit_limit,
+    a.type,
+    a.subtype,
+    a.hidden,
+    i.name AS institutionName
+FROM
+ AccountEntity  a
+ LEFT JOIN itemWithLogo i ON i.id = a.item_id;
+
+
+
+insertAccount:
+INSERT INTO AccountEntity
+VALUES ?
+ON CONFLICT(id)
+    DO UPDATE SET
+        current_balance = excluded.current_balance,
+        available_balance = excluded.available_balance,
+        credit_limit = excluded.credit_limit,
+        hidden = excluded.hidden;
+
+selectAll:
+SELECT * FROM UserAccount
+WHERE user_id = ?;
+
+selectAllNotHidden:
+SELECT * FROM UserAccount
+WHERE user_id = ? AND hidden = 'false';
+
+selectById:
+SELECT * FROM UserAccount
+WHERE id = ?;
+
+selectAllByItemId:
+SELECT * FROM UserAccount
+WHERE item_id = ?;
+
+selectDetailByItemId:
+SELECT a.id,a.item_id, a.subtype,a.hidden,a.name, a.mask FROM UserAccount a
+WHERE a.item_id = ?;
+
+deleteByItemId:
+DELETE FROM AccountEntity
+WHERE item_id = ?;
+
+availableBalance:
+SELECT SUM(available_balance) AS available
+FROM UserAccount
+WHERE type = 'DEPOSITORY' AND user_id = ? AND UserAccount.hidden = 0;
+
+currentBalance:
+SELECT SUM(current_balance) AS current
+FROM UserAccount
+WHERE type = 'DEPOSITORY' AND user_id = ? AND UserAccount.hidden = 0;
+
+setHidden:
+UPDATE AccountEntity SET hidden = ?
+WHERE id = ?;

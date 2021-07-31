@@ -1,0 +1,14 @@
+query TransactionsById($ids:[UUID!]!){
+    transactionsByIds(ids:$ids){
+        ...Transaction
+    }
+}
+
+query TransactionsUpdate($id:UUID!){
+    transactionsUpdated(updateId: $id){
+        added {
+            ...Transaction
+        }
+        removed
+    }
+}

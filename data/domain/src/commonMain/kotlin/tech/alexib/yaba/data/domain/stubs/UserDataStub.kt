@@ -16,13 +16,13 @@
 package tech.alexib.yaba.data.domain.stubs
 
 import kotlinx.serialization.decodeFromString
-import tech.alexib.yaba.core.model.User
-import tech.alexib.yaba.core.util.jSerializer
 import tech.alexib.yaba.data.domain.dto.AccountDto
 import tech.alexib.yaba.data.domain.dto.InstitutionDto
 import tech.alexib.yaba.data.domain.dto.ItemDto
 import tech.alexib.yaba.data.domain.dto.TransactionDto
 import tech.alexib.yaba.data.domain.dto.UserDataDto
+import tech.alexib.yaba.model.User
+import tech.alexib.yaba.util.jSerializer
 
 object UserDataStub {
 

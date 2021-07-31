@@ -37,7 +37,7 @@ import tech.alexib.yaba.data.repository.Success
 
 internal interface AccountApi {
     suspend fun setHideAccount(hide: Boolean, accountId: Uuid)
-    fun accountById(id: Uuid): Flow<DataResult<AccountDto>>
+//    fun accountById(id: Uuid): Flow<DataResult<AccountDto>>
     fun accountByIdWithTransactions(id: Uuid): Flow<DataResult<AccountWithTransactionsDto>>
     fun accountsByItemId(itemId: Uuid): Flow<DataResult<List<AccountDto>>>
 }
@@ -52,21 +52,21 @@ internal class AccountApiImpl : AccountApi, KoinComponent {
         apolloApi.client().mutate(mutation).execute().firstOrNull()
     }
 
-    override fun accountById(id: Uuid): Flow<DataResult<AccountDto>> {
-        val query = AccountByIdQuery(id)
-        return apolloApi.client().safeQuery(query) {
-            it.accountById.fragments.account.toDto()
-        }.map {
-            when (it) {
-                is ApolloResponse.Success -> Success(
-                    it.data
-                )
-                is ApolloResponse.Error -> ErrorResult(
-                    it.message
-                )
-            }
-        }
-    }
+//    override fun accountById(id: Uuid): Flow<DataResult<AccountDto>> {
+//        val query = AccountByIdQuery(id)
+//        return apolloApi.client().safeQuery(query) {
+//            it.accountById.fragments.account.toDto()
+//        }.map {
+//            when (it) {
+//                is ApolloResponse.Success -> Success(
+//                    it.data
+//                )
+//                is ApolloResponse.Error -> ErrorResult(
+//                    it.message
+//                )
+//            }
+//        }
+//    }
 
     override fun accountByIdWithTransactions(id: Uuid):
         Flow<DataResult<AccountWithTransactionsDto>> {

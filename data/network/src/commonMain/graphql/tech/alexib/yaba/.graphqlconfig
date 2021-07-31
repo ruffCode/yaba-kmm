@@ -1,0 +1,13 @@
+{
+  "name": "yaba GraphQL Schema",
+  "schemaPath": "schema.json",
+  "extensions": {
+    "endpoints": {
+      "Default GraphQL Endpoint": {
+        "url": "http://192.168.86.231:9050/graphql",
+
+        "introspect": true
+      }
+    }
+  }
+}

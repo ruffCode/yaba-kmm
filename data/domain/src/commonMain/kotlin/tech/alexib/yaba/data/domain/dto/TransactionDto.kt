@@ -21,8 +21,8 @@ import com.benasher44.uuid.Uuid
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
-import tech.alexib.yaba.core.model.TransactionType
-import tech.alexib.yaba.core.util.UuidSerializer
+import tech.alexib.yaba.model.TransactionType
+import tech.alexib.yaba.util.UuidSerializer
 
 @Serializable
 data class TransactionDto(

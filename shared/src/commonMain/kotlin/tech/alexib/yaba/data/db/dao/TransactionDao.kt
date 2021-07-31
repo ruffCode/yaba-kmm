@@ -37,16 +37,16 @@ import tech.alexib.yaba.model.TransactionDetail
 import tech.alexib.yaba.model.TransactionType
 
 internal interface TransactionDao {
-    suspend fun insert(transaction: TransactionEntity)
+//    suspend fun insert(transaction: TransactionEntity)
     suspend fun insert(transactions: List<TransactionEntity>)
     suspend fun selectAll(userId: Uuid): Flow<List<Transaction>>
     suspend fun selectById(id: Uuid): Flow<TransactionDetail>
-    suspend fun selectAllByAccountIdWithDetail(accountId: Uuid): Flow<List<TransactionDetail>>
+//    suspend fun selectAllByAccountIdWithDetail(accountId: Uuid): Flow<List<TransactionDetail>>
     fun selectAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
-    suspend fun selectByItemId(itemId: Uuid): Flow<List<TransactionDetail>>
-    suspend fun deleteByItemId(itemId: Uuid)
+//    suspend fun selectByItemId(itemId: Uuid): Flow<List<TransactionDetail>>
+//    suspend fun deleteByItemId(itemId: Uuid)
     suspend fun deleteByAccountId(accountId: Uuid)
-    suspend fun count(userId: Uuid): Flow<Long>
+//    suspend fun count(userId: Uuid): Flow<Long>
     suspend fun selectRecent(userId: Uuid): Flow<List<Transaction>>
     suspend fun deleteById(id: Uuid)
 }
@@ -71,13 +71,13 @@ internal class TransactionDaoImpl(
         }
     }
 
-    override suspend fun insert(transaction: TransactionEntity) {
-        withContext(backgroundDispatcher) {
-            queries.insert(
-                transaction
-            )
-        }
-    }
+//    override suspend fun insert(transaction: TransactionEntity) {
+//        withContext(backgroundDispatcher) {
+//            queries.insert(
+//                transaction
+//            )
+//        }
+//    }
 
     override suspend fun selectAll(userId: Uuid): Flow<List<Transaction>> =
         queries.selectAll(userId, transactionMapper).asFlow().mapToList()
@@ -87,22 +87,22 @@ internal class TransactionDaoImpl(
         queries.selectById(id, transactionDetailMapper).asFlow().mapToOne()
             .flowOn(backgroundDispatcher)
 
-    override suspend fun selectAllByAccountIdWithDetail(accountId: Uuid):
-        Flow<List<TransactionDetail>> {
-        return queries.selectAllByAccountIdWithDetail(accountId, transactionDetailMapper).asFlow()
-            .mapToList()
-            .flowOn(backgroundDispatcher)
-    }
+//    override suspend fun selectAllByAccountIdWithDetail(accountId: Uuid):
+//        Flow<List<TransactionDetail>> {
+//        return queries.selectAllByAccountIdWithDetail(accountId, transactionDetailMapper).asFlow()
+//            .mapToList()
+//            .flowOn(backgroundDispatcher)
+//    }
 
-    override suspend fun selectByItemId(itemId: Uuid): Flow<List<TransactionDetail>> =
-        queries.selectByItemId(itemId, transactionDetailMapper).asFlow().mapToList()
-            .flowOn(backgroundDispatcher)
-
-    override suspend fun deleteByItemId(itemId: Uuid) {
-        withContext(backgroundDispatcher) {
-            queries.deleteByItemId(itemId)
-        }
-    }
+//    override suspend fun selectByItemId(itemId: Uuid): Flow<List<TransactionDetail>> =
+//        queries.selectByItemId(itemId, transactionDetailMapper).asFlow().mapToList()
+//            .flowOn(backgroundDispatcher)
+//
+//    override suspend fun deleteByItemId(itemId: Uuid) {
+//        withContext(backgroundDispatcher) {
+//            queries.deleteByItemId(itemId)
+//        }
+//    }
 
     override fun selectAllByAccountId(accountId: Uuid): Flow<List<Transaction>> =
         queries.selectAllByAccount(accountId, transactionMapper).asFlow().mapToList()
@@ -112,8 +112,8 @@ internal class TransactionDaoImpl(
         queries.selectRecent(userId, transactionMapper).asFlow().mapToList()
             .flowOn(backgroundDispatcher)
 
-    override suspend fun count(userId: Uuid): Flow<Long> =
-        queries.count(userId).asFlow().mapToOne().flowOn(backgroundDispatcher)
+//    override suspend fun count(userId: Uuid): Flow<Long> =
+//        queries.count(userId).asFlow().mapToOne().flowOn(backgroundDispatcher)
 
     override suspend fun deleteByAccountId(accountId: Uuid) {
         withContext(backgroundDispatcher) {

@@ -18,8 +18,8 @@ package tech.alexib.yaba.data.domain.dto
 import com.benasher44.uuid.Uuid
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import tech.alexib.yaba.core.model.AccountSubtype
-import tech.alexib.yaba.core.model.AccountType
+import tech.alexib.yaba.model.AccountSubtype
+import tech.alexib.yaba.model.AccountType
 
 @Serializable
 data class AccountDto(
@@ -36,42 +36,3 @@ data class AccountDto(
     val subtype: AccountSubtype,
     val hidden: Boolean = false,
 )
-@Serializable
-data class AccountWithTransactionsDto(
-    val account: AccountDto,
-    val transactions: List<TransactionDto>,
-)
-
-// internal fun tech.alexib.yaba.fragment.Account.toDto(): AccountDto = AccountDto(
-//     id = id as Uuid,
-//     name = name,
-//     mask = mask,
-//     availableBalance = availableBalance,
-//     currentBalance = currentBalance,
-//     creditLimit = creditLimit,
-//     itemId = itemId as Uuid,
-//     type = AccountType.valueOf(type.name),
-//     subtype = AccountSubtype.valueOf(subtype.name),
-//     hidden = hidden
-// )
-
-// internal fun AccountDto.toEntity(): AccountEntity = AccountEntity(
-//     id = id,
-//     name = name,
-//     current_balance = currentBalance,
-//     available_balance = availableBalance,
-//     credit_limit = creditLimit,
-//     mask = mask,
-//     item_id = itemId,
-//     type = type,
-//     subtype = subtype,
-//     hidden = hidden
-// )
-//
-// internal fun List<AccountDto>.toEntities(): List<AccountEntity> = this.map { it.toEntity() }
-//
-// internal fun tech.alexib.yaba.fragment.AccountWithTransactions.toAccountWithTransactions() =
-//     AccountWithTransactionsDto(
-//         account = this.fragments.account.toDto(),
-//         transactions = transactions.map { it.fragments.transaction.toDto() }
-//     )

@@ -1,0 +1,57 @@
+fragment Institution on Institution{
+    institutionId
+    name
+    logo
+    primaryColor
+}
+
+query UserTransactions{
+    transactionsByUser{
+        ...Transaction
+    }
+}
+
+query UserAccounts{
+    accountsByUser{
+        ...Account
+    }
+}
+
+fragment ItemWithInstitution on Item{
+    id
+    plaidInstitutionId
+    institution{
+        ...Institution
+    }
+}
+
+query NewItemData($id:UUID!){
+    me{
+        id
+        email
+    }
+    itemById(itemId: $id){
+        ...ItemWithInstitution
+        accounts{
+            ...AccountWithTransactions
+        }
+    }
+}
+
+
+
+query AllUserData{
+    me{
+        id
+        email
+        accounts{
+            ...Account
+        }
+        items{
+            ...ItemWithInstitution
+        }
+        transactions{
+            ...Transaction
+        }
+    }
+}

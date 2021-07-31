@@ -36,8 +36,8 @@ internal interface AccountDao {
     suspend fun selectAll(userId: Uuid): Flow<List<Account>>
     suspend fun selectAllNotHidden(userId: Uuid): Flow<List<Account>>
     suspend fun selectById(accountId: Uuid): Flow<Account>
-    suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
-    suspend fun availableBalance(userId: Uuid): Flow<Double>
+//    suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>>
+//    suspend fun availableBalance(userId: Uuid): Flow<Double>
     suspend fun currentBalance(userId: Uuid): Flow<Double>
     suspend fun setHidden(id: Uuid, hidden: Boolean)
 }
@@ -83,14 +83,14 @@ internal class AccountDaoImpl(
             .mapToOne()
             .flowOn(backgroundDispatcher)
 
-    override suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>> =
-        accountQueries.selectAllByItemId(itemId, accountMapper).asFlow().mapToList()
-            .flowOn(backgroundDispatcher)
-
-    override suspend fun availableBalance(userId: Uuid): Flow<Double> =
-        accountQueries.availableBalance(userId) { available -> available ?: 0.0 }.asFlow()
-            .mapToOne()
-            .flowOn(backgroundDispatcher)
+//    override suspend fun selectAllByItemId(itemId: Uuid): Flow<List<Account>> =
+//        accountQueries.selectAllByItemId(itemId, accountMapper).asFlow().mapToList()
+//            .flowOn(backgroundDispatcher)
+//
+//    override suspend fun availableBalance(userId: Uuid): Flow<Double> =
+//        accountQueries.availableBalance(userId) { available -> available ?: 0.0 }.asFlow()
+//            .mapToOne()
+//            .flowOn(backgroundDispatcher)
 
     override suspend fun setHidden(id: Uuid, hidden: Boolean) {
         withContext(backgroundDispatcher) {

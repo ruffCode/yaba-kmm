@@ -33,8 +33,8 @@ import tech.alexib.yaba.data.db.dao.TransactionDao
 import tech.alexib.yaba.model.Account
 
 interface AccountRepository {
-    fun getAll(): Flow<List<Account>>
-    fun availableCashBalance(): Flow<Double>
+//    fun getAll(): Flow<List<Account>>
+//    fun availableCashBalance(): Flow<Double>
     fun currentCashBalance(): Flow<Double>
     fun getById(id: Uuid): Flow<Account>
     suspend fun hide(accountId: Uuid)
@@ -55,13 +55,13 @@ internal class AccountRepositoryImpl : AccountRepository, KoinComponent {
         ensureNeverFrozen()
     }
 
-    override fun getAll(): Flow<List<Account>> = flow {
-        emitAll(accountDao.selectAll(userIdProvider.userId.value))
-    }
-
-    override fun availableCashBalance(): Flow<Double> = flow {
-        emitAll(accountDao.availableBalance(userIdProvider.userId.value))
-    }
+//    override fun getAll(): Flow<List<Account>> = flow {
+//        emitAll(accountDao.selectAll(userIdProvider.userId.value))
+//    }
+//
+//    override fun availableCashBalance(): Flow<Double> = flow {
+//        emitAll(accountDao.availableBalance(userIdProvider.userId.value))
+//    }
 
     override fun currentCashBalance(): Flow<Double> = flow {
         emitAll(accountDao.currentBalance(userIdProvider.userId.value))

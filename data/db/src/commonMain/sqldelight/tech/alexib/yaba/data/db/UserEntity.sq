@@ -1,0 +1,20 @@
+import com.benasher44.uuid.Uuid;
+CREATE TABLE UserEntity (
+id TEXT AS Uuid PRIMARY KEY NOT NULL,
+email TEXT NOT NULL
+);
+
+insert:
+INSERT INTO UserEntity
+VALUES ?
+    ON CONFLICT(id)
+        DO UPDATE
+        SET email = excluded.email;
+
+selectById:
+SELECT * FROM UserEntity
+WHERE id = ?;
+
+deleteById:
+DELETE FROM UserEntity
+WHERE id = ?;

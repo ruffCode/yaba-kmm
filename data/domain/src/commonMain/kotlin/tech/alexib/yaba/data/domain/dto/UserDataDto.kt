@@ -16,7 +16,7 @@
 package tech.alexib.yaba.data.domain.dto
 
 import kotlinx.serialization.Serializable
-import tech.alexib.yaba.core.model.User
+import tech.alexib.yaba.model.User
 
 @Serializable
 data class UserDataDto(

@@ -40,7 +40,7 @@ import tech.alexib.yaba.model.request.UpdateTransactionsRequest
 
 interface TransactionRepository {
     fun recentTransactions(): Flow<List<Transaction>>
-    fun count(): Flow<Long>
+//    fun count(): Flow<Long>
     fun getAll(): Flow<List<Transaction>>
     fun getById(id: Uuid): Flow<TransactionDetail>
     fun getAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
@@ -63,9 +63,9 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
         emitAll(dao.selectRecent(userIdProvider.userId.value))
     }
 
-    override fun count(): Flow<Long> = flow {
-        emitAll(dao.count(userIdProvider.userId.value))
-    }
+//    override fun count(): Flow<Long> = flow {
+//        emitAll(dao.count(userIdProvider.userId.value))
+//    }
 
     override fun getAll(): Flow<List<Transaction>> =
         flow { emitAll(dao.selectAll(userIdProvider.userId.value)) }

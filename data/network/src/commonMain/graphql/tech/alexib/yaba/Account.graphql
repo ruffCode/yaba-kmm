@@ -1,0 +1,57 @@
+query AccountById($id:UUID!){
+    accountById(id: $id){
+        ...Account
+    }
+}
+query AccountByIdWithTransaction($id:UUID!){
+    accountById(id: $id){
+        ...AccountWithTransactions
+    }
+}
+
+fragment Account on Account{
+    id
+    name
+    currentBalance
+    availableBalance
+    creditLimit
+    mask
+    itemId
+    type
+    subtype
+    hidden
+
+}
+
+fragment AccountWithTransactions on Account{
+   ...Account
+    transactions{
+        ...Transaction
+    }
+
+}
+
+mutation AccountSetHidden($id:UUID!,$hidden:Boolean!){
+    setAccountHidden(input: {accountId: $id,hide: $hidden})
+}
+
+fragment Transaction on Transaction{
+    name
+    id
+    type
+    amount
+    date
+    accountId
+    itemId
+    category
+    pending
+    subcategory
+    isoCurrencyCode
+    merchantName
+}
+
+query AccountsByItemId($itemId:UUID!){
+    accountsByItemId(itemId: $itemId){
+        ...Account
+    }
+}
