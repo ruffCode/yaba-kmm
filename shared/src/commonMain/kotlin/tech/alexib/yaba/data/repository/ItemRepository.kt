@@ -30,7 +30,7 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.NewItemDataQuery
 import tech.alexib.yaba.data.api.ApolloApi
-import tech.alexib.yaba.data.api.ApolloResponse
+import tech.alexib.yaba.data.api.YabaApolloResponse
 import tech.alexib.yaba.data.api.PlaidItemApi
 import tech.alexib.yaba.data.api.dto.NewItemData
 import tech.alexib.yaba.data.api.dto.toAccountWithTransactions
@@ -121,7 +121,7 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
             )
         }
         return when (val newData = response.firstOrNull()) {
-            is ApolloResponse.Success -> {
+            is YabaApolloResponse.Success -> {
                 val data = newData.data
                 institutionDao.insert(
                     Institution(
@@ -154,7 +154,7 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
                 transactionDao.insert(transactions)
                 true
             }
-            is ApolloResponse.Error -> true
+            is YabaApolloResponse.Error -> true
             null -> {
                 log.d { "error fetching new item data: result was null" }
                 true

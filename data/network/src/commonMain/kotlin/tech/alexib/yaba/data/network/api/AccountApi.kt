@@ -18,15 +18,16 @@ package tech.alexib.yaba.data.network.api
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
-import tech.alexib.yaba.AccountByIdWithTransactionQuery
-import tech.alexib.yaba.AccountSetHiddenMutation
-import tech.alexib.yaba.AccountsByItemIdQuery
+
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.dto.AccountDto
 import tech.alexib.yaba.data.domain.dto.AccountWithTransactionsDto
 import tech.alexib.yaba.data.network.apollo.YabaApolloClient
 import tech.alexib.yaba.data.network.mapper.toAccountWithTransactions
 import tech.alexib.yaba.data.network.mapper.toDto
+import yaba.schema.AccountByIdWithTransactionQuery
+import yaba.schema.AccountSetHiddenMutation
+import yaba.schema.AccountsByItemIdQuery
 
 interface AccountApi {
     suspend fun setHideAccount(hide: Boolean, accountId: Uuid)
@@ -41,9 +42,12 @@ interface AccountApi {
             client.mutate(mutation).firstOrNull()
         }
 
-        override fun accountByIdWithTransactions(id: Uuid): Flow<DataResult<AccountWithTransactionsDto>> {
+        override fun accountByIdWithTransactions(id: Uuid):
+            Flow<DataResult<AccountWithTransactionsDto>> {
             val query = AccountByIdWithTransactionQuery(id)
-            return client.query(query) { it.accountById.fragments.accountWithTransactions.toAccountWithTransactions() }
+            return client.query(query) {
+                it.accountById.fragments.accountWithTransactions.toAccountWithTransactions()
+            }
         }
 
         override fun accountsByItemId(itemId: Uuid): Flow<DataResult<List<AccountDto>>> {

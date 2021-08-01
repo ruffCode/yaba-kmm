@@ -15,14 +15,12 @@
  */
 package tech.alexib.yaba.data.network.mapper
 
-import com.benasher44.uuid.Uuid
-import tech.alexib.yaba.AllUserDataQuery
 import tech.alexib.yaba.data.domain.dto.UserDataDto
 import tech.alexib.yaba.model.User
 
-internal fun AllUserDataQuery.Data.toDto(): UserDataDto {
+internal fun yaba.schema.AllUserDataQuery.Data.toDto(): UserDataDto {
     val data = this.me
-    val userId = data.id as Uuid
+    val userId = data.id
 
     return UserDataDto(
         user = User(userId, data.email),

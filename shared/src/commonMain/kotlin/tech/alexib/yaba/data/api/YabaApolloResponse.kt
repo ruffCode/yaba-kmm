@@ -15,14 +15,15 @@
  */
 package tech.alexib.yaba.data.api
 
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.Error as ApolloError
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Error as ApolloError
 
-sealed class ApolloResponse<out T> {
+sealed class YabaApolloResponse<out T> {
 
-    data class Success<T>(val data: T) : ApolloResponse<T>()
+    data class Success<T>(val data: T) : YabaApolloResponse<T>()
     data class Error(val errors: List<String>) :
-        ApolloResponse<Nothing>() {
+        YabaApolloResponse<Nothing>() {
         val message = errors.first()
     }
 
@@ -30,7 +31,7 @@ sealed class ApolloResponse<out T> {
         fun <T> success(data: T) = Success(data)
         fun error(errors: List<String>) = Error(errors)
 
-        operator fun <T> invoke(response: Response<T>): ApolloResponse<T> {
+        operator fun <T : Operation.Data> invoke(response: ApolloResponse<T>): YabaApolloResponse<T> {
             return if (response.hasErrors()) {
                 error(response.errors!!)
             } else {
@@ -38,10 +39,10 @@ sealed class ApolloResponse<out T> {
             }
         }
 
-        operator fun <T, R> invoke(
-            response: Response<T>,
+        operator fun <T : Operation.Data, R> invoke(
+            response: ApolloResponse<T>,
             mapper: (T) -> R
-        ): ApolloResponse<R> {
+        ): YabaApolloResponse<R> {
             return if (response.hasErrors()) {
                 error(response.errorMessages())
             } else {
@@ -52,5 +53,5 @@ sealed class ApolloResponse<out T> {
 }
 
 private fun List<ApolloError>.messages(): List<String> = this.map { it.message }
-fun <T> Response<T>.errorMessages(): List<String> =
+fun <T : Operation.Data> ApolloResponse<T>.errorMessages(): List<String> =
     this.errors?.map { it.message } ?: emptyList()

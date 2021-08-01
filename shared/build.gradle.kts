@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 plugins {
     id("android-lib")
     id("multiplatform-plugin")
-    kotlin("native.cocoapods")
-    id("com.apollographql.apollo")
+//    kotlin("native.cocoapods")
+    id("com.apollographql.apollo3")
     kotlin("plugin.serialization")
     id("kotlin-parcelize")
     id("com.squareup.sqldelight")
@@ -26,13 +26,13 @@ kotlin {
             }
         }
     }
-    cocoapods {
-        summary = "Some description for the Shared Module"
-        homepage = "Link to the Shared Module homepage"
-        ios.deploymentTarget = "14.1"
-        frameworkName = "shared"
-        podfile = project.file("../iosApp/Podfile")
-    }
+//    cocoapods {
+//        summary = "Some description for the Shared Module"
+//        homepage = "Link to the Shared Module homepage"
+//        ios.deploymentTarget = "14.1"
+//        frameworkName = "shared"
+//        podfile = project.file("../iosApp/Podfile")
+//    }
     targets.withType<KotlinNativeTarget> {
         binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework> {
             isStatic = true
@@ -44,6 +44,7 @@ kotlin {
 
 dependencies {
     commonMainImplementation(Lib.Apollo.runtimeKotlin)
+    commonMainImplementation(Lib.Apollo.adapters)
     commonMainImplementation(Lib.KotlinX.Serialization.core)
     commonMainImplementation(Lib.KotlinX.Serialization.json)
     commonMainImplementation(Lib.MultiplatformSettings.settings)
@@ -201,18 +202,60 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 }
 
-configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
-    generateKotlinModels.set(true)
-    customTypeMapping.set(
+//configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
+////    generateKotlinModels.set(true)
+//    customTypeMapping.set(
+//        mapOf(
+//            "timestamptz" to "kotlinx.datetime.Instant",
+//            "uuid" to "com.benasher44.uuid.Uuid",
+//            "date" to "kotlinx.datetime.LocalDate",
+//            "smallint" to "kotlin.Int"
+//        )
+//    )
+//}
+
+//apollo{
+//        customTypeMapping.set(
+//        mapOf(
+//            "timestamptz" to "kotlinx.datetime.Instant",
+//            "uuid" to "com.benasher44.uuid.Uuid",
+//            "date" to "kotlinx.datetime.LocalDate",
+//            "smallint" to "kotlin.Int"
+//        )
+//    )
+//}
+
+configure<com.apollographql.apollo3.gradle.api.ApolloExtension>{
+//    customScalarsMapping.set(
+//        mapOf(
+//            "timestamptz" to "com.apollographql.apollo3.adapter.InstantAdapter",
+//            "uuid" to "com.benasher44.uuid.Uuid",
+//            "date" to "com.apollographql.apollo3.adapter.LocalDateAdapter",
+//            "smallint" to "kotlin.Int"
+//        )
+//    )
+//    packageName.set("tech.alexib.yaba")
+    customScalarsMapping.set(
         mapOf(
-            "timestamptz" to "kotlinx.datetime.Instant",
-            "uuid" to "com.benasher44.uuid.Uuid",
-            "date" to "kotlinx.datetime.LocalDate",
-            "smallint" to "kotlin.Int"
+//            "timestamptz" to "com.apollographql.apollo3.adapter.InstantAdapter",
+            "UUID" to "com.benasher44.uuid.Uuid",
+            "LocalDate" to "com.apollographql.apollo3.adapter.LocalDateAdapter",
+//            "smallint" to "kotlin.Int"
         )
     )
+    packageName.set("tech.alexib.yaba")
 }
-
+//apollo{
+//    customScalarsMapping.set(
+//        mapOf(
+////            "timestamptz" to "com.apollographql.apollo3.adapter.InstantAdapter",
+//            "UUID" to "com.benasher44.uuid.Uuid",
+//            "LocalDate" to "com.apollographql.apollo3.adapter.LocalDateAdapter",
+////            "smallint" to "kotlin.Int"
+//        )
+//    )
+//    packageName.set("tech.alexib.yaba")
+//}
 sqldelight {
     database("YabaDb") {
         packageName = "tech.alexib.yaba.data.db"

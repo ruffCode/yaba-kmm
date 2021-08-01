@@ -8,7 +8,7 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-serialization:1.5.10")
         classpath("dev.icerock.moko:resources-generator:0.16.1")
         classpath("com.squareup.sqldelight:gradle-plugin:1.5.1")
-        classpath("com.apollographql.apollo:apollo-gradle-plugin:2.5.9")
+        classpath("com.apollographql.apollo3:apollo-gradle-plugin:3.0.0-alpha03")
         classpath("com.google.gms:google-services:4.3.8")
     }
 }

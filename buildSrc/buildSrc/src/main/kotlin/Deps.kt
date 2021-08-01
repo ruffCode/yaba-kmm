@@ -42,10 +42,11 @@ object Lib {
 
     object Apollo {
         private const val version = Version.apollo
-        const val runtimeKotlin = "com.apollographql.apollo:apollo-runtime-kotlin:$version"
-        const val runtime = "com.apollographql.apollo:apollo-runtime:$version"
-        const val coroutinesSupport = "com.apollographql.apollo:apollo-coroutines-support:$version"
-        const val cacheSqlite = "com.apollographql.apollo:apollo-normalized-cache-sqlite:$version"
+        const val runtimeKotlin = "com.apollographql.apollo3:apollo-runtime:$version"
+        const val runtime = "com.apollographql.apollo3:apollo-runtime:$version"
+        const val coroutinesSupport = "com.apollographql.apollo3:apollo-coroutines-support:$version"
+        const val cacheSqlite = "com.apollographql.apollo:apollo3-normalized-cache-sqlite:$version"
+        const val adapters = "com.apollographql.apollo3:apollo-adapters:$version"
     }
 
     object MultiplatformSettings {
@@ -166,7 +167,7 @@ object Lib {
 object Version {
     const val kotlin = "1.5.10"
     const val sqlDelight = "1.5.1"
-    const val apollo = "2.5.9"
+    const val apollo = "3.0.0-alpha03"
     const val arrow = "0.13.2"
     const val compose = "1.0.0"
     const val coroutines = "1.5.1-native-mt"
@@ -194,6 +195,6 @@ object GradlePlugins {
     const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.kotlin}"
     const val android = "com.android.tools.build:gradle:${GradleVersions.androidTools}"
     const val serialization = "org.jetbrains.kotlin:kotlin-serialization:${Version.kotlin}"
-    const val apollo = "com.apollographql.apollo:apollo-gradle-plugin:${Version.apollo}"
+    const val apollo = "com.apollographql.apollo3:apollo-gradle-plugin:${Version.apollo}"
     const val sqlDelight = "com.squareup.sqldelight:gradle-plugin:${Version.sqlDelight}"
 }

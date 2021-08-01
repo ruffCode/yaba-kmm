@@ -54,18 +54,18 @@ object UserDataStubs {
             institutions = institutions
         )
     }
-    val groupedTransactions by lazy {
+    val groupedTransactions: Map<Uuid, List<TransactionDto>> by lazy {
         TransactionStubs.allTransactions.groupBy { it.accountId }
     }
 
-    val groupedAccounts by lazy {
+    val groupedAccounts: Map<Uuid, List<AccountDto>> by lazy {
         AccountStubs.allAccounts.groupBy { it.itemId }
     }
 
     fun accountByIdWithTransactions(accountId: Uuid): AccountWithTransactionsDto? {
-        return AccountStubs.allAccounts.firstOrNull { it.id == accountId }?.let {
+        return AccountStubs.allAccounts.firstOrNull { it.id == accountId }?.let { accountDto ->
             AccountWithTransactionsDto(
-                it, groupedTransactions.getOrDefault(accountId, emptyList())
+                accountDto, groupedTransactions.getOrElse(accountId) { emptyList<TransactionDto>() }
             )
         }
     }
@@ -77,20 +77,22 @@ object UserDataStubs {
         id = user.id
     )
 
-    val newItemDtoStub by lazy {
+    val newItemDtoStub: NewItemDto by lazy {
+        val transactions: List<TransactionDto> =
+            AccountStubs.wellsFargoAccounts.flatMap { accountDto ->
+                groupedTransactions.getOrElse(accountDto.id) { emptyList<TransactionDto>() }
+            }
         NewItemDto(
             user = user,
             institutionDto = InstitutionStubs.wellsFargo,
             item = PlaidItemStubs.wellsFargo,
             accounts = AccountStubs.wellsFargoAccounts,
-            transactions = AccountStubs.wellsFargoAccounts.flatMap {
-                groupedTransactions.getOrDefault(it.id, emptyList())
-            }
+            transactions = transactions
         )
     }
 
     object Registration {
-        val newId = Uuid.randomUUID()
+        val newId = uuid4()
     }
 
     object PlaidLink {
@@ -99,12 +101,13 @@ object UserDataStubs {
         val publicToken = uuid4().toString()
         fun itemCreateResponse(): PlaidItemCreateResponse {
 
-            val accounts = AccountStubs.wellsFargoAccounts.map {
-                PlaidItemCreateResponse.Account(
-                    mask = it.mask, name = it.name, plaidAccountId = it.id.toString()
+            val accounts: List<PlaidItemCreateResponse.Account> =
+                AccountStubs.wellsFargoAccounts.map {
+                    PlaidItemCreateResponse.Account(
+                        mask = it.mask, name = it.name, plaidAccountId = it.id.toString()
 
-                )
-            }
+                    )
+                }
             return PlaidItemCreateResponse(
                 id = item.id,
                 name = institution.name,
@@ -113,7 +116,7 @@ object UserDataStubs {
             )
         }
 
-        val itemCreateRequest by lazy {
+        val itemCreateRequest: PlaidItemCreateRequest by lazy {
             PlaidItemCreateRequest(
                 institutionId = institution.institutionId,
                 publicToken

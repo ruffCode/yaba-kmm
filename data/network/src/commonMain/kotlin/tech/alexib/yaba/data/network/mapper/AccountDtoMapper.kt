@@ -15,26 +15,25 @@
  */
 package tech.alexib.yaba.data.network.mapper
 
-import com.benasher44.uuid.Uuid
 import tech.alexib.yaba.data.domain.dto.AccountDto
 import tech.alexib.yaba.data.domain.dto.AccountWithTransactionsDto
 import tech.alexib.yaba.model.AccountSubtype
 import tech.alexib.yaba.model.AccountType
 
-internal fun tech.alexib.yaba.fragment.Account.toDto(): AccountDto = AccountDto(
-    id = id as Uuid,
+internal fun yaba.schema.fragment.Account.toDto(): AccountDto = AccountDto(
+    id = id,
     name = name,
     mask = mask,
     availableBalance = availableBalance,
     currentBalance = currentBalance,
     creditLimit = creditLimit,
-    itemId = itemId as Uuid,
-    type = AccountType.valueOf(type.name),
-    subtype = AccountSubtype.valueOf(subtype.name),
+    itemId = itemId,
+    type = AccountType.valueOf(type.rawValue),
+    subtype = AccountSubtype.valueOf(subtype.rawValue),
     hidden = hidden
 )
 
-internal fun tech.alexib.yaba.fragment.AccountWithTransactions.toAccountWithTransactions() =
+internal fun yaba.schema.fragment.AccountWithTransactions.toAccountWithTransactions() =
     AccountWithTransactionsDto(
         account = this.fragments.account.toDto(),
         transactions = transactions.map { it.fragments.transaction.toDto() }

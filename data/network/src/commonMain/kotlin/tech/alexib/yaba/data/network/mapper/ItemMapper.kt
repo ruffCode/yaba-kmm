@@ -17,20 +17,20 @@ package tech.alexib.yaba.data.network.mapper
 
 import com.benasher44.uuid.Uuid
 import tech.alexib.yaba.data.domain.dto.ItemDto
-import tech.alexib.yaba.fragment.ItemWithInstitution
 import tech.alexib.yaba.model.PlaidItem
 
-internal fun ItemWithInstitution.toDto(userId: Uuid) = this.run {
+internal fun yaba.schema.fragment.ItemWithInstitution.toDto(userId: Uuid) = this.run {
     ItemDto(
-        id = id as Uuid,
+        id = id,
         plaidInstitutionId = plaidInstitutionId,
         userId
     )
 }
-internal fun ItemWithInstitution.toPlaidItem() = this.run {
+
+internal fun yaba.schema.fragment.ItemWithInstitution.toPlaidItem() = this.run {
     val institution = institution.fragments.institution
     PlaidItem(
-        id = id as Uuid,
+        id = id,
         plaidInstitutionId = plaidInstitutionId,
         name = institution.name,
         base64Logo = institution.logo

@@ -5,8 +5,8 @@ mutation CreateLinkToken{
 }
 
 
-mutation CreateLinkEvent($requestId:String,$type:String!,$linkSessionId:String!
-    $errorCode:String,$errorType:String){
+mutation CreateLinkEvent($requestId:String @optional,$type:String!,$linkSessionId:String!
+    $errorCode:String @optional,$errorType:String @optional){
     createLinkEvent(input:{
         requestId: $requestId,
         type:$type,

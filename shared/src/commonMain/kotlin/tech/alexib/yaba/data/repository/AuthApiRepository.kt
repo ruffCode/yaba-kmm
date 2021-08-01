@@ -18,7 +18,7 @@ package tech.alexib.yaba.data.repository
 import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
 import kotlinx.coroutines.flow.first
-import tech.alexib.yaba.data.api.ApolloResponse
+import tech.alexib.yaba.data.api.YabaApolloResponse
 import tech.alexib.yaba.data.api.AuthApi
 import tech.alexib.yaba.model.User
 import tech.alexib.yaba.model.request.UserLoginInput
@@ -50,8 +50,8 @@ class AuthApiRepositoryImpl(
     override suspend fun login(email: String, password: String): DataResult<AuthResponse> {
         val input = UserLoginInput(email, password)
         return when (val result = authApi.login(input).first()) {
-            is ApolloResponse.Success -> Success(result.data)
-            is ApolloResponse.Error -> {
+            is YabaApolloResponse.Success -> Success(result.data)
+            is YabaApolloResponse.Error -> {
                 result.errors.forEach {
                     log.e { it }
                 }
@@ -63,8 +63,8 @@ class AuthApiRepositoryImpl(
     override suspend fun register(email: String, password: String): DataResult<AuthResponse> {
         val input = UserRegisterInput(email, password)
         return when (val result = authApi.register(input).first()) {
-            is ApolloResponse.Success -> Success(result.data)
-            is ApolloResponse.Error -> {
+            is YabaApolloResponse.Success -> Success(result.data)
+            is YabaApolloResponse.Error -> {
                 result.errors.forEach {
                     log.e { it }
                 }
@@ -75,8 +75,8 @@ class AuthApiRepositoryImpl(
 
     override suspend fun verifyToken(): DataResult<User> {
         return when (val result = authApi.verifyToken().first()) {
-            is ApolloResponse.Success -> Success(result.data)
-            is ApolloResponse.Error -> {
+            is YabaApolloResponse.Success -> Success(result.data)
+            is YabaApolloResponse.Error -> {
                 result.errors.forEach {
                     log.e { "verify token error $it" }
                 }

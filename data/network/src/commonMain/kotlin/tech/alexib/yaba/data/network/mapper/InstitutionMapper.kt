@@ -17,7 +17,7 @@ package tech.alexib.yaba.data.network.mapper
 
 import tech.alexib.yaba.data.domain.dto.InstitutionDto
 
-internal fun tech.alexib.yaba.fragment.Institution.toDto(): InstitutionDto = this.run {
+internal fun yaba.schema.fragment.Institution.toDto(): InstitutionDto = this.run {
     InstitutionDto(
         institutionId = institutionId,
         name = name,
@@ -26,7 +26,7 @@ internal fun tech.alexib.yaba.fragment.Institution.toDto(): InstitutionDto = thi
     )
 }
 
-internal fun tech.alexib.yaba.fragment.ItemWithInstitution.Institution.toDto(): InstitutionDto =
+internal fun yaba.schema.fragment.ItemWithInstitution.Institution.toDto(): InstitutionDto =
     this.run {
         val institution = fragments.institution
         institution.toDto()

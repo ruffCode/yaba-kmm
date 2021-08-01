@@ -15,19 +15,16 @@
  */
 package tech.alexib.yaba.data.network.mapper
 
-import com.benasher44.uuid.Uuid
-import tech.alexib.yaba.LoginMutation
-import tech.alexib.yaba.RegisterMutation
 import tech.alexib.yaba.model.response.AuthResponse
 
-internal fun LoginMutation.Login.toAuthResponse() = AuthResponse(
-    id = id as Uuid,
+internal fun yaba.schema.LoginMutation.Login.toAuthResponse() = AuthResponse(
+    id = id,
     email = email,
     token = token
 )
 
-internal fun RegisterMutation.Register.toAuthResponse() = AuthResponse(
-    id = id as Uuid,
+internal fun yaba.schema.RegisterMutation.Register.toAuthResponse() = AuthResponse(
+    id = id,
     email = email,
     token = token
 )

@@ -16,9 +16,9 @@
 package tech.alexib.yaba.data.network.api
 
 import kotlinx.coroutines.flow.firstOrNull
-import tech.alexib.yaba.PushTokenDeleteMutation
-import tech.alexib.yaba.PushTokenInsertMutation
 import tech.alexib.yaba.data.network.apollo.YabaApolloClient
+import yaba.schema.PushTokenDeleteMutation
+import yaba.schema.PushTokenInsertMutation
 
 interface PushTokenApi {
     suspend fun save(token: String)
@@ -31,6 +31,7 @@ interface PushTokenApi {
             val mutation = PushTokenInsertMutation(token)
             client.mutate(mutation).firstOrNull()
         }
+
         override suspend fun delete(token: String) {
             val mutation = PushTokenDeleteMutation(token)
             client.mutate(mutation).firstOrNull()

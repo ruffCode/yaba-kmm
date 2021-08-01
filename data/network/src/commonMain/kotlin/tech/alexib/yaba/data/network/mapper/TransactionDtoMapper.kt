@@ -15,19 +15,17 @@
  */
 package tech.alexib.yaba.data.network.mapper
 
-import com.benasher44.uuid.Uuid
-import kotlinx.datetime.LocalDate
 import tech.alexib.yaba.data.domain.dto.TransactionDto
 import tech.alexib.yaba.model.TransactionType
 
-internal fun tech.alexib.yaba.fragment.Transaction.toDto() = TransactionDto(
+internal fun yaba.schema.fragment.Transaction.toDto() = TransactionDto(
     name = name,
-    id = id as Uuid,
+    id = id,
     type = TransactionType.valueOf(type.uppercase()),
     amount = amount,
-    date = date as LocalDate,
-    accountId = accountId as Uuid,
-    itemId = itemId as Uuid,
+    date = date,
+    accountId = accountId,
+    itemId = itemId,
     category = category,
     pending = pending,
     subcategory = subcategory,

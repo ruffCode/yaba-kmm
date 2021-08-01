@@ -23,11 +23,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.UseSerializers
-import kotlinx.serialization.decodeFromString
-import tech.alexib.yaba.stubs.detailStub
-import tech.alexib.yaba.stubs.transactionsJson
 import tech.alexib.yaba.util.UuidSerializer
-import tech.alexib.yaba.util.jSerializer
 
 @Serializable
 enum class TransactionType {
@@ -77,10 +73,10 @@ data class TransactionDetail(
     val label = "$institutionName \n $accountName ****$accountMask"
 }
 
-//object TransactionStubs {
+// object TransactionStubs {
 //
 //    val transactions: List<Transaction> = jSerializer.decodeFromString(transactionsJson)
 //    val transaction = transactions.first()
 //
 //    val transactionDetail: TransactionDetail = jSerializer.decodeFromString(detailStub)
-//}
+// }

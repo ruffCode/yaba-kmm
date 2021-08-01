@@ -17,7 +17,7 @@ package tech.alexib.yaba.data.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
-import tech.alexib.yaba.data.api.ApolloResponse
+import tech.alexib.yaba.data.api.YabaApolloResponse
 
 sealed class DataResult<T> {
     open fun get(): T? = null
@@ -34,10 +34,10 @@ data class Success<T>(val data: T) : DataResult<T>() {
 
 data class ErrorResult<T>(val error: String) : DataResult<T>()
 
-inline fun <reified T, reified R : DataResult<T>> Flow<ApolloResponse<T>>.toDataResult(): Flow<R> =
+inline fun <reified T, reified R : DataResult<T>> Flow<YabaApolloResponse<T>>.toDataResult(): Flow<R> =
     this.transform {
         when (it) {
-            is ApolloResponse.Success<T> -> Success(it.data)
-            is ApolloResponse.Error -> ErrorResult(it.message)
+            is YabaApolloResponse.Success<T> -> Success(it.data)
+            is YabaApolloResponse.Error -> ErrorResult(it.message)
         }
     }

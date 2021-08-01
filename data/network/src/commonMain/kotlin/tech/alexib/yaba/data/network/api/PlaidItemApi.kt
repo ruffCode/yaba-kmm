@@ -21,11 +21,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import tech.alexib.yaba.CreateItemMutation
-import tech.alexib.yaba.CreateLinkTokenMutation
-import tech.alexib.yaba.NewItemDataQuery
-import tech.alexib.yaba.SetAccountsToHideMutation
-import tech.alexib.yaba.UnlinkItemMutation
+import yaba.schema.CreateItemMutation
+import yaba.schema.CreateLinkTokenMutation
+import yaba.schema.NewItemDataQuery
+import yaba.schema.SetAccountsToHideMutation
+import yaba.schema.UnlinkItemMutation
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.dto.NewItemDto
 import tech.alexib.yaba.data.network.apollo.YabaApolloClient

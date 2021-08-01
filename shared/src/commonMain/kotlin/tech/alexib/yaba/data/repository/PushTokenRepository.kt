@@ -35,13 +35,13 @@ class PushTokenRepositoryImpl : PushTokenRepository, KoinComponent {
     private val backgroundDispatcher: CoroutineDispatcher by inject()
     override suspend fun save(token: String) {
         val mutation = PushTokenInsertMutation(token)
-        apolloApi.client().mutate(mutation).execute().firstOrNull()
+        apolloApi.client().mutate(mutation)
     }
 
     override fun delete(token: String) {
         CoroutineScope(backgroundDispatcher).launch {
             val mutation = PushTokenDeleteMutation(token)
-            apolloApi.client().mutate(mutation).execute().firstOrNull()
+            apolloApi.client().mutate(mutation)
         }
     }
 }

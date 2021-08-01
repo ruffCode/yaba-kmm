@@ -22,7 +22,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -69,9 +68,9 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
                             }
                             .first()
                 ) {
-                    is ApolloResponse.Success -> emit(Success(result.data))
+                    is YabaApolloResponse.Success -> emit(Success(result.data))
 
-                    is ApolloResponse.Error -> emit(ErrorResult(result.message))
+                    is YabaApolloResponse.Error -> emit(ErrorResult(result.message))
                 }
             }
         }.getOrElse {
@@ -106,9 +105,9 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
                 }.first()
 
                 when (result) {
-                    is ApolloResponse.Success -> emit(Success(result.data))
+                    is YabaApolloResponse.Success -> emit(Success(result.data))
 
-                    is ApolloResponse.Error -> emit(ErrorResult(result.message))
+                    is YabaApolloResponse.Error -> emit(ErrorResult(result.message))
                 }
             }
         }.getOrElse {
@@ -120,7 +119,7 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
     override fun sendLinkEvent(request: PlaidLinkEventCreateRequest) {
         CoroutineScope(Dispatchers.Default).launch {
             runCatching {
-                apolloApi.client().mutate(request.toMutation()).execute().firstOrNull()
+                apolloApi.client().mutate(request.toMutation()).dataOrThrow
             }.getOrElse {
                 log.e { "error sending link event ${it.message}" }
             }
@@ -132,7 +131,7 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
 
         CoroutineScope(Dispatchers.Default).launch {
             runCatching {
-                apolloApi.client().mutate(mutation).execute().firstOrNull()
+                apolloApi.client().mutate(mutation).dataOrThrow
             }.getOrElse {
                 log.e { "error setting accounts to hide ${it.message}" }
             }
@@ -143,7 +142,7 @@ class PlaidItemApiImpl : PlaidItemApi, KoinComponent {
         val mutation = UnlinkItemMutation(itemId)
         CoroutineScope(Dispatchers.Default).launch {
             runCatching {
-                apolloApi.client().mutate(mutation).execute().firstOrNull()
+                apolloApi.client().mutate(mutation).dataOrThrow
             }.getOrElse {
                 log.e { "error unlinking item ${it.message}" }
             }

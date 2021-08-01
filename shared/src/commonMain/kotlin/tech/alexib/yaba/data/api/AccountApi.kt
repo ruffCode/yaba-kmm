@@ -18,12 +18,10 @@ package tech.alexib.yaba.data.api
 import co.touchlab.kermit.Kermit
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.AccountByIdQuery
 import tech.alexib.yaba.AccountByIdWithTransactionQuery
 import tech.alexib.yaba.AccountSetHiddenMutation
 import tech.alexib.yaba.AccountsByItemIdQuery
@@ -49,7 +47,7 @@ internal class AccountApiImpl : AccountApi, KoinComponent {
 
     override suspend fun setHideAccount(hide: Boolean, accountId: Uuid) {
         val mutation = AccountSetHiddenMutation(id = accountId, hidden = hide)
-        apolloApi.client().mutate(mutation).execute().firstOrNull()
+        apolloApi.client().mutate(mutation)
     }
 
 //    override fun accountById(id: Uuid): Flow<DataResult<AccountDto>> {
@@ -76,8 +74,8 @@ internal class AccountApiImpl : AccountApi, KoinComponent {
             it.accountById.fragments.accountWithTransactions.toAccountWithTransactions()
         }.map {
             when (it) {
-                is ApolloResponse.Success -> Success(it.data)
-                is ApolloResponse.Error -> ErrorResult(it.message)
+                is YabaApolloResponse.Success -> Success(it.data)
+                is YabaApolloResponse.Error -> ErrorResult(it.message)
             }
         }
     }
@@ -88,8 +86,8 @@ internal class AccountApiImpl : AccountApi, KoinComponent {
             data.accountsByItemId.map { it.fragments.account.toDto() }
         }.map {
             when (it) {
-                is ApolloResponse.Success -> Success(it.data)
-                is ApolloResponse.Error -> ErrorResult(it.message)
+                is YabaApolloResponse.Success -> Success(it.data)
+                is YabaApolloResponse.Error -> ErrorResult(it.message)
             }
         }
     }

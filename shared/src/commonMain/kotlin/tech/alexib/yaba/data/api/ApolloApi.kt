@@ -17,29 +17,27 @@ package tech.alexib.yaba.data.api
 
 import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo.interceptor.ApolloRequest
-import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
-import com.apollographql.apollo.interceptor.BearerTokenInterceptor
-import com.apollographql.apollo.interceptor.TokenProvider
-import com.apollographql.apollo.network.http.ApolloHttpNetworkTransport
-import com.apollographql.apollo.network.ws.ApolloWebSocketFactory
-import com.apollographql.apollo.network.ws.ApolloWebSocketNetworkTransport
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+
+import com.apollographql.apollo3.api.variables
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.network.http.BearerTokenInterceptor
+import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.network.http.TokenProvider
+import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import tech.alexib.yaba.data.settings.AuthSettings
-import tech.alexib.yaba.type.CustomType
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
 internal class ApolloApi(
@@ -57,30 +55,22 @@ internal class ApolloApi(
     }
 
     private val apolloClient: ApolloClient = ApolloClient(
-        networkTransport = ApolloHttpNetworkTransport(
+        networkTransport = HttpNetworkTransport(
             serverUrl = serverUrl,
             headers = mutableMapOf(
                 "Accept" to "application/json",
                 "Content-Type" to "application/json",
             ),
+            interceptors = listOf(BearerTokenInterceptor(this))
         ),
-        subscriptionNetworkTransport = ApolloWebSocketNetworkTransport(
-            webSocketFactory = ApolloWebSocketFactory(
-                serverUrl = serverUrl,
-                mutableMapOf(
-                    "Accept" to "application/json",
-                    "Content-Type" to "application/json",
-                )
-            )
-        ),
-        scalarTypeAdapters = ScalarTypeAdapters(
-            mapOf(
-                CustomType.UUID to uuidAdapter,
-                CustomType.ID to uuidAdapter,
-                CustomType.LOCALDATE to localDateAdapter
-            )
-        ),
-        interceptors = listOf(BearerTokenInterceptor(this), LoggingInterceptor(log))
+        subscriptionNetworkTransport = WebSocketNetworkTransport(
+            serverUrl = serverUrl,
+
+            ),
+        customScalarAdapters = customScalarTypeAdapters,
+        interceptors = listOf(
+            MyLoggingInterceptor(log)
+        )
     )
 
     fun client() = apolloClient
@@ -90,15 +80,16 @@ internal class ApolloApi(
     override suspend fun refreshToken(previousToken: String): String = ""
 }
 
-internal class LoggingInterceptor(private val log: Kermit) : ApolloRequestInterceptor {
-    @ExperimentalTime
+
+internal class MyLoggingInterceptor(private val log: Kermit) : ApolloInterceptor {
+
     override fun <D : Operation.Data> intercept(
         request: ApolloRequest<D>,
         chain: ApolloInterceptorChain,
-    ): Flow<com.apollographql.apollo.interceptor.ApolloResponse<D>> {
+    ): Flow<ApolloResponse<D>> {
         val uuid = request.requestUuid.toString()
-        val operation = request.operation.name().name()
-        val variables = request.operation.variables().valueMap().toString()
+        val operation = request.operation.name()
+        val variables = request.operation.variables(customScalarTypeAdapters).valueMap.toString()
         val (response, elapsed) = measureTimedValue {
             chain.proceed(request)
         }
@@ -113,6 +104,7 @@ internal class LoggingInterceptor(private val log: Kermit) : ApolloRequestInterc
         return response
     }
 }
+
 // private val catchApolloError: suspend FlowCollector<ApolloResponse.Error>.(cause: Throwable) -> Unit =
 //    { exception ->
 //        exception.message?.let {
@@ -121,44 +113,44 @@ internal class LoggingInterceptor(private val log: Kermit) : ApolloRequestInterc
 //        emit(ApolloResponse.Error(listOf()))
 //    }
 
-fun <T : Operation.Data, R> ApolloClient.safeQuery(
-    queryData: Query<T, T, Operation.Variables>,
+fun <T : Query.Data, R> ApolloClient.safeQuery(
+    queryData: Query<T>,
     mapper: (T) -> R,
-): Flow<ApolloResponse<R>> = this.query(queryData).execute().map(checkResponse(mapper))
+): Flow<YabaApolloResponse<R>> = this.queryAsFlow(ApolloRequest(queryData)).map(checkResponse(mapper))
 
 //    .catch(
 //    catchApolloError
 // )
 
-fun <T : Operation.Data> ApolloClient.safeQuery(
-    queryData: Query<T, T, Operation.Variables>,
-): Flow<ApolloResponse<T>> = this.query(queryData).execute().map(checkResponse())
+fun <T : Query.Data> ApolloClient.safeQuery(
+    queryData: Query<T>,
+): Flow<YabaApolloResponse<T>> = this.queryAsFlow(ApolloRequest(queryData)).map(checkResponse())
 
 //    .catch(
 //    catchApolloError
 // )
 
-fun <T : Operation.Data, R> ApolloClient.safeMutation(
-    mutationData: Mutation<T, T, Operation.Variables>,
+fun <T : Mutation.Data, R> ApolloClient.safeMutation(
+    mutationData: Mutation<T>,
     mapper: (T) -> R,
-): Flow<ApolloResponse<R>> =
-    this.mutate(mutationData).execute().map(checkResponse(mapper))
+): Flow<YabaApolloResponse<R>> =
+    this.mutateAsFlow(ApolloRequest(mutationData)).map(checkResponse(mapper))
 
 //        .catch(catchApolloError)
 
-fun <T : Operation.Data> ApolloClient.safeMutation(
-    mutationData: Mutation<T, T, Operation.Variables>,
-): Flow<ApolloResponse<T>> =
-    this.mutate(mutationData).execute().map(checkResponse())
+fun <T : Mutation.Data> ApolloClient.safeMutation(
+    mutationData: Mutation<T>,
+): Flow<YabaApolloResponse<T>> =
+    this.mutateAsFlow(ApolloRequest(mutationData)).map(checkResponse())
 //        .catch(catchApolloError)
 
-private fun <T, R> checkResponse(mapper: (T) -> R): suspend (Response<T>) ->
-ApolloResponse<R> {
+private fun <T:Operation.Data, R> checkResponse(mapper: (T) -> R): suspend (ApolloResponse<T>) ->
+YabaApolloResponse<R> {
     return {
-        ApolloResponse(it, mapper)
+        YabaApolloResponse(it, mapper)
     }
 }
 
-private fun <T> checkResponse(): suspend (Response<T>) -> ApolloResponse<T> {
-    return { ApolloResponse(it) }
+private fun <T:Operation.Data> checkResponse(): suspend (ApolloResponse<T>) -> YabaApolloResponse<T> {
+    return { YabaApolloResponse(it) }
 }

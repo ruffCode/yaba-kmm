@@ -15,21 +15,20 @@
  */
 package tech.alexib.yaba.data.network.mapper
 
-import com.benasher44.uuid.Uuid
-import tech.alexib.yaba.CreateItemMutation
 import tech.alexib.yaba.model.response.PlaidItemCreateResponse
 
-internal fun CreateItemMutation.Data.toResponse(): PlaidItemCreateResponse = this.itemCreate.run {
-    PlaidItemCreateResponse(
-        id = itemId as Uuid,
-        name = name,
-        logo = logo,
-        accounts = accounts.map { account ->
-            PlaidItemCreateResponse.Account(
-                mask = account.mask,
-                plaidAccountId = account.plaidAccountId,
-                name = account.name
-            )
-        }
-    )
-}
+internal fun yaba.schema.CreateItemMutation.Data.toResponse(): PlaidItemCreateResponse =
+    this.itemCreate.run {
+        PlaidItemCreateResponse(
+            id = itemId,
+            name = name,
+            logo = logo,
+            accounts = accounts.map { account ->
+                PlaidItemCreateResponse.Account(
+                    mask = account.mask,
+                    plaidAccountId = account.plaidAccountId,
+                    name = account.name
+                )
+            }
+        )
+    }

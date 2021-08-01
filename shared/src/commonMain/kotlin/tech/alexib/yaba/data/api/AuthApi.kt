@@ -27,9 +27,9 @@ import tech.alexib.yaba.model.request.UserRegisterInput
 import tech.alexib.yaba.model.response.AuthResponse
 
 interface AuthApi {
-    suspend fun login(userLoginInput: UserLoginInput): Flow<ApolloResponse<AuthResponse>>
-    suspend fun register(userRegisterInput: UserRegisterInput): Flow<ApolloResponse<AuthResponse>>
-    suspend fun verifyToken(): Flow<ApolloResponse<User>>
+    suspend fun login(userLoginInput: UserLoginInput): Flow<YabaApolloResponse<AuthResponse>>
+    suspend fun register(userRegisterInput: UserRegisterInput): Flow<YabaApolloResponse<AuthResponse>>
+    suspend fun verifyToken(): Flow<YabaApolloResponse<User>>
 }
 
 internal class AuthApiImpl(
@@ -42,7 +42,7 @@ internal class AuthApiImpl(
 
     override suspend fun login(
         userLoginInput: UserLoginInput
-    ): Flow<ApolloResponse<AuthResponse>> {
+    ): Flow<YabaApolloResponse<AuthResponse>> {
         val mutation = LoginMutation(userLoginInput.email, userLoginInput.password)
 
         return runCatching {
@@ -54,7 +54,7 @@ internal class AuthApiImpl(
 
     override suspend fun register(
         userRegisterInput: UserRegisterInput
-    ): Flow<ApolloResponse<AuthResponse>> {
+    ): Flow<YabaApolloResponse<AuthResponse>> {
         val mutation = RegisterMutation(userRegisterInput.email, userRegisterInput.password)
         return runCatching {
             apolloApi.client().safeMutation(mutation) {
@@ -63,7 +63,7 @@ internal class AuthApiImpl(
         }.getOrThrow()
     }
 
-    override suspend fun verifyToken(): Flow<ApolloResponse<User>> {
+    override suspend fun verifyToken(): Flow<YabaApolloResponse<User>> {
         val query = VerifyTokenQuery()
         return runCatching {
             apolloApi.client().safeQuery(query) {

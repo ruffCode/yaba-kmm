@@ -16,11 +16,10 @@
 package tech.alexib.yaba.data.network.api
 
 import co.touchlab.stately.ensureNeverFrozen
-import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
-import tech.alexib.yaba.LoginMutation
-import tech.alexib.yaba.RegisterMutation
-import tech.alexib.yaba.VerifyTokenQuery
+import yaba.schema.LoginMutation
+import yaba.schema.RegisterMutation
+import yaba.schema.VerifyTokenQuery
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.network.apollo.YabaApolloClient
 import tech.alexib.yaba.data.network.mapper.toAuthResponse
@@ -68,7 +67,7 @@ interface AuthApi {
             return runCatching {
                 client.query(query) {
                     val data = it.me
-                    User(data.id as Uuid, data.email)
+                    User(data.id, data.email)
                 }
             }.getOrThrow()
         }

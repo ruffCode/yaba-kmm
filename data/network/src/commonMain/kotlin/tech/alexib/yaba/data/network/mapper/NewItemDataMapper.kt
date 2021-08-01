@@ -15,18 +15,16 @@
  */
 package tech.alexib.yaba.data.network.mapper
 
-import com.benasher44.uuid.Uuid
-import tech.alexib.yaba.NewItemDataQuery
 import tech.alexib.yaba.data.domain.dto.AccountDto
 import tech.alexib.yaba.data.domain.dto.NewItemDto
 import tech.alexib.yaba.data.domain.dto.TransactionDto
 import tech.alexib.yaba.model.User
 
-internal fun NewItemDataQuery.Data.toDto(): NewItemDto = this.run {
+internal fun yaba.schema.NewItemDataQuery.Data.toDto(): NewItemDto = this.run {
     val item = itemById.fragments.itemWithInstitution
     val accountTransactionPair = itemById.accountsAndTransactions()
     NewItemDto(
-        item = item.toDto(me.id as Uuid),
+        item = item.toDto(me.id),
         accounts = accountTransactionPair.first,
         transactions = accountTransactionPair.second,
         user = User(me.id, me.email),
@@ -34,7 +32,7 @@ internal fun NewItemDataQuery.Data.toDto(): NewItemDto = this.run {
     )
 }
 
-internal fun NewItemDataQuery.ItemById.accountsAndTransactions():
+internal fun yaba.schema.NewItemDataQuery.ItemById.accountsAndTransactions():
     Pair<List<AccountDto>, List<TransactionDto>> {
     return Pair(
         this.accounts.map { it.fragments.accountWithTransactions.fragments.account.toDto() },

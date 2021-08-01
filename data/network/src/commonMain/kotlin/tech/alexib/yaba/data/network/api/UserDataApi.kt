@@ -17,8 +17,8 @@ package tech.alexib.yaba.data.network.api
 
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
-import tech.alexib.yaba.AllUserDataQuery
-import tech.alexib.yaba.TransactionsUpdateQuery
+import yaba.schema.AllUserDataQuery
+import yaba.schema.TransactionsUpdateQuery
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.dto.TransactionsUpdateDto
 import tech.alexib.yaba.data.domain.dto.UserDataDto

@@ -39,15 +39,15 @@ internal data class AccountWithTransactionsDto(
 )
 
 internal fun tech.alexib.yaba.fragment.Account.toDto(): AccountDto = AccountDto(
-    id = id as Uuid,
+    id = id,
     name = name,
     mask = mask,
     availableBalance = availableBalance,
     currentBalance = currentBalance,
     creditLimit = creditLimit,
-    itemId = itemId as Uuid,
-    type = AccountType.valueOf(type.name),
-    subtype = AccountSubtype.valueOf(subtype.name),
+    itemId = itemId,
+    type = AccountType.valueOf(type.rawValue),
+    subtype = AccountSubtype.valueOf(subtype.rawValue),
     hidden = hidden
 )
 

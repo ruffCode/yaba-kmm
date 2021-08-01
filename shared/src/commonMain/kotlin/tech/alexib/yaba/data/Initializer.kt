@@ -30,7 +30,7 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.AllUserDataQuery
 import tech.alexib.yaba.data.api.ApolloApi
-import tech.alexib.yaba.data.api.ApolloResponse
+import tech.alexib.yaba.data.api.YabaApolloResponse
 import tech.alexib.yaba.data.api.dto.AccountDto
 import tech.alexib.yaba.data.api.dto.ItemDto
 import tech.alexib.yaba.data.api.dto.TransactionDto
@@ -70,7 +70,7 @@ class InitializerImpl : Initializer, KoinComponent {
         ensureNeverFrozen()
     }
 
-    private suspend fun getRemoteUserData(): ApolloResponse<AllDataMappedResponse> {
+    private suspend fun getRemoteUserData(): YabaApolloResponse<AllDataMappedResponse> {
         return withContext(backgroundDispatcher) {
             apolloApi.client().safeQuery(AllUserDataQuery()) {
                 val data = it.me
@@ -117,11 +117,11 @@ class InitializerImpl : Initializer, KoinComponent {
 
         if (user == null) {
             when (val response = getRemoteUserData()) {
-                is ApolloResponse.Success -> {
+                is YabaApolloResponse.Success -> {
                     insertAllUserData(response.data)
                     emit(InvokeSuccess)
                 }
-                is ApolloResponse.Error -> log.e {
+                is YabaApolloResponse.Error -> log.e {
                     "Error retrieving user data: ${response.message}"
                 }
             }

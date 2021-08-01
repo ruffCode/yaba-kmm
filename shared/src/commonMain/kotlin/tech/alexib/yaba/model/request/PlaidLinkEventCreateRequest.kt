@@ -15,7 +15,6 @@
  */
 package tech.alexib.yaba.model.request
 
-import com.apollographql.apollo.api.Input
 import tech.alexib.yaba.CreateLinkEventMutation
 
 sealed class PlaidLinkEventCreateRequest {
@@ -35,14 +34,17 @@ sealed class PlaidLinkEventCreateRequest {
         return when (this) {
             is Exit -> CreateLinkEventMutation(
                 type = "LinkExit",
-                requestId = Input.optional(requestId),
-                errorCode = Input.optional(errorCode),
-                errorType = Input.optional(errorType),
+                requestId = requestId,
+                errorCode = errorCode,
+                errorType = errorType,
                 linkSessionId = linkSessionId
             )
             is Success -> CreateLinkEventMutation(
                 type = "LinkSuccess",
-                linkSessionId = linkSessionId
+                linkSessionId = linkSessionId,
+                errorCode = null,
+                errorType = null,
+                requestId = null
             )
         }
     }

@@ -15,15 +15,13 @@
  */
 package tech.alexib.yaba.data.network.mapper
 
-import com.benasher44.uuid.Uuid
-import tech.alexib.yaba.TransactionsUpdateQuery
 import tech.alexib.yaba.data.domain.dto.TransactionsUpdateDto
 
-internal fun TransactionsUpdateQuery.Data.toDto(): TransactionsUpdateDto? = this.run {
+internal fun yaba.schema.TransactionsUpdateQuery.Data.toDto(): TransactionsUpdateDto? = this.run {
     transactionsUpdated?.let { data ->
         val added =
             data.added?.map { it.fragments.transaction.toDto() }
-        val removed = data.removed?.map { it as Uuid }
+        val removed = data.removed
         TransactionsUpdateDto(added, removed)
     }
 }

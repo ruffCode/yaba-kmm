@@ -15,48 +15,53 @@
  */
 package tech.alexib.yaba.data.network.apollo
 
-import com.apollographql.apollo.api.CustomTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import kotlinx.datetime.LocalDate
-import tech.alexib.yaba.type.CustomType
 
-internal val localDateAdapter = object : CustomTypeAdapter<LocalDate> {
-    @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
-    override fun decode(value: CustomTypeValue<*>): LocalDate {
-        try {
-            return LocalDate.parse(value.value.toString())
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
+// internal val localDateAdapter = object : CustomTypeAdapter<LocalDate> {
+//    @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
+//    override fun decode(value: CustomTypeValue<*>): LocalDate {
+//        try {
+//            return LocalDate.parse(value.value.toString())
+//        } catch (e: Exception) {
+//            throw RuntimeException(e)
+//        }
+//    }
+//
+//    override fun encode(value: LocalDate): CustomTypeValue<*> {
+//        return CustomTypeValue.GraphQLString(
+//            value.toString()
+//        )
+//    }
+// }
+
+internal val uuidAdapter = object : Adapter<Uuid> {
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Uuid {
+        return uuidFrom(reader.nextString()!!)
     }
 
-    override fun encode(value: LocalDate): CustomTypeValue<*> {
-        return CustomTypeValue.GraphQLString(
-            value.toString()
-        )
+    override fun toJson(
+        writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
+        value: Uuid
+    ) {
+        writer.value(value.toString())
     }
-}
-
-internal val uuidAdapter = object : CustomTypeAdapter<Uuid> {
-    override fun decode(value: CustomTypeValue<*>): Uuid = try {
-        uuidFrom(value.value.toString())
-    } catch (e: Throwable) {
-        throw RuntimeException(e)
-    }
-
-    override fun encode(value: Uuid): CustomTypeValue<*> =
-        CustomTypeValue.GraphQLString(value.toString())
 }
 
 class TypeAdapterParseException(message: String) : Exception(message)
 
-internal val customScalarTypeAdapters = ScalarTypeAdapters(
+internal val customScalarTypeAdapters = CustomScalarAdapters(
     mapOf(
-        CustomType.UUID to uuidAdapter,
-        CustomType.ID to uuidAdapter,
-        CustomType.LOCALDATE to localDateAdapter,
+        "uuid" to uuidAdapter,
+        "id" to uuidAdapter,
+//        "LocalDate" to LocalDateAdapter
+
+//        CustomType.LOCALDATE to localDateAdapter,
     )
 )

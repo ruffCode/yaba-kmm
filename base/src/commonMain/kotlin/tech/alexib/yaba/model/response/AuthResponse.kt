@@ -22,4 +22,3 @@ data class AuthResponse(
     val email: String,
     val token: String
 )
-

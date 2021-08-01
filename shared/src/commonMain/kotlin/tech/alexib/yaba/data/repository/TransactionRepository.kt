@@ -29,7 +29,7 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.TransactionsUpdateQuery
 import tech.alexib.yaba.data.api.ApolloApi
-import tech.alexib.yaba.data.api.ApolloResponse
+import tech.alexib.yaba.data.api.YabaApolloResponse
 import tech.alexib.yaba.data.api.dto.toDto
 import tech.alexib.yaba.data.api.dto.toEntities
 import tech.alexib.yaba.data.api.safeQuery
@@ -84,7 +84,7 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
         emitAll(dao.selectAllByAccountId(accountId))
     }
 
-    private fun getUpdate(updateId: Uuid): Flow<ApolloResponse<UpdateTransactionsRequest?>> =
+    private fun getUpdate(updateId: Uuid): Flow<YabaApolloResponse<UpdateTransactionsRequest?>> =
         apolloApi.client().safeQuery(TransactionsUpdateQuery(updateId)) { data ->
             if (data.transactionsUpdated != null) {
                 val added =
@@ -97,7 +97,7 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
     override suspend fun updateTransactions(updateId: Uuid) {
         withContext(backgroundDispatcher) {
             when (val update = getUpdate(updateId).firstOrNull()) {
-                is ApolloResponse.Success -> {
+                is YabaApolloResponse.Success -> {
                     if (update.data != null) {
                         val itemId = update.data.added?.firstOrNull()?.itemId
                         update.data.added?.let {
@@ -114,7 +114,7 @@ internal class TransactionRepositoryImpl : TransactionRepository, KoinComponent 
                         }
                     }
                 }
-                is ApolloResponse.Error -> log.e { "Error fetching transactions updates: ${update.message}" }
+                is YabaApolloResponse.Error -> log.e { "Error fetching transactions updates: ${update.message}" }
                 null -> log.e { "Error fetching transactions updates: response was null" }
             }
         }
