@@ -16,42 +16,64 @@
 package tech.alexib.yaba.data.repository
 
 import app.cash.turbine.test
-import tech.alexib.yaba.data.domain.stubs.UserDataStub
+import tech.alexib.yaba.data.domain.stubs.UserDataStubs
 import tech.alexib.yaba.util.suspendTest
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class UserRepositoryTest : BaseRepositoryTest() {
+    private val userDao = deps.userDao
+    private val authSettings = deps.authSettings
+    private val userRepository = deps.userRepository
+
+    @BeforeTest
+    fun setup() = suspendTest {
+        setupTest()
+    }
+
+    @AfterTest
+    fun breakdown() = suspendTest {
+        cleanup()
+    }
 
     @Test
     fun getsCurrentUser() = suspendTest {
-        authSettings.setUserId(userId)
-        userDao.insert(user)
+//        authSettings.setUserId(userId)
+//        userDao.insert(user)
         userRepository.currentUser().test {
-            assertEquals(user, expectItem())
+            assertEquals(user, awaitItem())
         }
     }
 
     @Test
     fun deletesCurrentUser() = suspendTest {
-        authSettings.setUserId(userId)
-        userDao.insert(user)
+//        authSettings.setUserId(userId)
+//        userDao.insert(user)
         userDao.selectById(userId).test {
-            assertEquals(user, expectItem())
+            assertEquals(user, awaitItem())
             expectNoEvents()
             userRepository.deleteCurrentUser()
-            assertEquals(null, expectItem())
+            assertEquals(null, awaitItem())
         }
     }
 
     @Test
     fun insertUserData() = suspendTest {
-        val data = UserDataStub.userData
+        userDao.deleteById(userId)
+        val data = UserDataStubs.userData
         userDao.selectById(userId).test {
-            assertEquals(null, expectItem())
+            assertEquals(null, awaitItem())
             expectNoEvents()
             userDao.insertUserData(data)
-            assertEquals(user, expectItem())
+            assertEquals(user, awaitItem())
+            cancelAndIgnoreRemainingEvents()
         }
+
+//        yabaDb.accountQueries.selectAll(userId, accountMapper).asFlow().mapToList().test {
+//            assertTrue(awaitItem().isNotEmpty())
+//            cancelAndIgnoreRemainingEvents()
+//        }
     }
 }

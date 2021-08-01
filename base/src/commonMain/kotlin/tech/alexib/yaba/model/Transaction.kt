@@ -77,10 +77,10 @@ data class TransactionDetail(
     val label = "$institutionName \n $accountName ****$accountMask"
 }
 
-object TransactionStubs {
-
-    val transactions: List<Transaction> = jSerializer.decodeFromString(transactionsJson)
-    val transaction = transactions.first()
-
-    val transactionDetail: TransactionDetail = jSerializer.decodeFromString(detailStub)
-}
+//object TransactionStubs {
+//
+//    val transactions: List<Transaction> = jSerializer.decodeFromString(transactionsJson)
+//    val transaction = transactions.first()
+//
+//    val transactionDetail: TransactionDetail = jSerializer.decodeFromString(detailStub)
+//}

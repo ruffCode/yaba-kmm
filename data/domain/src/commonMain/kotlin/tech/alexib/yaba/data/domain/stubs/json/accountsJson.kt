@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.domain.stubs
+package tech.alexib.yaba.data.domain.stubs.json
 
-const val accountsJson = """
-    [
-    {
+internal const val accountsChaseJson = """
+    [{
       "id": "228021f2-7fbc-4929-9c36-01e262c1e858",
       "name": "Plaid Checking",
       "currentBalance": 110,
@@ -124,6 +123,117 @@ const val accountsJson = """
       "type": "LOAN",
       "subtype": "STUDENT",
       "hidden": false
-    }
-  ]
+    }]
+"""
+
+internal const val accountsWellsJson = """
+    [{
+        "id": "d65deffb-32db-4d0e-ab94-535e8e31903c",
+        "name": "Plaid Credit Card",
+        "currentBalance": 410,
+        "availableBalance": null,
+        "creditLimit": 2000,
+        "mask": "3333",
+        "itemId": "79028cd1-a0ad-4551-84ea-54742ca72ea4",
+        "type": "CREDIT",
+        "subtype": "CREDIT_CARD",
+        "hidden": false
+      },
+      {
+        "id": "76073160-ca0d-4b59-ab46-b5635b8d3664",
+        "name": "Plaid Money Market",
+        "currentBalance": 43200,
+        "availableBalance": 43200,
+        "creditLimit": null,
+        "mask": "4444",
+        "itemId": "79028cd1-a0ad-4551-84ea-54742ca72ea4",
+        "type": "DEPOSITORY",
+        "subtype": "MONEY_MARKET",
+        "hidden": false
+      },
+      {
+        "id": "7a19f160-f5e8-4af8-b33b-3f1a0b3b5e5c",
+        "name": "Plaid IRA",
+        "currentBalance": 320.76,
+        "availableBalance": null,
+        "creditLimit": null,
+        "mask": "5555",
+        "itemId": "79028cd1-a0ad-4551-84ea-54742ca72ea4",
+        "type": "INVESTMENT",
+        "subtype": "IRA",
+        "hidden": true
+      },
+      {
+        "id": "bc61dd95-c1fd-448f-9faa-52456962e123",
+        "name": "Plaid 401k",
+        "currentBalance": 23631.9805,
+        "availableBalance": null,
+        "creditLimit": null,
+        "mask": "6666",
+        "itemId": "79028cd1-a0ad-4551-84ea-54742ca72ea4",
+        "type": "INVESTMENT",
+        "subtype": "FOUR_HUNDRED_ONE_K",
+        "hidden": true
+      },
+      {
+        "id": "626fa47f-7247-4a82-b292-aea4e0c21858",
+        "name": "Plaid Student Loan",
+        "currentBalance": 65262,
+        "availableBalance": null,
+        "creditLimit": null,
+        "mask": "7777",
+        "itemId": "79028cd1-a0ad-4551-84ea-54742ca72ea4",
+        "type": "LOAN",
+        "subtype": "STUDENT",
+        "hidden": true
+      },
+      {
+        "id": "e3b78d6e-39ab-4271-a344-46652f1c89ed",
+        "name": "Plaid Mortgage",
+        "currentBalance": 56302.06,
+        "availableBalance": null,
+        "creditLimit": null,
+        "mask": "8888",
+        "itemId": "79028cd1-a0ad-4551-84ea-54742ca72ea4",
+        "type": "LOAN",
+        "subtype": "MORTGAGE",
+        "hidden": true
+      },
+      {
+        "id": "22eab40d-2d5c-4c12-9e5a-f4d9833e39d4",
+        "name": "Plaid Checking",
+        "currentBalance": 110,
+        "availableBalance": 100,
+        "creditLimit": null,
+        "mask": "0000",
+        "itemId": "79028cd1-a0ad-4551-84ea-54742ca72ea4",
+        "type": "DEPOSITORY",
+        "subtype": "CHECKING",
+        "hidden": false
+      },
+      {
+        "id": "eb9ab93a-5d4e-4b8d-aecc-2f4e82bb3614",
+        "name": "Plaid Saving",
+        "currentBalance": 210,
+        "availableBalance": 200,
+        "creditLimit": null,
+        "mask": "1111",
+        "itemId": "79028cd1-a0ad-4551-84ea-54742ca72ea4",
+        "type": "DEPOSITORY",
+        "subtype": "SAVINGS",
+        "hidden": false
+      },
+      {
+        "id": "16983334-efc4-4d4b-8be0-59351685c521",
+        "name": "Plaid CD",
+        "currentBalance": 1000,
+        "availableBalance": null,
+        "creditLimit": null,
+        "mask": "2222",
+        "itemId": "79028cd1-a0ad-4551-84ea-54742ca72ea4",
+        "type": "DEPOSITORY",
+        "subtype": "CD",
+        "hidden": false
+      }
+    ]
 """

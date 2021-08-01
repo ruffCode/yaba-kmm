@@ -21,7 +21,7 @@ object Lib {
     const val statelyConcurrency = "co.touchlab:stately-concurrency:1.1.4"
     const val desugar = "com.android.tools:desugar_jdk_libs:1.1.5"
     const val uuid = "com.benasher44:uuid:0.3.0"
-    const val turbine = "app.cash.turbine:turbine:0.5.2"
+    const val turbine = "app.cash.turbine:turbine:0.6.0"
     const val junit = "junit:junit:4.13.2"
     const val robolectric = "org.robolectric:robolectric:4.6.1"
 

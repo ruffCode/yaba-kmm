@@ -34,57 +34,59 @@ interface AuthRepository {
     suspend fun register(email: String, password: String): AuthResult
     fun startLogoutTimer()
     fun isShowOnBoarding(): Flow<Boolean>
-}
 
-internal class AuthRepositoryImpl(
-    private val authApi: AuthApi,
-    private val authSettings: AuthSettings,
-    private val log: Kermit
-) : AuthRepository {
-    override fun isLoggedIn(): Flow<Boolean> = authSettings.token().map { !it.isNullOrEmpty() }
+    class Impl(
+        private val authApi: AuthApi,
+        private val authSettings: AuthSettings,
+        private val log: Kermit
+    ) : AuthRepository {
+        override fun isLoggedIn(): Flow<Boolean> = authSettings.token().map { !it.isNullOrEmpty() }
 
-    override suspend fun logout() {
-        authSettings.clearAuthToken()
-        authSettings.clearUserId()
-    }
-
-    override suspend fun login(email: String, password: String): AuthResult {
-        return runCatching {
-            handleAuthResponse(authApi.login(UserLoginInput(email, password)).first().getOrThrow())
-        }.getOrElse {
-            log.e(it) { "Login Error" }
-            AuthResult.Error("Authentication Error")
+        override suspend fun logout() {
+            authSettings.clearAuthToken()
+            authSettings.clearUserId()
         }
-    }
 
-    override suspend fun register(email: String, password: String): AuthResult {
-        return runCatching {
-            handleAuthResponse(
-                authApi.register(UserRegisterInput(email, password)).first().getOrThrow()
-            )
-        }.getOrElse {
-            AuthResult.Error(it.message ?: "User Registration Error")
+        override suspend fun login(email: String, password: String): AuthResult {
+            return runCatching {
+                handleAuthResponse(
+                    authApi.login(UserLoginInput(email, password)).first().getOrThrow()
+                )
+            }.getOrElse {
+                log.e(it) { "Login Error" }
+                AuthResult.Error("Authentication Error")
+            }
         }
-    }
 
-    override fun startLogoutTimer() {
-    }
+        override suspend fun register(email: String, password: String): AuthResult {
+            return runCatching {
+                handleAuthResponse(
+                    authApi.register(UserRegisterInput(email, password)).first().getOrThrow()
+                )
+            }.getOrElse {
+                AuthResult.Error(it.message ?: "User Registration Error")
+            }
+        }
 
-    override fun isShowOnBoarding(): Flow<Boolean> = authSettings.showOnboarding()
+        override fun startLogoutTimer() {
+        }
 
-    private suspend fun setToken(token: String) {
-        authSettings.setToken(token)
-    }
+        override fun isShowOnBoarding(): Flow<Boolean> = authSettings.showOnboarding()
 
-    private suspend fun setUserId(userId: Uuid) {
-        authSettings.setUserId(userId)
-    }
+        private suspend fun setToken(token: String) {
+            authSettings.setToken(token)
+        }
 
-    private suspend fun handleAuthResponse(authResponse: AuthResponse): AuthResult {
-        return if (authResponse.token.isNotEmpty()) {
-            setToken(authResponse.token)
-            setUserId(authResponse.id)
-            AuthResult.Success
-        } else AuthResult.Error("Authentication Error")
+        private suspend fun setUserId(userId: Uuid) {
+            authSettings.setUserId(userId)
+        }
+
+        private suspend fun handleAuthResponse(authResponse: AuthResponse): AuthResult {
+            return if (authResponse.token.isNotEmpty()) {
+                setToken(authResponse.token)
+                setUserId(authResponse.id)
+                AuthResult.Success
+            } else AuthResult.Error("Authentication Error")
+        }
     }
 }

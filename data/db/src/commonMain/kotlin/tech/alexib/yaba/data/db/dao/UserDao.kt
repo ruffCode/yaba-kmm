@@ -68,6 +68,9 @@ interface UserDao {
                 userData.institutions.forEach {
                     database.institutionEntityQueries.insertInstitution(it.toEntity())
                 }
+                userData.items.forEach {
+                    database.itemEntityQueries.insert(it.toEntity())
+                }
                 userData.accounts.forEach {
                     database.accountQueries.insertAccount(it.toEntity())
                 }

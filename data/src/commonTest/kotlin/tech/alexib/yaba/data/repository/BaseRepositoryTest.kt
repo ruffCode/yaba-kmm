@@ -15,44 +15,63 @@
  */
 package tech.alexib.yaba.data.repository
 
-import co.touchlab.kermit.CommonLogger
-import co.touchlab.kermit.Kermit
-import com.russhwolf.settings.MockSettings
-import com.russhwolf.settings.coroutines.toFlowSettings
-import com.squareup.sqldelight.db.SqlDriver
-import kotlinx.coroutines.Dispatchers
-import tech.alexib.yaba.data.createInMemorySqlDriver
-import tech.alexib.yaba.data.db.YabaDatabase
-import tech.alexib.yaba.data.db.YabaDb
-import tech.alexib.yaba.data.db.dao.UserDao
-import tech.alexib.yaba.data.domain.stubs.UserDataStub
-import tech.alexib.yaba.data.provider.UserIdProvider
-import tech.alexib.yaba.data.settings.AuthSettings
+import com.benasher44.uuid.Uuid
+import tech.alexib.yaba.data.domain.dto.UserDataDto
+import tech.alexib.yaba.data.domain.stubs.UserDataStubs
 
 internal open class BaseRepositoryTest {
-    val kermit = Kermit(CommonLogger())
-    val settings = MockSettings().toFlowSettings(Dispatchers.Unconfined)
-    val authSettings = AuthSettings.Impl(settings)
-    val userIdProvider: UserIdProvider =
-        UserIdProvider.Impl(
-            authSettings, Dispatchers.Unconfined,
-            kermit.withTag("UserIdProvider")
-        )
+    //    val kermit = Kermit(CommonLogger())
+//    val backgroundDispatcher = Dispatchers.Unconfined
+//    val settings = MockSettings().toFlowSettings(backgroundDispatcher)
+//    val authSettings = AuthSettings.Impl(settings)
+//    val userIdProvider: UserIdProvider by lazy {
+//        UserIdProvider.Impl(
+//            authSettings, backgroundDispatcher,
+//            kermit.withTag("UserIdProvider")
+//        )
+//    }
+//
+//
+//    private val driver: SqlDriver = createInMemorySqlDriver()
+//    val database: YabaDatabase by lazy {
+//        YabaDatabase(driver, kermit.withTag("YabaDatabase"))
+//    }
+//    val yabaDb: YabaDb by lazy {
+//        database.getInstance()
+//    }
+//
+//    val dao = TestDaos(backgroundDispatcher, yabaDb)
+//
+// //    val userDao: UserDao by lazy {
+// //        UserDao.Impl(yabaDb, backgroundDispatcher)
+// //    }
+//    val userRepository: UserRepository by lazy {
+//        UserRepositoryImpl(userIdProvider, kermit.withTag("UserRepository"), dao.userDao)
+//    }
+    val deps = TestDependencies
 
-    private val driver: SqlDriver = createInMemorySqlDriver()
-    val database: YabaDatabase by lazy {
-        YabaDatabase(driver, kermit.withTag("YabaDatabase"))
-    }
-    val yabaDb: YabaDb by lazy {
-        database.getInstance()
-    }
-    val userDao: UserDao by lazy {
-        UserDao.Impl(yabaDb, Dispatchers.Default)
-    }
-    val userRepository: UserRepository by lazy {
-        UserRepositoryImpl(userIdProvider, kermit.withTag("UserRepository"), userDao)
-    }
-
-    val user = UserDataStub.user
+    val user = UserDataStubs.user
     val userId = user.id
+
+    suspend fun setupTest() {
+        deps.authRepository.login(UserDataStubs.validLogin.email, UserDataStubs.validLogin.password)
+        deps.userDao.insert(user)
+    }
+
+    suspend fun login() {
+        deps.authRepository.login(UserDataStubs.validLogin.email, UserDataStubs.validLogin.password)
+    }
+    suspend fun cleanup() {
+        deps.userDao.deleteById(userId)
+        deps.authRepository.logout()
+        deps.authSettings.clearAppSettings()
+    }
+
+    suspend fun setUserId(id: Uuid = userId) {
+        deps.authSettings.setUserId(id)
+    }
+
+    suspend fun insertAllUserData(userData: UserDataDto = UserDataStubs.userData) {
+        deps.userDao.insertUserData(userData)
+    }
 }

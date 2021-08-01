@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.domain.dto
+package tech.alexib.yaba.data.domain.stubs
 
-import kotlinx.serialization.Serializable
-import tech.alexib.yaba.model.User
+import kotlinx.serialization.decodeFromString
+import tech.alexib.yaba.data.domain.dto.InstitutionDto
+import tech.alexib.yaba.data.domain.stubs.json.institutionChaseJson
+import tech.alexib.yaba.data.domain.stubs.json.institutionWellsFargoJson
+import tech.alexib.yaba.util.jSerializer
 
-@Serializable
-data class NewItemDto(
-    val user: User,
-    val institutionDto: InstitutionDto,
-    val item: ItemDto,
-    val accounts: List<AccountDto>,
-    val transactions: List<TransactionDto>
-)
+object InstitutionStubs {
+
+    val wellsFargo: InstitutionDto by lazy {
+        jSerializer.decodeFromString(institutionWellsFargoJson)
+    }
+    val chase: InstitutionDto by lazy {
+        jSerializer.decodeFromString(institutionChaseJson)
+    }
+}

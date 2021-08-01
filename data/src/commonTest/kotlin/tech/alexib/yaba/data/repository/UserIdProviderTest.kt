@@ -17,20 +17,34 @@ package tech.alexib.yaba.data.repository
 
 import app.cash.turbine.test
 import com.benasher44.uuid.uuidFrom
-import tech.alexib.yaba.util.runBlockingTest
+import tech.alexib.yaba.util.suspendTest
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class UserIdProviderTest : BaseRepositoryTest() {
 
+    private val userIdProvider = deps.userIdProvider
+    private val authSettings = deps.authSettings
+
+    @BeforeTest
+    fun setup() = suspendTest {
+        authSettings.setUserId(uuidFrom("aa1e60bd-0a48-4e8d-800e-237f42d4a793"))
+    }
+
     @Test
-    fun providesUserId() = runBlockingTest {
+    fun providesUserId() = suspendTest {
         userIdProvider.userId.test {
-            assertEquals(uuidFrom("aa1e60bd-0a48-4e8d-800e-237f42d4a793"), expectItem())
-            expectNoEvents()
+            assertEquals(uuidFrom("aa1e60bd-0a48-4e8d-800e-237f42d4a793"), awaitItem())
             authSettings.setUserId(userId)
-            assertEquals(userId, expectItem())
-            expectNoEvents()
+            assertEquals(userId, awaitItem())
+            cancelAndConsumeRemainingEvents()
         }
+    }
+
+    @AfterTest
+    fun breakdown() = suspendTest {
+        cleanup()
     }
 }

@@ -28,18 +28,18 @@ import tech.alexib.yaba.data.network.mapper.toDto
 interface UserDataApi {
     fun getTransactionsUpdate(updateId: Uuid): Flow<DataResult<TransactionsUpdateDto?>>
     fun getAllUserData(): Flow<DataResult<UserDataDto>>
-}
 
-internal class UserDataApiImpl(
-    private val client: YabaApolloClient
-) : UserDataApi {
-    override fun getTransactionsUpdate(updateId: Uuid): Flow<DataResult<TransactionsUpdateDto?>> {
-        val query = TransactionsUpdateQuery(updateId)
-        return client.query(query) { it.toDto() }
-    }
+    class Impl(
+        private val client: YabaApolloClient
+    ) : UserDataApi {
+        override fun getTransactionsUpdate(updateId: Uuid): Flow<DataResult<TransactionsUpdateDto?>> {
+            val query = TransactionsUpdateQuery(updateId)
+            return client.query(query) { it.toDto() }
+        }
 
-    override fun getAllUserData(): Flow<DataResult<UserDataDto>> {
-        val query = AllUserDataQuery()
-        return client.query(query) { it.toDto() }
+        override fun getAllUserData(): Flow<DataResult<UserDataDto>> {
+            val query = AllUserDataQuery()
+            return client.query(query) { it.toDto() }
+        }
     }
 }

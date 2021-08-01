@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.domain.stubs
+package tech.alexib.yaba.data.domain.stubs.json
 
-const val transactionsJson = """
+internal const val transactionsChaseJson1 = """
     [
         {
           "name": "KFC",

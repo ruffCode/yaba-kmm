@@ -15,6 +15,7 @@
  */
 package tech.alexib.yaba.data.db.dao
 
+import co.touchlab.stately.ensureNeverFrozen
 import com.benasher44.uuid.Uuid
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
@@ -38,11 +39,30 @@ interface ItemDao {
     fun selectAll(userId: Uuid): Flow<List<PlaidItem>>
     fun selectById(id: Uuid): Flow<PlaidItem?>
     suspend fun deleteById(id: Uuid)
+    val itemMapper: (Uuid, String, Uuid, String, String) -> PlaidItem
+        get() = { id: Uuid,
+            plaid_institution_id: String,
+            user_id: Uuid,
+            name: String,
+            logo: String
+            ->
+            PlaidItem(
+                id = id,
+                plaidInstitutionId = plaid_institution_id,
+                name = name,
+                base64Logo = logo
+            )
+        }
 
     class Impl(
         private val database: YabaDb,
         private val backgroundDispatcher: CoroutineDispatcher,
     ) : ItemDao {
+
+        init {
+            ensureNeverFrozen()
+        }
+
         private val queries: ItemEntityQueries = database.itemEntityQueries
         override suspend fun insert(item: ItemDto) {
             withContext(backgroundDispatcher) {
@@ -75,21 +95,6 @@ interface ItemDao {
             withContext(backgroundDispatcher) {
                 queries.deleteById(id)
             }
-        }
-
-        private val itemMapper = {
-            id: Uuid,
-            plaid_institution_id: String,
-            _: Uuid?,
-            name: String,
-            logo: String,
-            ->
-            PlaidItem(
-                id = id,
-                plaidInstitutionId = plaid_institution_id,
-                name = name,
-                base64Logo = logo
-            )
         }
     }
 }

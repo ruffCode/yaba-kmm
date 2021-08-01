@@ -25,6 +25,7 @@ import tech.alexib.yaba.model.Institution
 
 interface InstitutionDao {
     suspend fun insert(institution: InstitutionDto)
+
     class Impl(
         database: YabaDb,
         private val backgroundDispatcher: CoroutineDispatcher
@@ -38,8 +39,9 @@ interface InstitutionDao {
                 )
             }
         }
-
-        private val institutionMapper = {
+    }
+    val institutionMapper: (String, String, String, String) -> Institution
+        get() = {
             id: String,
             logo: String,
             name: String,
@@ -52,5 +54,4 @@ interface InstitutionDao {
                 primaryColor = primary_color
             )
         }
-    }
 }

@@ -20,16 +20,17 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import tech.alexib.yaba.data.db.dao.AccountDao
-import tech.alexib.yaba.data.db.dao.InstitutionDao
-import tech.alexib.yaba.data.db.dao.ItemDao
 import tech.alexib.yaba.data.db.dao.TransactionDao
+import tech.alexib.yaba.data.db.dao.UserDao
 import tech.alexib.yaba.data.domain.ErrorResult
 import tech.alexib.yaba.data.domain.Success
 import tech.alexib.yaba.data.domain.dto.NewItemDto
+import tech.alexib.yaba.data.domain.dto.UserDataDto
 import tech.alexib.yaba.data.network.api.PlaidItemApi
 import tech.alexib.yaba.data.network.api.UserDataApi
 import tech.alexib.yaba.util.InvokeError
@@ -40,27 +41,23 @@ import tech.alexib.yaba.util.InvokeSuccess
 interface UserDataRepository {
     fun handleNewItem(itemId: Uuid): Flow<InvokeStatus>
     suspend fun handleUpdate(updateId: Uuid)
+    fun handleInitialSync(): Flow<InvokeStatus>
 }
 
 internal class UserDataRepositoryImpl(
     private val plaidItemApi: PlaidItemApi,
     private val userDataApi: UserDataApi,
-    private val itemDao: ItemDao,
-    private val institutionDao: InstitutionDao,
-    private val accountDao: AccountDao,
     private val transactionDao: TransactionDao,
     private val accountRepository: AccountRepository,
     private val log: Kermit,
-    private val backgroundDispatcher: CoroutineDispatcher
+    private val backgroundDispatcher: CoroutineDispatcher,
+    private val userRepository: UserRepository,
+    private val userDao: UserDao,
+    private val itemRepository: ItemRepository,
 ) : UserDataRepository {
 
     private suspend fun insertNewItemData(data: NewItemDto) = runCatching {
-        institutionDao.insert(data.institutionDto)
-        itemDao.insert(data.item)
-        data.accounts.forEach {
-            accountDao.insert(it.account)
-            transactionDao.insert(it.transactions)
-        }
+        itemRepository.insert(data)
     }.fold(
         {
             log.d { "New Item inserted" }
@@ -91,7 +88,7 @@ internal class UserDataRepositoryImpl(
         emit(InvokeError(it))
     }
 
-    private suspend fun delete(ids: List<Uuid>) {
+    private suspend fun deleteTransactions(ids: List<Uuid>) {
         ids.forEach {
             transactionDao.deleteById(it)
         }
@@ -109,7 +106,7 @@ internal class UserDataRepositoryImpl(
                         }
                         it.removed?.let { removedIds ->
                             log.d { "updateTransactions deleted ${removedIds.size}" }
-                            delete(removedIds)
+                            deleteTransactions(removedIds)
                         }
 
                         itemId?.let { id ->
@@ -123,4 +120,39 @@ internal class UserDataRepositoryImpl(
             }
         }
     }
+
+    override fun handleInitialSync(): Flow<InvokeStatus> = flow {
+        emit(InvokeStarted)
+        val user = userRepository.currentUser().distinctUntilChanged().first()
+        if (user == null) {
+            when (val result = userDataApi.getAllUserData().firstOrNull()) {
+                is Success -> {
+                    handleSaveUserData(result.data)
+                    emit(InvokeSuccess)
+                }
+                is ErrorResult -> {
+                    log.e { result.error }
+                    emit(InvokeSuccess)
+                }
+                null -> emit(InvokeSuccess)
+            }
+        } else emit(InvokeSuccess)
+    }.catch {
+        log.e(it) { "Initializer error ${it.message}" }
+        emit(InvokeError(it))
+    }
+
+    private suspend fun handleSaveUserData(data: UserDataDto) = runCatching {
+        userDao.insertUserData(data)
+    }.fold(
+        {
+            log.d { "Initial sync completed" }
+        },
+        {
+            log.e(it) {
+                "Error inserting user data: ${it.message}"
+            }
+            throw it
+        }
+    )
 }

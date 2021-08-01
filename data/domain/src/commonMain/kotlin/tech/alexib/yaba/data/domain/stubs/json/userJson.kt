@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.db.mapper
+package tech.alexib.yaba.data.domain.stubs.json
 
-interface EntityMapper<Dto, Entity> {
-    suspend fun map(from: Dto): Entity
-}
+internal const val userJson = """
+    {
+     "id": "6accd19f-1db5-430f-8fdd-0d406df2d334",
+    "email": "alexi3@test.com"
+    }
+"""

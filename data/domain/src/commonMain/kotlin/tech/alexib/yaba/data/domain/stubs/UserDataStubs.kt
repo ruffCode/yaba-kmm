@@ -1,0 +1,123 @@
+/*
+ * Copyright 2021 Alexi Bre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package tech.alexib.yaba.data.domain.stubs
+
+import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuid4
+import kotlinx.serialization.decodeFromString
+import tech.alexib.yaba.data.domain.dto.AccountDto
+import tech.alexib.yaba.data.domain.dto.AccountWithTransactionsDto
+import tech.alexib.yaba.data.domain.dto.InstitutionDto
+import tech.alexib.yaba.data.domain.dto.ItemDto
+import tech.alexib.yaba.data.domain.dto.NewItemDto
+import tech.alexib.yaba.data.domain.dto.TransactionDto
+import tech.alexib.yaba.data.domain.dto.UserDataDto
+import tech.alexib.yaba.data.domain.stubs.json.userJson
+import tech.alexib.yaba.model.User
+import tech.alexib.yaba.model.request.PlaidItemCreateRequest
+import tech.alexib.yaba.model.request.UserLoginInput
+import tech.alexib.yaba.model.response.AuthResponse
+import tech.alexib.yaba.model.response.PlaidItemCreateResponse
+import tech.alexib.yaba.util.jSerializer
+
+object UserDataStubs {
+
+    val user: User by lazy { jSerializer.decodeFromString(userJson) }
+    val items: List<ItemDto> by lazy { listOf(PlaidItemStubs.chase) }
+    val accounts: List<AccountDto> by lazy { AccountStubs.chaseAccounts }
+    val transactions: List<TransactionDto> by lazy {
+        TransactionStubs.transactionsChase1
+    }
+    val institutions: List<InstitutionDto> by lazy {
+        listOf(InstitutionStubs.chase)
+    }
+
+    val userData: UserDataDto by lazy {
+        UserDataDto(
+            user = user,
+            items = items,
+            accounts = accounts,
+            transactions = transactions,
+            institutions = institutions
+        )
+    }
+    val groupedTransactions by lazy {
+        TransactionStubs.allTransactions.groupBy { it.accountId }
+    }
+
+    val groupedAccounts by lazy {
+        AccountStubs.allAccounts.groupBy { it.itemId }
+    }
+
+    fun accountByIdWithTransactions(accountId: Uuid): AccountWithTransactionsDto? {
+        return AccountStubs.allAccounts.firstOrNull { it.id == accountId }?.let {
+            AccountWithTransactionsDto(
+                it, groupedTransactions.getOrDefault(accountId, emptyList())
+            )
+        }
+    }
+
+    val validLogin = UserLoginInput("alexi3@test.com", "testpassword")
+    val goodAuthResponse = AuthResponse(
+        email = validLogin.email,
+        token = "authtoken",
+        id = user.id
+    )
+
+    val newItemDtoStub by lazy {
+        NewItemDto(
+            user = user,
+            institutionDto = InstitutionStubs.wellsFargo,
+            item = PlaidItemStubs.wellsFargo,
+            accounts = AccountStubs.wellsFargoAccounts,
+            transactions = AccountStubs.wellsFargoAccounts.flatMap {
+                groupedTransactions.getOrDefault(it.id, emptyList())
+            }
+        )
+    }
+
+    object Registration {
+        val newId = Uuid.randomUUID()
+    }
+
+    object PlaidLink {
+        val item = PlaidItemStubs.wellsFargo
+        val institution = InstitutionStubs.wellsFargo
+        val publicToken = uuid4().toString()
+        fun itemCreateResponse(): PlaidItemCreateResponse {
+
+            val accounts = AccountStubs.wellsFargoAccounts.map {
+                PlaidItemCreateResponse.Account(
+                    mask = it.mask, name = it.name, plaidAccountId = it.id.toString()
+
+                )
+            }
+            return PlaidItemCreateResponse(
+                id = item.id,
+                name = institution.name,
+                logo = institution.logo,
+                accounts = accounts
+            )
+        }
+
+        val itemCreateRequest by lazy {
+            PlaidItemCreateRequest(
+                institutionId = institution.institutionId,
+                publicToken
+            )
+        }
+    }
+}

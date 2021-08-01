@@ -58,7 +58,7 @@ WHERE user_id = ?;
 
 selectAllNotHidden:
 SELECT * FROM UserAccount
-WHERE user_id = ? AND hidden = 'false';
+WHERE user_id = ? AND hidden = 0;
 
 selectById:
 SELECT * FROM UserAccount
@@ -79,12 +79,12 @@ WHERE item_id = ?;
 availableBalance:
 SELECT SUM(available_balance) AS available
 FROM UserAccount
-WHERE type = 'DEPOSITORY' AND user_id = ? AND UserAccount.hidden = 0;
+WHERE type = 'DEPOSITORY' AND user_id = ? AND hidden = 0;
 
 currentBalance:
 SELECT SUM(current_balance) AS current
 FROM UserAccount
-WHERE type = 'DEPOSITORY' AND user_id = ? AND UserAccount.hidden = 0;
+WHERE type = 'DEPOSITORY' AND user_id = ? AND hidden = 0;
 
 setHidden:
 UPDATE AccountEntity SET hidden = ?

@@ -9,7 +9,7 @@ plugins {
 
 dependencies {
     commonMainApi(Lib.SqlDelight.runtime)
-    commonMainImplementation(Lib.SqlDelight.coroutineExtensions)
+    commonMainApi(Lib.SqlDelight.coroutineExtensions)
     androidMainApi(Lib.SqlDelight.androidDriver)
     androidMainApi(Lib.SqlDelight.jvm)
     androidTestImplementation(Lib.SqlDelight.jvm)

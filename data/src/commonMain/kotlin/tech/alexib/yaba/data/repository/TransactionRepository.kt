@@ -15,9 +15,7 @@
  */
 package tech.alexib.yaba.data.repository
 
-import co.touchlab.kermit.Kermit
 import com.benasher44.uuid.Uuid
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -29,15 +27,13 @@ import tech.alexib.yaba.model.TransactionDetail
 interface TransactionRepository {
     fun recentTransactions(): Flow<List<Transaction>>
     fun getAll(): Flow<List<Transaction>>
-    fun getById(id: Uuid): Flow<TransactionDetail>
+    fun getById(id: Uuid): Flow<TransactionDetail?>
     fun getAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
 }
 
 internal class TransactionRepositoryImpl(
     private val userIdProvider: UserIdProvider,
     private val dao: TransactionDao,
-    private val backgroundDispatcher: CoroutineDispatcher,
-    private val log: Kermit
 ) : TransactionRepository {
 
     override fun recentTransactions(): Flow<List<Transaction>> = flow {
@@ -47,7 +43,7 @@ internal class TransactionRepositoryImpl(
     override fun getAll(): Flow<List<Transaction>> =
         flow { emitAll(dao.selectAll(userIdProvider.userId.value)) }
 
-    override fun getById(id: Uuid): Flow<TransactionDetail> = flow {
+    override fun getById(id: Uuid): Flow<TransactionDetail?> = flow {
         emitAll(dao.selectById(id))
     }
     override fun getAllByAccountId(accountId: Uuid): Flow<List<Transaction>> = flow {

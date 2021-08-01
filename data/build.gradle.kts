@@ -23,6 +23,7 @@ dependencies {
     commonMainImplementation(projects.data.domain)
     commonMainImplementation(projects.data.network)
     commonMainImplementation(projects.data.db)
+    commonTestImplementation(Lib.turbine)
     commonMainImplementation(Lib.MultiplatformSettings.settings)
     commonMainImplementation(Lib.MultiplatformSettings.coroutines)
     commonTestImplementation(Lib.MultiplatformSettings.test)

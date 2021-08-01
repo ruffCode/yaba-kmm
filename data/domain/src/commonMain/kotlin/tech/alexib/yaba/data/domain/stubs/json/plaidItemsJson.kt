@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.domain.stubs
+package tech.alexib.yaba.data.domain.stubs.json
 
-const val userJson = """
+internal const val plaidItemChaseJson = """
     {
-     "id": "6accd19f-1db5-430f-8fdd-0d406df2d334",
-    "email": "alexi3@test.com"
+      "id": "4ea99dc5-db41-433e-afa2-db7e0b54bf95",
+      "plaidInstitutionId": "ins_3",
+      "userId": "6accd19f-1db5-430f-8fdd-0d406df2d334"
+    }
+"""
+
+internal const val plaidItemWellsFargoJson = """
+    {
+      "id": "79028cd1-a0ad-4551-84ea-54742ca72ea4",
+      "plaidInstitutionId": "ins_4",
+      "userId": "6accd19f-1db5-430f-8fdd-0d406df2d334"
     }
 """

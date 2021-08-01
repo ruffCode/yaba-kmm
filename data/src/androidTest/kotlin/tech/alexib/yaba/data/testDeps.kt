@@ -15,11 +15,18 @@
  */
 package tech.alexib.yaba.data
 
+import co.touchlab.kermit.CommonLogger
+import co.touchlab.kermit.Kermit
 import com.squareup.sqldelight.db.SqlDriver
+import com.squareup.sqldelight.logs.LogSqliteDriver
 import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import tech.alexib.yaba.data.db.YabaDb
 
-actual fun createInMemorySqlDriver(): SqlDriver =
-    JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY).apply {
+actual fun createInMemorySqlDriver(): SqlDriver {
+    val log = Kermit(CommonLogger())
+    val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY).apply {
         YabaDb.Schema.create(this)
     }
+    driver.execute(null, "PRAGMA foreign_keys = 1", 0, null)
+    return LogSqliteDriver(driver) { log.d { it } }
+}

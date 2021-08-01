@@ -16,76 +16,39 @@
 package tech.alexib.yaba.data.repository
 
 import app.cash.turbine.test
-import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import tech.alexib.yaba.data.db.dao.AccountDao
 import tech.alexib.yaba.data.db.dao.TransactionDao
-import tech.alexib.yaba.data.domain.DataResult
-import tech.alexib.yaba.data.domain.ErrorResult
-import tech.alexib.yaba.data.domain.Success
-import tech.alexib.yaba.data.domain.dto.AccountDto
-import tech.alexib.yaba.data.domain.dto.AccountWithTransactionsDto
-import tech.alexib.yaba.data.domain.stubs.UserDataStub
-import tech.alexib.yaba.data.network.api.AccountApi
+import tech.alexib.yaba.data.domain.stubs.UserDataStubs
+import tech.alexib.yaba.model.AccountType
 import tech.alexib.yaba.util.suspendTest
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-internal class AccountApiMock : AccountApi {
-    override suspend fun setHideAccount(hide: Boolean, accountId: Uuid) {
-    }
-
-    override fun accountByIdWithTransactions(id: Uuid): Flow<DataResult<AccountWithTransactionsDto>> =
-        flow {
-            val account = UserDataStub.accounts.firstOrNull { it.id == id }
-            val transactions = UserDataStub.transactions.filter { it.accountId == id }
-            account?.let {
-                emit(
-                    Success(
-                        AccountWithTransactionsDto(
-                            account, transactions
-                        )
-                    )
-                )
-            } ?: emit(ErrorResult<AccountWithTransactionsDto>("account not found"))
-        }
-
-    override fun accountsByItemId(itemId: Uuid): Flow<DataResult<List<AccountDto>>> = flow {
-        val accounts = UserDataStub.accounts.filter { it.itemId == itemId }
-        emit(Success(accounts))
-    }
-}
-
 internal class AccountRepositoryTest : BaseRepositoryTest() {
 
-    private val accountDao = AccountDao.Impl(yabaDb, Dispatchers.Default)
-    private val transactionDao = TransactionDao.Impl(yabaDb, Dispatchers.Default)
+    private val transactionDao: TransactionDao = deps.transactionDao
+    private val userDao = deps.userDao
     private val existingAccountId = uuidFrom("228021f2-7fbc-4929-9c36-01e262c1e858")
-    private val accountRepository = AccountRepositoryImpl(
-        AccountApiMock(),
-        accountDao,
-        userIdProvider,
-        transactionDao,
-        kermit.withTag("AccountRepository")
-    )
+    private val accountRepository = deps.accountRepository
+    private val balance = UserDataStubs.accounts.filter { it.type == AccountType.DEPOSITORY }
+        .sumOf { it.currentBalance }
 
     @BeforeTest
     fun setup() {
         suspendTest {
-            authSettings.setUserId(userId)
-            userDao.insertUserData(UserDataStub.userData)
+            userDao.deleteById(userId)
+            login()
+            userDao.insertUserData(UserDataStubs.userData)
         }
     }
 
     @Test
     fun getAccountById() = suspendTest {
         accountRepository.getById(existingAccountId).test {
-            assertEquals("Plaid Checking", expectItem()?.name)
+            assertEquals("Plaid Checking", awaitItem()?.name)
             expectNoEvents()
         }
     }
@@ -93,24 +56,43 @@ internal class AccountRepositoryTest : BaseRepositoryTest() {
     @Test
     fun getAccountByIdFail() = suspendTest {
         accountRepository.getById(uuidFrom("228021f2-7fbc-4929-9c36-01e262c1e859")).test {
-            assertEquals(null, expectItem())
+            assertEquals(null, awaitItem())
             expectNoEvents()
         }
     }
+
     @Test
     fun setsAccountHidden() = suspendTest {
         accountRepository.getById(existingAccountId).test {
-            assertEquals(false, expectItem()?.hidden)
+            assertEquals(false, awaitItem()?.hidden)
             expectNoEvents()
         }
         transactionDao.selectAllByAccountId(existingAccountId).test {
-            assertTrue(expectItem().isNotEmpty())
+            assertTrue(awaitItem().isNotEmpty())
             expectNoEvents()
         }
         accountRepository.hide(existingAccountId)
         transactionDao.selectAllByAccountId(existingAccountId).test {
-            assertTrue(expectItem().isEmpty())
+            assertTrue(awaitItem().isEmpty())
             expectNoEvents()
         }
+        accountRepository.show(existingAccountId)
+        transactionDao.selectAllByAccountId(existingAccountId).test {
+            assertTrue(awaitItem().isNotEmpty())
+            expectNoEvents()
+        }
+    }
+
+    @Test
+    fun currentCashBalance() = suspendTest {
+        accountRepository.currentCashBalance().test {
+            assertEquals(balance, awaitItem())
+            expectNoEvents()
+        }
+    }
+
+    @AfterTest
+    fun breakdown() = suspendTest {
+        cleanup()
     }
 }

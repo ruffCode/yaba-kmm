@@ -18,7 +18,7 @@ package tech.alexib.yaba.data.db.dao
 import com.benasher44.uuid.Uuid
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
-import com.squareup.sqldelight.runtime.coroutines.mapToOne
+import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -37,7 +37,7 @@ interface TransactionDao {
     suspend fun deleteByAccountId(accountId: Uuid)
     fun selectRecent(userId: Uuid): Flow<List<Transaction>>
     fun selectAll(userId: Uuid): Flow<List<Transaction>>
-    fun selectById(id: Uuid): Flow<TransactionDetail>
+    fun selectById(id: Uuid): Flow<TransactionDetail?>
     fun selectAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
     suspend fun deleteById(id: Uuid)
 
@@ -69,8 +69,8 @@ interface TransactionDao {
             queries.selectAll(userId, transactionMapper).asFlow().mapToList()
                 .flowOn(backgroundDispatcher)
 
-        override fun selectById(id: Uuid): Flow<TransactionDetail> =
-            queries.selectById(id, transactionDetailMapper).asFlow().mapToOne()
+        override fun selectById(id: Uuid): Flow<TransactionDetail?> =
+            queries.selectById(id, transactionDetailMapper).asFlow().mapToOneOrNull()
                 .flowOn(backgroundDispatcher)
 
         override fun selectAllByAccountId(accountId: Uuid): Flow<List<Transaction>> =
@@ -82,8 +82,24 @@ interface TransactionDao {
                 queries.deleteById(id)
             }
         }
+    }
 
-        private val transactionMapper = {
+    val transactionMapper: (
+        Uuid,
+        Uuid,
+        Uuid,
+        Uuid?,
+        String?,
+        String?,
+        TransactionType,
+        String,
+        String?,
+        LocalDate,
+        Double,
+        String?,
+        Boolean?
+    ) -> Transaction
+        get() = {
             id: Uuid,
             account_id: Uuid,
             _: Uuid,
@@ -112,41 +128,56 @@ interface TransactionDao {
                 merchantName = merchant_name,
             )
         }
-
-        private val transactionDetailMapper =
-            { id: Uuid,
-                account_id: Uuid,
-                _: Uuid,
-                _: Uuid?,
-                category: String?,
-                subcategory: String?,
-                type: TransactionType,
-                name: String,
-                iso_currency_code: String?,
-                date: LocalDate,
-                amount: Double,
-                pending: Boolean?,
-                merchant_name: String?,
-                accountName: String?,
-                mask: String?,
-                institutionName: String?
-                ->
-                TransactionDetail(
-                    id = id,
-                    accountId = account_id,
-                    name = name,
-                    type = type,
-                    amount = amount,
-                    date = date,
-                    category = category,
-                    subcategory = subcategory,
-                    isoCurrencyCode = iso_currency_code,
-                    pending = pending,
-                    merchantName = merchant_name,
-                    accountName = accountName ?: "Unknown",
-                    accountMask = mask ?: "0000",
-                    institutionName = institutionName ?: "unknown"
-                )
-            }
-    }
+    val transactionDetailMapper: (
+        Uuid,
+        Uuid,
+        Uuid,
+        Uuid?,
+        String?,
+        String?,
+        TransactionType,
+        String,
+        String?,
+        LocalDate,
+        Double,
+        Boolean?,
+        String?,
+        String?,
+        String?,
+        String?
+    ) -> TransactionDetail
+        get() = { id: Uuid,
+            account_id: Uuid,
+            _: Uuid,
+            _: Uuid?,
+            category: String?,
+            subcategory: String?,
+            type: TransactionType,
+            name: String,
+            iso_currency_code: String?,
+            date: LocalDate,
+            amount: Double,
+            pending: Boolean?,
+            merchant_name: String?,
+            accountName: String?,
+            mask: String?,
+            institutionName: String?
+            ->
+            TransactionDetail(
+                id = id,
+                accountId = account_id,
+                name = name,
+                type = type,
+                amount = amount,
+                date = date,
+                category = category,
+                subcategory = subcategory,
+                isoCurrencyCode = iso_currency_code,
+                pending = pending,
+                merchantName = merchant_name,
+                accountName = accountName ?: "Unknown",
+                accountMask = mask ?: "0000",
+                institutionName = institutionName ?: "unknown"
+            )
+        }
 }

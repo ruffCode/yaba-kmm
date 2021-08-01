@@ -45,6 +45,7 @@ interface AccountDao {
         private val backgroundDispatcher: CoroutineDispatcher,
     ) : AccountDao {
         private val accountQueries = database.accountQueries
+
         override suspend fun insert(account: AccountDto) {
             withContext(backgroundDispatcher) {
                 accountQueries.insertAccount(
@@ -83,36 +84,47 @@ interface AccountDao {
         override fun selectAll(userId: Uuid): Flow<List<Account>> =
             accountQueries.selectAll(userId, accountMapper).asFlow().mapToList()
                 .flowOn(backgroundDispatcher)
-
-        companion object {
-            private val accountMapper =
-                { id: Uuid,
-                    item_id: Uuid,
-                    _: Uuid?,
-                    name: String,
-                    mask: String,
-                    current_balance: Double,
-                    available_balance: Double?,
-                    credit_limit: Double?,
-                    type: AccountType,
-                    subtype: AccountSubtype,
-                    hidden: Boolean,
-                    institutionName: String?
-                    ->
-                    Account(
-                        id = id,
-                        name = name,
-                        currentBalance = current_balance,
-                        availableBalance = available_balance,
-                        creditLimit = credit_limit,
-                        mask = mask,
-                        itemId = item_id,
-                        type = type,
-                        subtype = subtype,
-                        hidden = hidden,
-                        institutionName = institutionName ?: "unknown"
-                    )
-                }
-        }
     }
+
+    val accountMapper: (
+        Uuid,
+        Uuid,
+        Uuid?,
+        String,
+        String,
+        Double,
+        Double?,
+        Double?,
+        AccountType,
+        AccountSubtype,
+        Boolean,
+        String?
+    ) -> Account
+        get() = { id: Uuid,
+            item_id: Uuid,
+            user_id: Uuid?,
+            name: String,
+            mask: String,
+            current_balance: Double,
+            available_balance: Double?,
+            credit_limit: Double?,
+            type: AccountType,
+            subtype: AccountSubtype,
+            hidden: Boolean,
+            institutionName: String?
+            ->
+            Account(
+                id = id,
+                name = name,
+                currentBalance = current_balance,
+                availableBalance = available_balance,
+                creditLimit = credit_limit,
+                mask = mask,
+                itemId = item_id,
+                type = type,
+                subtype = subtype,
+                hidden = hidden,
+                institutionName = institutionName ?: "unknown"
+            )
+        }
 }

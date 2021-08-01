@@ -21,7 +21,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import tech.alexib.yaba.data.db.dao.AccountDao
+import tech.alexib.yaba.data.db.dao.InstitutionDao
 import tech.alexib.yaba.data.db.dao.ItemDao
+import tech.alexib.yaba.data.db.dao.TransactionDao
+import tech.alexib.yaba.data.domain.dto.NewItemDto
 import tech.alexib.yaba.data.network.api.PlaidItemApi
 import tech.alexib.yaba.data.provider.UserIdProvider
 import tech.alexib.yaba.model.PlaidItem
@@ -32,6 +35,7 @@ interface ItemRepository {
     fun getAllWithAccounts(withHidden: Boolean = false): Flow<List<PlaidItemWithAccounts>>
     suspend fun unlinkItem(id: Uuid)
     fun userItemsCount(): Flow<Long>
+    suspend fun insert(data: NewItemDto)
 }
 
 internal class ItemRepositoryImpl(
@@ -39,6 +43,8 @@ internal class ItemRepositoryImpl(
     private val itemDao: ItemDao,
     private val accountDao: AccountDao,
     private val userIdProvider: UserIdProvider,
+    private val transactionDao: TransactionDao,
+    private val institutionDao: InstitutionDao,
 ) : ItemRepository {
 
     private fun getAll(): Flow<List<PlaidItem>> = itemDao.selectAll(userIdProvider.userId.value)
@@ -68,5 +74,12 @@ internal class ItemRepositoryImpl(
 
     override fun userItemsCount(): Flow<Long> = flow {
         emitAll(itemDao.count(userIdProvider.userId.value))
+    }
+
+    override suspend fun insert(data: NewItemDto) {
+        institutionDao.insert(data.institutionDto)
+        itemDao.insert(data.item)
+        accountDao.insert(data.accounts)
+        transactionDao.insert(data.transactions)
     }
 }
