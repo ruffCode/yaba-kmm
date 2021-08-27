@@ -122,8 +122,8 @@ object Lib {
     }
 
     object Accompanist {
-        private const val version = "0.13.0"
-        const val coil = "com.google.accompanist:accompanist-coil:$version"
+        private const val version = "0.17.0"
+        const val coil = "com.google.accompanist:accompanist-coil:0.15.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val insetsUi = "com.google.accompanist:accompanist-insets-ui:$version"
     }
@@ -142,7 +142,7 @@ object Lib {
         const val iconsExtended = "androidx.compose.material:material-icons-extended:$version"
         const val material = "androidx.compose.material:material:$version"
         const val runtime = "androidx.compose.runtime:runtime:$version"
-        const val tooling = "androidx.compose.ui:ui-tooling:1.0.0-beta09"
+        const val tooling = "androidx.compose.ui:ui-tooling:$version"
         const val preview = "androidx.compose.ui:ui-tooling-preview:$version"
         const val ui = "androidx.compose.ui:ui:$version"
         const val uiUtil = "androidx.compose.ui:ui-util:$version"
@@ -156,12 +156,12 @@ object Lib {
 }
 
 object Version {
-    const val kotlin = "1.5.10"
+    const val kotlin = "1.5.21"
     const val sqlDelight = "1.5.1"
     const val apollo = "2.5.9"
     const val arrow = "0.13.2"
-    const val compose = "1.0.0"
-    const val androidTools = "7.1.0-alpha05"
+    const val compose = "1.0.1"
+    const val androidTools = "7.1.0-alpha10"
     const val coroutines = "1.5.1-native-mt"
 }
 

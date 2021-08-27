@@ -20,10 +20,10 @@ object AndroidConfig {
     private const val versionMinor = 0
     private const val versionPatch = 3
     const val minSdk = 29
-    const val targetSdk = 30
+    const val targetSdk = 31
     val versionCode = generateVersionCode()
     const val versionName = "$versionMajor.$versionMinor.$versionPatch"
-    const val compileSdk = 30
+    const val compileSdk = 31
     const val buildToolsVersion = "31.0.0"
 
     private fun generateVersionCode(): Int {
