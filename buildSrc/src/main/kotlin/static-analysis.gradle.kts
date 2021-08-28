@@ -7,6 +7,7 @@ plugins{
 ktlint {
     // debug.set(true)
     // verbose.set(true)
+    version.set(Version.ktLint)
     android.set(true)
     outputToConsole.set(true)
     outputColorName.set("BLUE")
@@ -25,11 +26,11 @@ ktlint {
 
 spotless{
     kotlin {
-        target("**/*.kt")
+        target("**/src/**/*.kt")
         licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
-        targetExclude("**/build/**")
+        targetExclude("$buildDir/**/*.kt")
         targetExclude("**/generated/**")
-        targetExclude("spotless/**")
+        targetExclude("spotless/copyright.kt")
         ktlint(Version.ktLint)
         trimTrailingWhitespace()
         endWithNewline()

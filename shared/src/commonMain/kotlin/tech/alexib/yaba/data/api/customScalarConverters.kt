@@ -17,14 +17,12 @@ package tech.alexib.yaba.data.api
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import kotlinx.datetime.LocalDate
 
-//val localDateAdapter = object : CustomTypeAdapter<LocalDate> {
+// val localDateAdapter = object : CustomTypeAdapter<LocalDate> {
 //    @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
 //    override fun decode(value: CustomTypeValue<*>): LocalDate {
 //        try {
@@ -39,9 +37,9 @@ import kotlinx.datetime.LocalDate
 //            value.toString()
 //        )
 //    }
-//}
+// }
 //
-//val uuidAdapter = object : CustomTypeAdapter<Uuid> {
+// val uuidAdapter = object : CustomTypeAdapter<Uuid> {
 //    override fun decode(value: CustomTypeValue<*>): Uuid = try {
 //        uuidFrom(value.value.toString())
 //    } catch (e: Throwable) {
@@ -50,9 +48,9 @@ import kotlinx.datetime.LocalDate
 //
 //    override fun encode(value: Uuid): CustomTypeValue<*> =
 //        CustomTypeValue.GraphQLString(value.toString())
-//}
+// }
 //
-//class TypeAdapterParseException(message: String) : Exception(message)
+// class TypeAdapterParseException(message: String) : Exception(message)
 internal val uuidAdapter = object : Adapter<Uuid> {
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Uuid {

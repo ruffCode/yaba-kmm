@@ -30,8 +30,8 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.NewItemDataQuery
 import tech.alexib.yaba.data.api.ApolloApi
-import tech.alexib.yaba.data.api.YabaApolloResponse
 import tech.alexib.yaba.data.api.PlaidItemApi
+import tech.alexib.yaba.data.api.YabaApolloResponse
 import tech.alexib.yaba.data.api.dto.NewItemData
 import tech.alexib.yaba.data.api.dto.toAccountWithTransactions
 import tech.alexib.yaba.data.api.dto.toEntity
@@ -108,7 +108,7 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
 
             NewItemData(
                 item = PlaidItem(
-                    id = item.id as Uuid,
+                    id = item.id,
                     name = item.institution.name,
                     base64Logo = item.institution.logo,
                     plaidInstitutionId = item.plaidInstitutionId
@@ -117,7 +117,7 @@ internal class ItemRepositoryImpl : ItemRepository, KoinComponent {
                 item.accounts.map {
                     it.fragments.accountWithTransactions.toAccountWithTransactions()
                 },
-                user = User(result.me.id as Uuid, result.me.email)
+                user = User(result.me.id, result.me.email)
             )
         }
         return when (val newData = response.firstOrNull()) {

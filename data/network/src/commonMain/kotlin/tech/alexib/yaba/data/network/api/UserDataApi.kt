@@ -17,13 +17,13 @@ package tech.alexib.yaba.data.network.api
 
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
-import yaba.schema.AllUserDataQuery
-import yaba.schema.TransactionsUpdateQuery
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.dto.TransactionsUpdateDto
 import tech.alexib.yaba.data.domain.dto.UserDataDto
 import tech.alexib.yaba.data.network.apollo.YabaApolloClient
 import tech.alexib.yaba.data.network.mapper.toDto
+import yaba.schema.AllUserDataQuery
+import yaba.schema.TransactionsUpdateQuery
 
 interface UserDataApi {
     fun getTransactionsUpdate(updateId: Uuid): Flow<DataResult<TransactionsUpdateDto?>>

@@ -28,7 +28,7 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 interface UserRepository {
-    suspend fun currentUser(): Flow<User?>
+    fun currentUser(): Flow<User?>
     suspend fun deleteCurrentUser()
 }
 
@@ -38,7 +38,7 @@ internal class UserRepositoryImpl(
     private val userDao: UserDao
 ) : UserRepository {
 
-    override suspend fun currentUser(): Flow<User?> {
+    override fun currentUser(): Flow<User?> {
         return flow {
             withTimeout(5.toDuration(DurationUnit.SECONDS)) {
                 userIdProvider.getCurrentUserId().collect { id ->

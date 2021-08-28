@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:SuppressWarnings()
+package tech.alexib.yaba.data.observer
 
-object YabaAndroidConfig {
-    private const val versionMajor = 1
-    private const val versionMinor = 0
-    private const val versionPatch = 3
-    const val minSdk = 29
-    const val targetSdk = 31
-    val versionCode = generateVersionCode()
-    const val versionName = "$versionMajor.$versionMinor.$versionPatch"
-    const val compileSdk = 31
-    const val buildToolsVersion = "31.0.0"
+import kotlinx.coroutines.flow.Flow
+import tech.alexib.yaba.SubjectInteractor
+import tech.alexib.yaba.data.repository.ItemRepository
 
-    private fun generateVersionCode(): Int {
-        return minSdk * 10000000 + versionMajor * 10000 + versionMinor * 100 + versionPatch
+class ObserveUserItemsCount(
+    private val itemRepository: ItemRepository
+) : SubjectInteractor<Unit, Long>() {
+    override fun createObservable(params: Unit): Flow<Long> {
+        return itemRepository.userItemsCount()
     }
 }

@@ -17,9 +17,6 @@ package tech.alexib.yaba.data.network.api
 
 import co.touchlab.stately.ensureNeverFrozen
 import kotlinx.coroutines.flow.Flow
-import yaba.schema.LoginMutation
-import yaba.schema.RegisterMutation
-import yaba.schema.VerifyTokenQuery
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.network.apollo.YabaApolloClient
 import tech.alexib.yaba.data.network.mapper.toAuthResponse
@@ -27,6 +24,9 @@ import tech.alexib.yaba.model.User
 import tech.alexib.yaba.model.request.UserLoginInput
 import tech.alexib.yaba.model.request.UserRegisterInput
 import tech.alexib.yaba.model.response.AuthResponse
+import yaba.schema.LoginMutation
+import yaba.schema.RegisterMutation
+import yaba.schema.VerifyTokenQuery
 
 interface AuthApi {
     suspend fun login(userLoginInput: UserLoginInput): Flow<DataResult<AuthResponse>>

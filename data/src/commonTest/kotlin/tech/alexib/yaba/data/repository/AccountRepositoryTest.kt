@@ -18,6 +18,7 @@ package tech.alexib.yaba.data.repository
 import app.cash.turbine.test
 import com.benasher44.uuid.uuidFrom
 import tech.alexib.yaba.data.db.dao.TransactionDao
+import tech.alexib.yaba.data.domain.dto.UserDataDto
 import tech.alexib.yaba.data.domain.stubs.UserDataStubs
 import tech.alexib.yaba.model.AccountType
 import tech.alexib.yaba.util.suspendTest
@@ -35,6 +36,17 @@ internal class AccountRepositoryTest : BaseRepositoryTest() {
     private val accountRepository = deps.accountRepository
     private val balance = UserDataStubs.accounts.filter { it.type == AccountType.DEPOSITORY }
         .sumOf { it.currentBalance }
+    private val additionalItem: UserDataDto by lazy {
+        with(UserDataStubs.newItemDtoStub) {
+            UserDataDto(
+                user = user,
+                accounts = accounts,
+                transactions = transactions,
+                items = listOf(item),
+                institutions = listOf(institutionDto)
+            )
+        }
+    }
 
     @BeforeTest
     fun setup() {
@@ -87,6 +99,12 @@ internal class AccountRepositoryTest : BaseRepositoryTest() {
     fun currentCashBalance() = suspendTest {
         accountRepository.currentCashBalance().test {
             assertEquals(balance, awaitItem())
+            userDao.insertUserData(additionalItem)
+            assertEquals(
+                additionalItem.accounts.filter { it.type == AccountType.DEPOSITORY }
+                    .sumOf { it.currentBalance } + balance,
+                awaitItem()
+            )
             expectNoEvents()
         }
     }

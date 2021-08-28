@@ -16,8 +16,8 @@
 package tech.alexib.yaba.data.network.mapper
 
 import com.apollographql.apollo3.api.Optional
-import yaba.schema.CreateLinkEventMutation
 import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
+import yaba.schema.CreateLinkEventMutation
 
 internal fun PlaidLinkEventCreateRequest.toMutation(): CreateLinkEventMutation {
     return when (this) {

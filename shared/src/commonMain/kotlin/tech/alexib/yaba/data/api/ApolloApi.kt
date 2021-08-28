@@ -23,7 +23,6 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
@@ -66,7 +65,7 @@ internal class ApolloApi(
         subscriptionNetworkTransport = WebSocketNetworkTransport(
             serverUrl = serverUrl,
 
-            ),
+        ),
         customScalarAdapters = customScalarTypeAdapters,
         interceptors = listOf(
             MyLoggingInterceptor(log)
@@ -79,7 +78,6 @@ internal class ApolloApi(
 
     override suspend fun refreshToken(previousToken: String): String = ""
 }
-
 
 internal class MyLoggingInterceptor(private val log: Kermit) : ApolloInterceptor {
 
@@ -144,13 +142,13 @@ fun <T : Mutation.Data> ApolloClient.safeMutation(
     this.mutateAsFlow(ApolloRequest(mutationData)).map(checkResponse())
 //        .catch(catchApolloError)
 
-private fun <T:Operation.Data, R> checkResponse(mapper: (T) -> R): suspend (ApolloResponse<T>) ->
+private fun <T : Operation.Data, R> checkResponse(mapper: (T) -> R): suspend (ApolloResponse<T>) ->
 YabaApolloResponse<R> {
     return {
         YabaApolloResponse(it, mapper)
     }
 }
 
-private fun <T:Operation.Data> checkResponse(): suspend (ApolloResponse<T>) -> YabaApolloResponse<T> {
+private fun <T : Operation.Data> checkResponse(): suspend (ApolloResponse<T>) -> YabaApolloResponse<T> {
     return { YabaApolloResponse(it) }
 }

@@ -125,8 +125,8 @@ object Lib {
     }
 
     object Accompanist {
-        private const val version = "0.15.0"
-        const val coil = "com.google.accompanist:accompanist-coil:$version"
+        private const val version = "0.17.0"
+        const val coil = "com.google.accompanist:accompanist-coil:0.15.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val insetsUi = "com.google.accompanist:accompanist-insets-ui:$version"
     }
@@ -165,13 +165,13 @@ object Lib {
 }
 
 object Version {
-    const val kotlin = "1.5.10"
+    const val kotlin = "1.5.21"
     const val sqlDelight = "1.5.1"
     const val apollo = "3.0.0-alpha03"
     const val arrow = "0.13.2"
-    const val compose = "1.0.0"
+    const val compose = "1.0.1"
     const val coroutines = "1.5.1-native-mt"
-    const val ktLint = "0.41.0"
+    const val ktLint = "0.42.1"
 
     object AndroidX {
         val test = "1.3.0"
@@ -181,7 +181,7 @@ object Version {
 
 object GradleVersions {
     const val detekt = "1.17.1"
-    const val androidTools = "7.1.0-alpha05"
+    const val androidTools = "7.1.0-alpha10"
     const val ktLint = "10.1.0"
     const val spotless = "5.14.1"
     const val googleServices = "4.3.8"

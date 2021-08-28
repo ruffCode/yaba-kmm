@@ -18,7 +18,6 @@ package tech.alexib.yaba.data.network.api
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
-
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.dto.AccountDto
 import tech.alexib.yaba.data.domain.dto.AccountWithTransactionsDto

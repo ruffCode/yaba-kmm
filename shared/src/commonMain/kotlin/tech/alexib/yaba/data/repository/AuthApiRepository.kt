@@ -18,8 +18,8 @@ package tech.alexib.yaba.data.repository
 import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
 import kotlinx.coroutines.flow.first
-import tech.alexib.yaba.data.api.YabaApolloResponse
 import tech.alexib.yaba.data.api.AuthApi
+import tech.alexib.yaba.data.api.YabaApolloResponse
 import tech.alexib.yaba.model.User
 import tech.alexib.yaba.model.request.UserLoginInput
 import tech.alexib.yaba.model.request.UserRegisterInput

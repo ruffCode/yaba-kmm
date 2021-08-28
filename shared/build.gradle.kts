@@ -202,8 +202,8 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 }
 
-//configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
-////    generateKotlinModels.set(true)
+// configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
+// //    generateKotlinModels.set(true)
 //    customTypeMapping.set(
 //        mapOf(
 //            "timestamptz" to "kotlinx.datetime.Instant",
@@ -212,9 +212,9 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 //            "smallint" to "kotlin.Int"
 //        )
 //    )
-//}
+// }
 
-//apollo{
+// apollo{
 //        customTypeMapping.set(
 //        mapOf(
 //            "timestamptz" to "kotlinx.datetime.Instant",
@@ -223,9 +223,9 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 //            "smallint" to "kotlin.Int"
 //        )
 //    )
-//}
+// }
 
-configure<com.apollographql.apollo3.gradle.api.ApolloExtension>{
+configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
 //    customScalarsMapping.set(
 //        mapOf(
 //            "timestamptz" to "com.apollographql.apollo3.adapter.InstantAdapter",
@@ -245,17 +245,17 @@ configure<com.apollographql.apollo3.gradle.api.ApolloExtension>{
     )
     packageName.set("tech.alexib.yaba")
 }
-//apollo{
+// apollo{
 //    customScalarsMapping.set(
 //        mapOf(
-////            "timestamptz" to "com.apollographql.apollo3.adapter.InstantAdapter",
+// //            "timestamptz" to "com.apollographql.apollo3.adapter.InstantAdapter",
 //            "UUID" to "com.benasher44.uuid.Uuid",
 //            "LocalDate" to "com.apollographql.apollo3.adapter.LocalDateAdapter",
-////            "smallint" to "kotlin.Int"
+// //            "smallint" to "kotlin.Int"
 //        )
 //    )
 //    packageName.set("tech.alexib.yaba")
-//}
+// }
 sqldelight {
     database("YabaDb") {
         packageName = "tech.alexib.yaba.data.db"

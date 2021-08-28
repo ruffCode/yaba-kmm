@@ -17,11 +17,9 @@ package tech.alexib.yaba.data.repository
 
 import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
-import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withTimeout
 import org.koin.core.component.KoinComponent

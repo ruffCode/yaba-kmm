@@ -16,8 +16,10 @@
 package tech.alexib.yaba.data.repository
 
 import app.cash.turbine.test
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import store.HomeStore
 import tech.alexib.yaba.data.domain.dto.AccountDto
 import tech.alexib.yaba.data.domain.stubs.PlaidItemStubs
 import tech.alexib.yaba.data.domain.stubs.UserDataStubs
@@ -29,6 +31,8 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 internal class UserDataRepositoryTest : BaseRepositoryTest() {
     private val userDataRepository = deps.userDataRepository
@@ -37,6 +41,7 @@ internal class UserDataRepositoryTest : BaseRepositoryTest() {
     private val itemDao = deps.itemDao
     private val transactionRepository = deps.transactionRepository
     private val userDao = deps.userDao
+    private val userRepository = deps.userRepository
 
     @BeforeTest
     fun setup() = suspendTest {
@@ -91,13 +96,38 @@ internal class UserDataRepositoryTest : BaseRepositoryTest() {
         }
     }
 
+    @Test
+    fun initial() = suspendTest {
+
+        val homeStore = HomeStore(
+            deps.observeRecentTransactions,
+            deps.observeCurrentCashBalance,
+            deps.observeUserItemsCount,
+            deps.performInitialSync
+        )
+        homeStore.init(CoroutineScope(deps.backgroundDispatcher))
+        homeStore.state.test {
+
+            val one = awaitItem()
+            assertEquals(true, one.loading, "Loading one should be true")
+
+            val item = awaitItem()
+            assertTrue(
+                item.recentTransactions.isNotEmpty(),
+                "recent transactions should not be empty"
+            )
+            assertFalse(item.loading, "Loading two should be false")
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     @AfterTest
     fun breakdown() = suspendTest {
         cleanup()
     }
 }
 
-fun List<AccountDto>.currentCashBalance() = this.filter {
+fun List<AccountDto>.currentCashBalance() = filter {
     !it.hidden &&
         it.type == AccountType.DEPOSITORY
 }.sumOf { it.currentBalance }

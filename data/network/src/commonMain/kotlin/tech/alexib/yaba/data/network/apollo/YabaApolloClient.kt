@@ -88,7 +88,7 @@ interface YabaApolloClient {
                 subscriptionNetworkTransport = WebSocketNetworkTransport(
                     serverUrl = serverUrl,
 
-                    ),
+                ),
                 customScalarAdapters = customScalarTypeAdapters,
                 interceptors = listOf(
                     MyLoggingInterceptor(log)

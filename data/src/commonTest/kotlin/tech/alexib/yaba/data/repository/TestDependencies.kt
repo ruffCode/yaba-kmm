@@ -29,6 +29,8 @@ import tech.alexib.yaba.data.db.dao.InstitutionDao
 import tech.alexib.yaba.data.db.dao.ItemDao
 import tech.alexib.yaba.data.db.dao.TransactionDao
 import tech.alexib.yaba.data.db.dao.UserDao
+import tech.alexib.yaba.data.interactor.AddItem
+import tech.alexib.yaba.data.interactor.PerformInitialSync
 import tech.alexib.yaba.data.mock.api.AccountApiMock
 import tech.alexib.yaba.data.mock.api.AuthApiMock
 import tech.alexib.yaba.data.mock.api.PlaidItemApiMock
@@ -39,6 +41,9 @@ import tech.alexib.yaba.data.network.api.AuthApi
 import tech.alexib.yaba.data.network.api.PlaidItemApi
 import tech.alexib.yaba.data.network.api.PushTokenApi
 import tech.alexib.yaba.data.network.api.UserDataApi
+import tech.alexib.yaba.data.observer.ObserveCurrentCashBalance
+import tech.alexib.yaba.data.observer.ObserveRecentTransactions
+import tech.alexib.yaba.data.observer.ObserveUserItemsCount
 import tech.alexib.yaba.data.provider.UserIdProvider
 import tech.alexib.yaba.data.settings.AuthSettings
 
@@ -127,4 +132,35 @@ internal object TestDependencies {
     val userDataApi: UserDataApi by lazy { UserDataApiMock() }
 
     val pushTokenApi: PushTokenApi by lazy { PushTokenApiMock() }
+
+    val observeUserItemsCount: ObserveUserItemsCount by lazy {
+        ObserveUserItemsCount(
+            itemRepository
+        )
+    }
+    val observeRecentTransactions: ObserveRecentTransactions by lazy {
+        ObserveRecentTransactions(transactionRepository)
+    }
+
+    val observeCurrentCashBalance: ObserveCurrentCashBalance by lazy {
+        ObserveCurrentCashBalance(accountRepository)
+    }
+    val performInitialSync: PerformInitialSync by lazy {
+        PerformInitialSync(
+            userRepository,
+            userDataApi,
+            userDao,
+            kermit,
+            backgroundDispatcher
+        )
+    }
+
+    val addItem: AddItem by lazy {
+        AddItem(
+            log = kermit.withTag("AddItem"),
+            backgroundDispatcher = backgroundDispatcher,
+            plaidItemApi = plaidItemApi,
+            itemRepository = itemRepository
+        )
+    }
 }

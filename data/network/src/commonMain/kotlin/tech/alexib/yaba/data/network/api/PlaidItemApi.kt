@@ -21,11 +21,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import yaba.schema.CreateItemMutation
-import yaba.schema.CreateLinkTokenMutation
-import yaba.schema.NewItemDataQuery
-import yaba.schema.SetAccountsToHideMutation
-import yaba.schema.UnlinkItemMutation
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.dto.NewItemDto
 import tech.alexib.yaba.data.network.apollo.YabaApolloClient
@@ -36,6 +31,11 @@ import tech.alexib.yaba.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
 import tech.alexib.yaba.model.response.CreateLinkTokenResponse
 import tech.alexib.yaba.model.response.PlaidItemCreateResponse
+import yaba.schema.CreateItemMutation
+import yaba.schema.CreateLinkTokenMutation
+import yaba.schema.NewItemDataQuery
+import yaba.schema.SetAccountsToHideMutation
+import yaba.schema.UnlinkItemMutation
 
 interface PlaidItemApi {
     fun createLinkToken(): Flow<DataResult<CreateLinkTokenResponse>>
