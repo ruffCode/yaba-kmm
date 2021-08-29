@@ -22,7 +22,7 @@ import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.Success
 import tech.alexib.yaba.data.domain.dto.TransactionsUpdateDto
 import tech.alexib.yaba.data.domain.dto.UserDataDto
-import tech.alexib.yaba.data.domain.stubs.UserDataStubs
+import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.data.network.api.UserDataApi
 
 internal class UserDataApiMock : UserDataApi {
@@ -32,6 +32,6 @@ internal class UserDataApiMock : UserDataApi {
         }
 
     override fun getAllUserData(): Flow<DataResult<UserDataDto>> = flow {
-        emit(Success(UserDataStubs.userData))
+        emit(Success(UserDataDtoStubs.userData))
     }
 }

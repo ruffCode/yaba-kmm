@@ -43,7 +43,8 @@ import tech.alexib.yaba.android.ui.theme.MoneyGreen
 import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.moneyFormat
 import tech.alexib.yaba.model.Transaction
-import tech.alexib.yaba.model.TransactionStubs
+import tech.alexib.yaba.stubs.TransactionStubs
+
 
 @Composable
 fun TransactionItem(
@@ -148,6 +149,6 @@ private fun TransactionItemContent(
 @Composable
 fun TransactionItemPreview() {
     YabaTheme(darkTheme = true) {
-        TransactionItem(transaction = TransactionStubs.transaction, false) {}
+        TransactionItem(transaction = TransactionStubs.transactionsChase1.first(), false) {}
     }
 }

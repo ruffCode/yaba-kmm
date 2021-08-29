@@ -32,7 +32,8 @@ interface UserDataApi {
     class Impl(
         private val client: YabaApolloClient
     ) : UserDataApi {
-        override fun getTransactionsUpdate(updateId: Uuid): Flow<DataResult<TransactionsUpdateDto?>> {
+        override fun getTransactionsUpdate(updateId: Uuid):
+            Flow<DataResult<TransactionsUpdateDto?>> {
             val query = TransactionsUpdateQuery(updateId)
             return client.query(query) { it.toDto() }
         }

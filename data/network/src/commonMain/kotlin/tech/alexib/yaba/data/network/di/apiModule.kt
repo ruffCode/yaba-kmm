@@ -21,6 +21,7 @@ import tech.alexib.yaba.data.network.api.AccountApi
 import tech.alexib.yaba.data.network.api.AuthApi
 import tech.alexib.yaba.data.network.api.PlaidItemApi
 import tech.alexib.yaba.data.network.api.PushTokenApi
+import tech.alexib.yaba.data.network.api.UserDataApi
 import tech.alexib.yaba.data.network.apollo.YabaApolloClient
 import tech.alexib.yaba.di.CoreDependencies.ioDispatcherQualifier
 import tech.alexib.yaba.util.getWith
@@ -40,4 +41,5 @@ val apiModule = module {
     single<AccountApi> { AccountApi.Impl(get()) }
     single<PlaidItemApi> { PlaidItemApi.Impl(get(), getWith("PlaidItemApi")) }
     single<PushTokenApi> { PushTokenApi.Impl(get()) }
+    single<UserDataApi> { UserDataApi.Impl(get()) }
 }

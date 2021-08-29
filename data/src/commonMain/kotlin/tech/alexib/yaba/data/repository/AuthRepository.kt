@@ -16,12 +16,13 @@
 package tech.alexib.yaba.data.repository
 
 import co.touchlab.kermit.Kermit
-import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import tech.alexib.yaba.data.network.api.AuthApi
 import tech.alexib.yaba.data.settings.AuthSettings
+import tech.alexib.yaba.model.User
 import tech.alexib.yaba.model.request.UserLoginInput
 import tech.alexib.yaba.model.request.UserRegisterInput
 import tech.alexib.yaba.model.response.AuthResponse
@@ -32,8 +33,8 @@ interface AuthRepository {
     suspend fun logout()
     suspend fun login(email: String, password: String): AuthResult
     suspend fun register(email: String, password: String): AuthResult
-    fun startLogoutTimer()
     fun isShowOnBoarding(): Flow<Boolean>
+    fun validateToken(): Flow<User?>
 
     class Impl(
         private val authApi: AuthApi,
@@ -68,25 +69,18 @@ interface AuthRepository {
             }
         }
 
-        override fun startLogoutTimer() {
-        }
-
         override fun isShowOnBoarding(): Flow<Boolean> = authSettings.showOnboarding()
-
-        private suspend fun setToken(token: String) {
-            authSettings.setToken(token)
-        }
-
-        private suspend fun setUserId(userId: Uuid) {
-            authSettings.setUserId(userId)
-        }
 
         private suspend fun handleAuthResponse(authResponse: AuthResponse): AuthResult {
             return if (authResponse.token.isNotEmpty()) {
-                setToken(authResponse.token)
-                setUserId(authResponse.id)
+                authSettings.setToken(authResponse.token)
+                authSettings.setUserId(authResponse.id)
                 AuthResult.Success
             } else AuthResult.Error("Authentication Error")
+        }
+
+        override fun validateToken(): Flow<User?> = flow {
+            emit(authApi.validateToken().first().get())
         }
     }
 }

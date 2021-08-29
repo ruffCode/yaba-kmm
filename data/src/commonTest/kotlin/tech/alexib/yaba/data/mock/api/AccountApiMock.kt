@@ -23,16 +23,17 @@ import tech.alexib.yaba.data.domain.ErrorResult
 import tech.alexib.yaba.data.domain.Success
 import tech.alexib.yaba.data.domain.dto.AccountDto
 import tech.alexib.yaba.data.domain.dto.AccountWithTransactionsDto
-import tech.alexib.yaba.data.domain.stubs.UserDataStubs
+import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.data.network.api.AccountApi
 
 internal class AccountApiMock : AccountApi {
     override suspend fun setHideAccount(hide: Boolean, accountId: Uuid) {
     }
 
-    override fun accountByIdWithTransactions(id: Uuid): Flow<DataResult<AccountWithTransactionsDto>> =
+    override fun accountByIdWithTransactions(id: Uuid):
+        Flow<DataResult<AccountWithTransactionsDto>> =
         flow {
-            val result = UserDataStubs.accountByIdWithTransactions(id)
+            val result = UserDataDtoStubs.accountByIdWithTransactions(id)
             result?.let {
                 emit(
                     Success(
@@ -43,7 +44,7 @@ internal class AccountApiMock : AccountApi {
         }
 
     override fun accountsByItemId(itemId: Uuid): Flow<DataResult<List<AccountDto>>> = flow {
-        val accounts = UserDataStubs.groupedAccounts.getValue(itemId)
+        val accounts = UserDataDtoStubs.groupedAccounts.getValue(itemId)
         emit(Success(accounts))
     }
 }

@@ -31,11 +31,7 @@ import tech.alexib.yaba.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
 import tech.alexib.yaba.model.response.CreateLinkTokenResponse
 import tech.alexib.yaba.model.response.PlaidItemCreateResponse
-import yaba.schema.CreateItemMutation
-import yaba.schema.CreateLinkTokenMutation
-import yaba.schema.NewItemDataQuery
-import yaba.schema.SetAccountsToHideMutation
-import yaba.schema.UnlinkItemMutation
+import yaba.schema.*
 
 interface PlaidItemApi {
     fun createLinkToken(): Flow<DataResult<CreateLinkTokenResponse>>
@@ -57,7 +53,8 @@ interface PlaidItemApi {
             }
         }
 
-        override fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<PlaidItemCreateResponse>> {
+        override fun createPlaidItem(request: PlaidItemCreateRequest):
+            Flow<DataResult<PlaidItemCreateResponse>> {
             val mutation = CreateItemMutation(request.institutionId, request.publicToken)
             return client.mutate(mutation) { result -> result.toResponse() }
         }

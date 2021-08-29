@@ -25,7 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.LocalImageLoader
+import coil.compose.rememberImagePainter
 import tech.alexib.yaba.android.R
 import tech.alexib.yaba.android.util.base64ToBitmap
 
@@ -37,9 +38,14 @@ fun BankLogo(modifier: Modifier = Modifier, logoUrl: String? = null) {
                 modifier = Modifier
                     .padding(16.dp)
                     .size(20.dp),
-                painter = rememberCoilPainter(
-                    it,
-                    previewPlaceholder = R.drawable.default_bank
+                painter = rememberImagePainter(
+                    data = it,
+                    imageLoader = LocalImageLoader.current,
+                    builder = {
+                        placeholder(
+                            drawableResId = R.drawable.default_bank
+                        )
+                    }
                 ),
                 contentScale = ContentScale.Fit,
                 contentDescription = "bank logo",
@@ -68,6 +74,7 @@ fun BankLogo(modifier: Modifier = Modifier, logoBitmap: Bitmap) {
         )
     }
 }
+
 @Composable
 fun BankLogoSmall(modifier: Modifier = Modifier, logoBitmap: Bitmap) {
     Box(modifier = modifier) {
@@ -76,7 +83,6 @@ fun BankLogoSmall(modifier: Modifier = Modifier, logoBitmap: Bitmap) {
             contentDescription = "Bank Logo",
             contentScale = ContentScale.Fit,
             modifier = Modifier
-
                 .size(25.dp),
         )
     }

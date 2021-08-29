@@ -16,7 +16,7 @@
 package tech.alexib.yaba.data.repository
 
 import app.cash.turbine.test
-import tech.alexib.yaba.data.domain.stubs.UserDataStubs
+import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.util.suspendTest
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -62,7 +62,7 @@ internal class UserRepositoryTest : BaseRepositoryTest() {
     @Test
     fun insertUserData() = suspendTest {
         userDao.deleteById(userId)
-        val data = UserDataStubs.userData
+        val data = UserDataDtoStubs.userData
         userDao.selectById(userId).test {
             assertEquals(null, awaitItem())
             expectNoEvents()

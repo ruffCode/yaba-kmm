@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.flow
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.ErrorResult
 import tech.alexib.yaba.data.domain.Success
-import tech.alexib.yaba.data.domain.stubs.UserDataStubs
+import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.data.network.api.AuthApi
 import tech.alexib.yaba.model.User
 import tech.alexib.yaba.model.request.UserLoginInput
@@ -29,7 +29,7 @@ import tech.alexib.yaba.model.request.UserRegisterInput
 import tech.alexib.yaba.model.response.AuthResponse
 
 internal class AuthApiMock : AuthApi {
-    private val stub = UserDataStubs
+    private val stub = UserDataDtoStubs
     private val validLogin = stub.validLogin
     override suspend fun login(userLoginInput: UserLoginInput): Flow<DataResult<AuthResponse>> =
         flow {
@@ -41,14 +41,15 @@ internal class AuthApiMock : AuthApi {
             }
         }
 
-    override suspend fun register(userRegisterInput: UserRegisterInput): Flow<DataResult<AuthResponse>> =
+    override suspend fun register(userRegisterInput: UserRegisterInput):
+        Flow<DataResult<AuthResponse>> =
         flow {
             delay(100)
             if (userRegisterInput.email != validLogin.email) {
                 emit(
                     Success(
                         AuthResponse(
-                            id = UserDataStubs.Registration.newId,
+                            id = UserDataDtoStubs.Registration.newId,
                             email = userRegisterInput.email,
                             token = "authtoken"
                         )
@@ -59,8 +60,8 @@ internal class AuthApiMock : AuthApi {
             }
         }
 
-    override suspend fun verifyToken(): Flow<DataResult<User>> = flow {
+    override suspend fun validateToken(): Flow<DataResult<User>> = flow {
         delay(100)
-        emit(Success(UserDataStubs.user))
+        emit(Success(UserDataDtoStubs.user))
     }
 }

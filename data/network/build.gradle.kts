@@ -25,10 +25,8 @@ dependencies {
 configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
     customScalarsMapping.set(
         mapOf(
-//            "timestamptz" to "kotlinx.datetime.Instant",
             "UUID" to "com.benasher44.uuid.Uuid",
             "LocalDate" to "kotlinx.datetime.LocalDate"
-//            "smallint" to "kotlin.Int"
         )
     )
     packageName.set("yaba.schema")

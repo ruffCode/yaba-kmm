@@ -17,11 +17,11 @@ package tech.alexib.yaba.data.domain
 
 import co.touchlab.kermit.CommonLogger
 import co.touchlab.kermit.Kermit
-import tech.alexib.yaba.data.domain.stubs.AccountStubs
-import tech.alexib.yaba.data.domain.stubs.InstitutionStubs
-import tech.alexib.yaba.data.domain.stubs.PlaidItemStubs
-import tech.alexib.yaba.data.domain.stubs.TransactionStubs
-import tech.alexib.yaba.data.domain.stubs.UserDataStubs
+import tech.alexib.yaba.data.domain.stubs.AccountDtoStubs
+import tech.alexib.yaba.data.domain.stubs.InstitutionDtoStubs
+import tech.alexib.yaba.data.domain.stubs.PlaidItemDtoStubs
+import tech.alexib.yaba.data.domain.stubs.TransactionDtoStubs
+import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -33,18 +33,18 @@ class StubTests {
     fun parsesJson() {
         runCatching {
 
-            val user = UserDataStubs.user
+            val user = UserDataDtoStubs.user
             assertEquals("alexi3@test.com", user.email)
 
-            val userData = UserDataStubs.userData
+            val userData = UserDataDtoStubs.userData
             assertTrue(userData.transactions.isNotEmpty())
 
-            assertEquals(340, TransactionStubs.allTransactions.size)
+            assertEquals(340, TransactionDtoStubs.allTransactions.size)
 
-            assertEquals(18, AccountStubs.allAccounts.size)
+            assertEquals(18, AccountDtoStubs.allAccounts.size)
 
-            assertEquals("Wells Fargo", InstitutionStubs.wellsFargo.name)
-            assertEquals("ins_4", PlaidItemStubs.wellsFargo.plaidInstitutionId)
+            assertEquals("Wells Fargo", InstitutionDtoStubs.wellsFargo.name)
+            assertEquals("ins_4", PlaidItemDtoStubs.wellsFargo.plaidInstitutionId)
         }.getOrThrow()
     }
 }

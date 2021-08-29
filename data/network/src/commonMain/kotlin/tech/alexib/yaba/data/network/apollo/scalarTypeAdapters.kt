@@ -22,23 +22,6 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 
-// internal val localDateAdapter = object : CustomTypeAdapter<LocalDate> {
-//    @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
-//    override fun decode(value: CustomTypeValue<*>): LocalDate {
-//        try {
-//            return LocalDate.parse(value.value.toString())
-//        } catch (e: Exception) {
-//            throw RuntimeException(e)
-//        }
-//    }
-//
-//    override fun encode(value: LocalDate): CustomTypeValue<*> {
-//        return CustomTypeValue.GraphQLString(
-//            value.toString()
-//        )
-//    }
-// }
-
 internal val uuidAdapter = object : Adapter<Uuid> {
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Uuid {
@@ -54,14 +37,9 @@ internal val uuidAdapter = object : Adapter<Uuid> {
     }
 }
 
-class TypeAdapterParseException(message: String) : Exception(message)
-
 internal val customScalarTypeAdapters = CustomScalarAdapters(
     mapOf(
-        "uuid" to uuidAdapter,
+        "UUID" to uuidAdapter,
         "id" to uuidAdapter,
-//        "LocalDate" to LocalDateAdapter
-
-//        CustomType.LOCALDATE to localDateAdapter,
     )
 )

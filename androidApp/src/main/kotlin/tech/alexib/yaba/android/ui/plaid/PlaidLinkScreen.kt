@@ -54,6 +54,7 @@ import tech.alexib.yaba.android.ui.components.defaultLogoBase64
 import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.model.response.PlaidItemCreateResponse
+import tech.alexib.yaba.model.response.PlaidLinkResult
 
 @Composable
 fun PlaidLinkScreen(
@@ -72,15 +73,9 @@ sealed class PlaidLinkScreenAction {
     data class HandleLinkResult(val data: LinkResult) : PlaidLinkScreenAction()
 }
 
-sealed class PlaidLinkResult {
-    data class Success(val data: PlaidItemCreateResponse) : PlaidLinkResult()
-    data class Error(val message: String) : PlaidLinkResult()
-    object Abandoned : PlaidLinkResult()
-    object Empty : PlaidLinkResult()
-    object AwaitingResult : PlaidLinkResult()
-}
 
-@OptIn(PlaidActivityResultContract::class)
+
+
 @Composable
 fun PlaidLinkScreen(
     viewModel: PlaidLinkViewModel,

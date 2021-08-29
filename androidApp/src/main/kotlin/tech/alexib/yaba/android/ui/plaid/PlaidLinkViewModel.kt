@@ -29,21 +29,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.android.BuildConfig
-import tech.alexib.yaba.data.api.PlaidItemApi
-import tech.alexib.yaba.data.repository.ErrorResult
-import tech.alexib.yaba.data.repository.Success
+import tech.alexib.yaba.data.repository.ItemRepository
 import tech.alexib.yaba.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
+import tech.alexib.yaba.model.response.PlaidLinkResult
 
 class PlaidLinkViewModel(
-    private val plaidItemApi: PlaidItemApi
+    private val repository: ItemRepository
 ) : ViewModel(), KoinComponent {
 
     private val resultFlow = MutableStateFlow<PlaidLinkResult>(PlaidLinkResult.Empty)
@@ -70,7 +68,7 @@ class PlaidLinkViewModel(
                     )
                 }
 
-                plaidItemApi.sendLinkEvent(linkResult.toRequest())
+                repository.sendLinkEvent(linkResult.toRequest())
             } else {
                 Log.d("PLAID EXIT", linkResult.metadata.toString())
             }
@@ -80,7 +78,7 @@ class PlaidLinkViewModel(
     fun linkInstitution(handleToken: (LinkTokenConfiguration) -> Unit) {
         viewModelScope.launch {
             val token: String? = withContext(Dispatchers.IO) {
-                return@withContext plaidItemApi.createLinkToken().first().get()?.linkToken
+                return@withContext repository.createLinkToken().first()?.linkToken
             }
             token?.let {
                 handleToken(
@@ -96,22 +94,23 @@ class PlaidLinkViewModel(
 
     private fun handleSuccess(linkSuccess: LinkSuccess) {
         viewModelScope.launch {
-            plaidItemApi.sendLinkEvent(linkSuccess.toRequest())
+            repository.sendLinkEvent(linkSuccess.toRequest())
 
             val request = PlaidItemCreateRequest(
                 institutionId = linkSuccess.metadata.institution!!.id,
                 publicToken = linkSuccess.publicToken
             )
+            resultFlow.value = repository.createPlaidItem(request).first()
 
-            when (val response = plaidItemApi.createPlaidItem(request).firstOrNull()) {
-                is Success -> resultFlow.value = PlaidLinkResult.Success(response.data)
-                is ErrorResult -> {
-                    log.e { "Plaid response error ${response.error}" }
-                    resultFlow.value = PlaidLinkResult.Error(response.error)
-                }
-                null -> {
-                }
-            }
+//            when (val response = plaidItemApi.createPlaidItem(request).firstOrNull()) {
+//                is Success -> resultFlow.value = PlaidLinkResult.Success(response.data)
+//                is ErrorResult -> {
+//                    log.e { "Plaid response error ${response.error}" }
+//                    resultFlow.value = PlaidLinkResult.Error(response.error)
+//                }
+//                null -> {
+//                }
+//            }
         }
     }
 

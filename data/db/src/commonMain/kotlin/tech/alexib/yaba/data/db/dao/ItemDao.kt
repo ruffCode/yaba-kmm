@@ -42,7 +42,7 @@ interface ItemDao {
     val itemMapper: (Uuid, String, Uuid, String, String) -> PlaidItem
         get() = { id: Uuid,
             plaid_institution_id: String,
-            user_id: Uuid,
+            _: Uuid,
             name: String,
             logo: String
             ->

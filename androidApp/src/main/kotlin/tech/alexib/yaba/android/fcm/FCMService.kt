@@ -25,8 +25,9 @@ import com.google.firebase.messaging.RemoteMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import tech.alexib.yaba.data.fcm.PushTokenManager
 import tech.alexib.yaba.data.task.UpdateTransactionsWorker
-import tech.alexib.yaba.fcm.PushTokenManager
+
 
 class FCMService : FirebaseMessagingService(), KoinComponent {
 

@@ -16,8 +16,9 @@
 package tech.alexib.yaba.data.repository
 
 import com.benasher44.uuid.Uuid
+import tech.alexib.yaba.data.TestDependencies
 import tech.alexib.yaba.data.domain.dto.UserDataDto
-import tech.alexib.yaba.data.domain.stubs.UserDataStubs
+import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 
 internal open class BaseRepositoryTest {
     //    val kermit = Kermit(CommonLogger())
@@ -50,17 +51,24 @@ internal open class BaseRepositoryTest {
 //    }
     val deps = TestDependencies
 
-    val user = UserDataStubs.user
+    val user = UserDataDtoStubs.user
     val userId = user.id
 
     suspend fun setupTest() {
-        deps.authRepository.login(UserDataStubs.validLogin.email, UserDataStubs.validLogin.password)
+        deps.authRepository.login(
+            UserDataDtoStubs.validLogin.email,
+            UserDataDtoStubs.validLogin.password
+        )
         deps.userDao.insert(user)
     }
 
     suspend fun login() {
-        deps.authRepository.login(UserDataStubs.validLogin.email, UserDataStubs.validLogin.password)
+        deps.authRepository.login(
+            UserDataDtoStubs.validLogin.email,
+            UserDataDtoStubs.validLogin.password
+        )
     }
+
     suspend fun cleanup() {
         deps.userDao.deleteById(userId)
         deps.authRepository.logout()
@@ -71,7 +79,7 @@ internal open class BaseRepositoryTest {
         deps.authSettings.setUserId(id)
     }
 
-    suspend fun insertAllUserData(userData: UserDataDto = UserDataStubs.userData) {
+    suspend fun insertAllUserData(userData: UserDataDto = UserDataDtoStubs.userData) {
         deps.userDao.insertUserData(userData)
     }
 }

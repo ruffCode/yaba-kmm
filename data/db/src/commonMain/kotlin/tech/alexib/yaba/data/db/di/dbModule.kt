@@ -18,8 +18,19 @@ package tech.alexib.yaba.data.db.di
 import org.koin.dsl.module
 import tech.alexib.yaba.data.db.YabaDatabase
 import tech.alexib.yaba.data.db.YabaDb
+import tech.alexib.yaba.data.db.dao.AccountDao
+import tech.alexib.yaba.data.db.dao.InstitutionDao
+import tech.alexib.yaba.data.db.dao.ItemDao
+import tech.alexib.yaba.data.db.dao.TransactionDao
+import tech.alexib.yaba.data.db.dao.UserDao
+import tech.alexib.yaba.di.CoreDependencies.ioDispatcherQualifier
 import tech.alexib.yaba.util.getWith
 
 val dbModule = module {
     single<YabaDb> { YabaDatabase(get(), getWith("YabaDb")).getInstance() }
+    single<AccountDao> { AccountDao.Impl(get(), get(ioDispatcherQualifier)) }
+    single<InstitutionDao> { InstitutionDao.Impl(get(), get(ioDispatcherQualifier)) }
+    single<ItemDao> { ItemDao.Impl(get(), get(ioDispatcherQualifier)) }
+    single<TransactionDao> { TransactionDao.Impl(get(), get(ioDispatcherQualifier)) }
+    single<UserDao> { UserDao.Impl(get(), get(ioDispatcherQualifier)) }
 }

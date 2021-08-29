@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.flow
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.Success
 import tech.alexib.yaba.data.domain.dto.NewItemDto
-import tech.alexib.yaba.data.domain.stubs.UserDataStubs
+import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.data.network.api.PlaidItemApi
 import tech.alexib.yaba.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
@@ -31,16 +31,16 @@ import tech.alexib.yaba.model.response.PlaidItemCreateResponse
 
 internal class PlaidItemApiMock : PlaidItemApi {
 
-    private val stub = UserDataStubs.PlaidLink
+    private val stub = UserDataDtoStubs.PlaidLink
     override fun createLinkToken(): Flow<DataResult<CreateLinkTokenResponse>> = flow {
         emit(Success(CreateLinkTokenResponse("linkToken")))
     }
 
-    override fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<PlaidItemCreateResponse>> =
-        flow {
-            delay(100)
-            emit(Success(stub.itemCreateResponse()))
-        }
+    override fun createPlaidItem(request: PlaidItemCreateRequest):
+        Flow<DataResult<PlaidItemCreateResponse>> = flow {
+        delay(100)
+        emit(Success(stub.itemCreateResponse()))
+    }
 
     override fun sendLinkEvent(request: PlaidLinkEventCreateRequest) {
     }
@@ -49,7 +49,7 @@ internal class PlaidItemApiMock : PlaidItemApi {
     }
 
     override fun fetchNewItemData(itemId: Uuid): Flow<DataResult<NewItemDto>> = flow {
-        emit(Success(UserDataStubs.newItemDtoStub))
+        emit(Success(UserDataDtoStubs.newItemDtoStub))
     }
 
     override suspend fun unlink(itemId: Uuid) {

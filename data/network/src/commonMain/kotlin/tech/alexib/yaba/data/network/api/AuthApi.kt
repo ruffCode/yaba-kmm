@@ -31,7 +31,7 @@ import yaba.schema.VerifyTokenQuery
 interface AuthApi {
     suspend fun login(userLoginInput: UserLoginInput): Flow<DataResult<AuthResponse>>
     suspend fun register(userRegisterInput: UserRegisterInput): Flow<DataResult<AuthResponse>>
-    suspend fun verifyToken(): Flow<DataResult<User>>
+    suspend fun validateToken(): Flow<DataResult<User>>
 
     class Impl(
         private val client: YabaApolloClient
@@ -62,7 +62,7 @@ interface AuthApi {
             }
         }
 
-        override suspend fun verifyToken(): Flow<DataResult<User>> {
+        override suspend fun validateToken(): Flow<DataResult<User>> {
             val query = VerifyTokenQuery()
             return runCatching {
                 client.query(query) {

@@ -102,7 +102,7 @@ interface AccountDao {
     ) -> Account
         get() = { id: Uuid,
             item_id: Uuid,
-            user_id: Uuid?,
+            _: Uuid?,
             name: String,
             mask: String,
             current_balance: Double,

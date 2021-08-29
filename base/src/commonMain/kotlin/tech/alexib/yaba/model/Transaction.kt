@@ -41,9 +41,9 @@ data class Transaction(
     val type: TransactionType,
     val amount: Double,
     val date: LocalDate,
-    val category: String?,
-    val subcategory: String?,
-    val isoCurrencyCode: String?,
+    val category: String? = null,
+    val subcategory: String? = null,
+    val isoCurrencyCode: String? = null,
     val merchantName: String? = null,
     val pending: Boolean = false
 ) {
@@ -72,11 +72,3 @@ data class TransactionDetail(
     @Transient
     val label = "$institutionName \n $accountName ****$accountMask"
 }
-
-// object TransactionStubs {
-//
-//    val transactions: List<Transaction> = jSerializer.decodeFromString(transactionsJson)
-//    val transaction = transactions.first()
-//
-//    val transactionDetail: TransactionDetail = jSerializer.decodeFromString(detailStub)
-// }

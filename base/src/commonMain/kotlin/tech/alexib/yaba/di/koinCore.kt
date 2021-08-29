@@ -15,7 +15,6 @@
  */
 package tech.alexib.yaba.di
 
-import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 
 object CoreDependencies {
@@ -23,5 +22,3 @@ object CoreDependencies {
     val ioDispatcherQualifier = named("IoDispatcher")
     val koinUiScopeQualifier = named("uiScope")
 }
-
-expect val corePlatformModule: Module

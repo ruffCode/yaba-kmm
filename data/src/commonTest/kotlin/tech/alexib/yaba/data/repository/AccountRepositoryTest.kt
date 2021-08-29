@@ -19,7 +19,7 @@ import app.cash.turbine.test
 import com.benasher44.uuid.uuidFrom
 import tech.alexib.yaba.data.db.dao.TransactionDao
 import tech.alexib.yaba.data.domain.dto.UserDataDto
-import tech.alexib.yaba.data.domain.stubs.UserDataStubs
+import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.model.AccountType
 import tech.alexib.yaba.util.suspendTest
 import kotlin.test.AfterTest
@@ -34,10 +34,10 @@ internal class AccountRepositoryTest : BaseRepositoryTest() {
     private val userDao = deps.userDao
     private val existingAccountId = uuidFrom("228021f2-7fbc-4929-9c36-01e262c1e858")
     private val accountRepository = deps.accountRepository
-    private val balance = UserDataStubs.accounts.filter { it.type == AccountType.DEPOSITORY }
+    private val balance = UserDataDtoStubs.accounts.filter { it.type == AccountType.DEPOSITORY }
         .sumOf { it.currentBalance }
     private val additionalItem: UserDataDto by lazy {
-        with(UserDataStubs.newItemDtoStub) {
+        with(UserDataDtoStubs.newItemDtoStub) {
             UserDataDto(
                 user = user,
                 accounts = accounts,
@@ -53,7 +53,7 @@ internal class AccountRepositoryTest : BaseRepositoryTest() {
         suspendTest {
             userDao.deleteById(userId)
             login()
-            userDao.insertUserData(UserDataStubs.userData)
+            userDao.insertUserData(UserDataDtoStubs.userData)
         }
     }
 

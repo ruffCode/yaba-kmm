@@ -56,7 +56,7 @@ import tech.alexib.yaba.android.util.moneyFormat
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.android.util.shortFormat
 import tech.alexib.yaba.model.TransactionDetail
-import tech.alexib.yaba.model.TransactionStubs
+import tech.alexib.yaba.stubs.TransactionStubs
 
 @Immutable
 data class TransactionDetailScreenState(
@@ -237,7 +237,7 @@ fun TransactionDetailScreenPreview() {
         TransactionDetailScreen(
             state = TransactionDetailScreenState(
                 false,
-                TransactionStubs.transactionDetail
+                TransactionStubs.transactionDetail.first()
             )
         ) {
         }

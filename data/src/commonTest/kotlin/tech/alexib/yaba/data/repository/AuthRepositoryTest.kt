@@ -16,7 +16,7 @@
 package tech.alexib.yaba.data.repository
 
 import app.cash.turbine.test
-import tech.alexib.yaba.data.domain.stubs.UserDataStubs
+import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.model.response.AuthResult
 import tech.alexib.yaba.util.suspendTest
 import kotlin.test.AfterTest
@@ -28,7 +28,7 @@ import kotlin.test.assertTrue
 
 internal class AuthRepositoryTest : BaseRepositoryTest() {
 
-    private val stub = UserDataStubs
+    private val stub = UserDataDtoStubs
     private val authRepository = deps.authRepository
     private val userIdProvider = deps.userIdProvider
     private val goodEmail = stub.validLogin.email
@@ -53,7 +53,7 @@ internal class AuthRepositoryTest : BaseRepositoryTest() {
             assertTrue(registerResult is AuthResult.Success)
             assertTrue(awaitItem())
             expectNoEvents()
-            assertEquals(UserDataStubs.Registration.newId, userIdProvider.userId.value)
+            assertEquals(UserDataDtoStubs.Registration.newId, userIdProvider.userId.value)
             cancelAndIgnoreRemainingEvents()
         }
     }

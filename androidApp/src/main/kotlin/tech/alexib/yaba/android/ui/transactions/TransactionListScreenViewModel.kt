@@ -16,11 +16,13 @@
 package tech.alexib.yaba.android.ui.transactions
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import tech.alexib.yaba.data.repository.TransactionRepository
+import tech.alexib.yaba.util.stateInDefault
 
 class TransactionListScreenViewModel : ViewModel(), KoinComponent {
     private val transactionRepository: TransactionRepository by inject()
-    val state = transactionRepository.getAll()
+    val state = transactionRepository.getAll().stateInDefault(viewModelScope, emptyList())
 }

@@ -18,8 +18,8 @@ ktlint {
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
     }
     filter {
-        exclude("**/generated/**")
-        exclude("**/build/**")
+        exclude { projectDir.toURI().relativize(it.file.toURI()).path.contains("/generated/") }
+
     }
     additionalEditorconfigFile.set(file("${rootProject.rootDir}/.editorConfig"))
 }

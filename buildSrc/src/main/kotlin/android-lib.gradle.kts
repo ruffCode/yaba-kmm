@@ -4,7 +4,7 @@ plugins {
 
 android {
     compileSdk = YabaAndroidConfig.compileSdk
-//    sourceSets.all { java.srcDir("src/$name/kotlin") }
+    sourceSets.all { java.srcDir("src/$name/kotlin") }
 
     defaultConfig {
         minSdk = YabaAndroidConfig.minSdk

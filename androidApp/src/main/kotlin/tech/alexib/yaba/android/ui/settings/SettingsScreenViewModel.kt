@@ -25,6 +25,7 @@ import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
@@ -32,27 +33,30 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.data.auth.SessionManagerAndroid
+import tech.alexib.yaba.data.fcm.PushTokenManager
+import tech.alexib.yaba.data.interactor.ClearAppData
+import tech.alexib.yaba.data.repository.AuthRepository
 import tech.alexib.yaba.data.settings.AppSettings
 import tech.alexib.yaba.data.settings.Theme
-import tech.alexib.yaba.fcm.PushTokenManager
+import tech.alexib.yaba.util.stateInDefault
 
 class SettingsScreenViewModel : ViewModel(), KoinComponent {
 
     private val appSettings: AppSettings by inject()
-    private val sessionManager: SessionManagerAndroid by inject()
+    private val authRepository: AuthRepository by inject()
     private val pushTokenManager: PushTokenManager by inject()
+    private val clearAppData:ClearAppData by inject()
     private val log: Kermit by inject { parametersOf("SettingsScreenViewModel") }
 
-    val state: Flow<SettingsScreenState> = appSettings.theme().mapLatest {
+    val state: StateFlow<SettingsScreenState> = appSettings.theme().mapLatest {
         SettingsScreenState(it)
-    }.distinctUntilChanged()
+    }.distinctUntilChanged().stateInDefault(viewModelScope, SettingsScreenState.Empty)
 
     fun logout() {
         viewModelScope.launch {
             deleteToken()
             delay(300)
-            sessionManager.logout()
+            authRepository.logout()
             delay(300)
         }
     }
@@ -61,8 +65,9 @@ class SettingsScreenViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch {
             deleteToken()
             delay(300)
-            sessionManager.clearAppData()
-            sessionManager.logout()
+            clearAppData.executeSync(Unit)
+
+            authRepository.logout()
             delay(100)
         }
     }

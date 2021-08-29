@@ -22,9 +22,11 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import org.koin.core.component.KoinComponent
@@ -36,8 +38,10 @@ import tech.alexib.yaba.data.repository.TransactionRepository
 import tech.alexib.yaba.model.Account
 import tech.alexib.yaba.model.PlaidItem
 import tech.alexib.yaba.model.Transaction
+import tech.alexib.yaba.util.stateInDefault
 
 class AccountDetailScreenViewModel : ViewModel(), KoinComponent {
+    //TODO refactor to use interactor
     private val loadingFlow = MutableStateFlow(false)
     private val accountRepository: AccountRepository by inject()
     private val transactionRepository: TransactionRepository by inject()
@@ -47,7 +51,7 @@ class AccountDetailScreenViewModel : ViewModel(), KoinComponent {
     private val dataLoader =
         AccountDetailDataLoader(accountRepository, transactionRepository, itemRepository)
 
-    val state: Flow<AccountDetailScreenState> =
+    val state: StateFlow<AccountDetailScreenState> =
         combine(
             loadingFlow,
             dataLoader.observeItem().distinctUntilChanged(),
@@ -60,9 +64,8 @@ class AccountDetailScreenViewModel : ViewModel(), KoinComponent {
                 account,
                 transactions
             )
-        }.stateIn(
+        }.stateInDefault(
             scope,
-            started = SharingStarted.WhileSubscribed(5000),
             initialValue = AccountDetailScreenState.Empty
         )
 
@@ -82,12 +85,12 @@ private class AccountDetailDataLoader(
     private val itemFlow: Flow<PlaidItem> =
         itemIdParam.flatMapLatest {
             if (it == null) emptyFlow()
-            else itemRepository.getById(it)
+            else itemRepository.getById(it).filterNotNull()
         }
     private val accountFlow: Flow<Account> =
         accountIdParam.flatMapLatest {
             if (it == null) emptyFlow()
-            else accountRepository.getById(it)
+            else accountRepository.getById(it).filterNotNull()
         }
     private val transactionsFlow: Flow<List<Transaction>> =
         accountIdParam.flatMapLatest {

@@ -144,7 +144,6 @@ private fun BiometricSetupScreen(
 
 @Composable
 private fun EnableBiometricsButton(
-    modifier: Modifier = Modifier,
     handleEnable: () -> Unit,
 ) {
     OutlinedButton(
@@ -167,7 +166,6 @@ private fun EnableBiometricsButton(
 
 @Composable
 private fun NotNowButton(
-    modifier: Modifier = Modifier,
     handleDecline: () -> Unit,
 ) {
     TextButton(onClick = handleDecline) {

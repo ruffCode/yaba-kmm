@@ -27,17 +27,19 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.data.api.PlaidItemApi
+import tech.alexib.yaba.data.interactor.AddItem
 import tech.alexib.yaba.data.repository.ItemRepository
 
 class PlaidLinkResultScreenViewModel : ViewModel(), KoinComponent {
+//TODO refactor to emit a single state
 
-    private val plaidItemApi: PlaidItemApi by inject()
     private val itemRepository: ItemRepository by inject()
 
+    private val addItem: AddItem by inject()
     lateinit var itemId: Uuid
     private val log: Kermit by inject { parametersOf("PlaidLinkResultScreenViewModel") }
     private val accountsFlow = MutableStateFlow<List<PlaidLinkScreenResult.Account>>(emptyList())
+
 
     private val loadingFlow = MutableStateFlow(false)
     val loading: StateFlow<Boolean>
@@ -63,14 +65,15 @@ class PlaidLinkResultScreenViewModel : ViewModel(), KoinComponent {
     fun submitAccountsToHide() {
         loadingFlow.value = true
         val accountsToHide = accountsFlow.value.filter { !it.show }.map { it.plaidAccountId }
-        plaidItemApi.setAccountsToHide(itemId, accountsToHide)
+        itemRepository.setAccountsToHide(itemId, accountsToHide)
         viewModelScope.launch(Dispatchers.Default) {
             delay(2_000)
             log.d { "delayed" }
-            val result = itemRepository.newItemData(itemId)
-            log.d { "got result $result" }
+//            val result = itemRepository.newItemData(itemId)
+            addItem.executeSync(AddItem.Params(itemId))
+//            log.d { "got result $result" }
             loadingFlow.emit(false)
-            shouldNavigateHomeFlow.emit(result)
+            shouldNavigateHomeFlow.emit(true)
         }
     }
 }

@@ -17,8 +17,8 @@
 
 object Lib {
     const val kermit = "co.touchlab:kermit:0.1.9"
-    const val stately = "co.touchlab:stately-common:1.1.7"
-    const val statelyConcurrency = "co.touchlab:stately-concurrency:1.1.4"
+    const val stately = "co.touchlab:stately-common:1.1.10"
+    const val statelyConcurrency = "co.touchlab:stately-concurrency:1.1.10"
     const val desugar = "com.android.tools:desugar_jdk_libs:1.1.5"
     const val uuid = "com.benasher44:uuid:0.3.0"
     const val turbine = "app.cash.turbine:turbine:0.6.0"
@@ -29,8 +29,10 @@ object Lib {
         private const val version = "3.1.2"
         const val core = "io.insert-koin:koin-core:$version"
         const val test = "io.insert-koin:koin-test:$version"
+        const val testJunit = "io.insert-koin:koin-test-junit4:$version"
         const val android = "io.insert-koin:koin-android:$version"
         const val compose = "io.insert-koin:koin-androidx-compose:$version"
+        const val work = "io.insert-koin:koin-androidx-workmanager:$version"
     }
 
     object Firebase {
@@ -43,9 +45,6 @@ object Lib {
     object Apollo {
         private const val version = Version.apollo
         const val runtimeKotlin = "com.apollographql.apollo3:apollo-runtime:$version"
-        const val runtime = "com.apollographql.apollo3:apollo-runtime:$version"
-        const val coroutinesSupport = "com.apollographql.apollo3:apollo-coroutines-support:$version"
-        const val cacheSqlite = "com.apollographql.apollo:apollo3-normalized-cache-sqlite:$version"
         const val adapters = "com.apollographql.apollo3:apollo-adapters:$version"
     }
 
@@ -57,13 +56,17 @@ object Lib {
         const val test = "com.russhwolf:multiplatform-settings-test:$version"
     }
 
-    object Jetpack {
+    object AndroidX {
 
-        const val startup = "androidx.startup:startup-runtime:1.0.0"
-        const val browser = "androidx.browser:browser:1.3.0"
-        const val dataStore = "androidx.datastore:datastore-preferences:1.0.0-rc02"
-        const val crypto = "androidx.security:security-crypto-ktx:1.1.0-alpha03"
+        const val activity = "androidx.activity:activity-compose:1.3.0"
         const val biometric = "androidx.biometric:biometric-ktx:1.2.0-alpha03"
+        const val browser = "androidx.browser:browser:1.3.0"
+        const val constrainLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02"
+        const val crypto = "androidx.security:security-crypto-ktx:1.1.0-alpha03"
+        const val dataStore = "androidx.datastore:datastore-preferences:1.0.0"
+        const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha04"
+        const val startup = "androidx.startup:startup-runtime:1.0.0"
+        const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
         const val work = "androidx.work:work-runtime-ktx:2.7.0-alpha05"
         const val workMultiProcess = "androidx.work:work-multiprocess:2.7.0-alpha05"
     }
@@ -81,9 +84,9 @@ object Lib {
         object Coroutines {
             private const val version = Version.coroutines
             const val bom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:$version"
-            val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
-            val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
-            val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
+            const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+            const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
+            const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
         }
     }
 
@@ -92,6 +95,9 @@ object Lib {
         val junit = "androidx.test.ext:junit:${Version.AndroidX.test_ext}"
         val runner = "androidx.test:runner:${Version.AndroidX.test}"
         val rules = "androidx.test:rules:${Version.AndroidX.test}"
+        const val mockito = "org.mockito:mockito-inline:3.11.2"
+        const val robolectric = "org.robolectric:robolectric:4.6.1"
+
     }
 
     object KotlinTest {
@@ -111,18 +117,6 @@ object Lib {
         const val jvm = "com.squareup.sqldelight:sqlite-driver:$version"
     }
 
-    object Arrow {
-        private const val version = Version.arrow
-        const val STACK = "io.arrow-kt:arrow-stack:$version"
-        const val CORE = "io.arrow-kt:arrow-core"
-        const val FX = "io.arrow-kt:arrow-fx"
-        const val MTL = "io.arrow-kt:arrow-mtl"
-        const val SYNTAX = "io.arrow-kt:arrow-syntax"
-        const val FX_MTL = "io.arrow-kt:arrow-fx-mtl"
-        const val COROUTINES = "io.arrow-kt:arrow-fx-coroutines"
-        const val OPTICS = "io.arrow-kt:arrow-optics"
-        const val META = "io.arrow-kt:arrow-meta"
-    }
 
     object Accompanist {
         private const val version = "0.17.0"
@@ -131,14 +125,6 @@ object Lib {
         const val insetsUi = "com.google.accompanist:accompanist-insets-ui:$version"
     }
 
-
-    object AndroidX {
-        const val activity = "androidx.activity:activity-compose:1.3.0"
-        const val constrainLayout =
-            "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08"
-        const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
-        const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha04"
-    }
 
     object Compose {
         private const val snapshot = ""
@@ -155,6 +141,8 @@ object Lib {
         const val ui = "androidx.compose.ui:ui:$version"
         const val uiUtil = "androidx.compose.ui:ui-util:$version"
         const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
+        const val uiTestJunit = "androidx.compose.ui:ui-test-junit4:$version"
+        const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:$version"
     }
 
     object Moko {
@@ -162,20 +150,21 @@ object Lib {
         const val mobileMultiplatform = "dev.icerock:mobile-multiplatform:0.12.0"
     }
 
+
 }
 
 object Version {
     const val kotlin = "1.5.21"
     const val sqlDelight = "1.5.1"
     const val apollo = "3.0.0-alpha03"
-    const val arrow = "0.13.2"
     const val compose = "1.0.1"
     const val coroutines = "1.5.1-native-mt"
     const val ktLint = "0.42.1"
 
+
     object AndroidX {
-        val test = "1.3.0"
-        val test_ext = "1.1.2"
+        val test = "1.4.0"
+        val test_ext = "1.1.3"
     }
 }
 

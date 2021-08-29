@@ -44,11 +44,8 @@ internal class AccountRepositoryImpl(
     private val transactionDao: TransactionDao,
     private val log: Kermit
 ) : AccountRepository {
-    override fun currentCashBalance(): Flow<Double> = accountDao.currentCashBalance(userIdProvider.userId.value)
-//        flow {
-// //        emitAll(accountDao.currentCashBalance(userIdProvider.userId.value))
-//        accountDao.currentCashBalance(userIdProvider.userId.value)
-//    }
+    override fun currentCashBalance(): Flow<Double> =
+        accountDao.currentCashBalance(userIdProvider.userId.value)
 
     override fun getById(id: Uuid): Flow<Account?> = flow {
         emitAll(accountDao.selectById(id))

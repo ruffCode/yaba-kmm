@@ -19,16 +19,23 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import tech.alexib.yaba.data.db.dao.AccountDao
 import tech.alexib.yaba.data.db.dao.InstitutionDao
 import tech.alexib.yaba.data.db.dao.ItemDao
 import tech.alexib.yaba.data.db.dao.TransactionDao
+import tech.alexib.yaba.data.domain.ErrorResult
+import tech.alexib.yaba.data.domain.Success
 import tech.alexib.yaba.data.domain.dto.NewItemDto
 import tech.alexib.yaba.data.network.api.PlaidItemApi
 import tech.alexib.yaba.data.provider.UserIdProvider
 import tech.alexib.yaba.model.PlaidItem
 import tech.alexib.yaba.model.PlaidItemWithAccounts
+import tech.alexib.yaba.model.request.PlaidItemCreateRequest
+import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
+import tech.alexib.yaba.model.response.CreateLinkTokenResponse
+import tech.alexib.yaba.model.response.PlaidLinkResult
 
 interface ItemRepository {
     fun getById(id: Uuid): Flow<PlaidItem?>
@@ -36,6 +43,10 @@ interface ItemRepository {
     suspend fun unlinkItem(id: Uuid)
     fun userItemsCount(): Flow<Long>
     suspend fun insert(data: NewItemDto)
+    fun sendLinkEvent(request: PlaidLinkEventCreateRequest)
+    fun createLinkToken(): Flow<CreateLinkTokenResponse?>
+    fun createPlaidItem(request: PlaidItemCreateRequest): Flow<PlaidLinkResult>
+    fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>)
 }
 
 internal class ItemRepositoryImpl(
@@ -55,9 +66,10 @@ internal class ItemRepositoryImpl(
     override fun getAllWithAccounts(withHidden: Boolean): Flow<List<PlaidItemWithAccounts>> =
         combine(
             getAll(),
-            if (withHidden) accountDao.selectAll(userIdProvider.userId.value) else accountDao.selectAllNotHidden(
-                userIdProvider.userId.value
-            )
+            if (withHidden) accountDao.selectAll(userIdProvider.userId.value) else
+                accountDao.selectAllNotHidden(
+                    userIdProvider.userId.value
+                )
         ) { items, accounts ->
             items.map {
                 PlaidItemWithAccounts(
@@ -81,5 +93,27 @@ internal class ItemRepositoryImpl(
         itemDao.insert(data.item)
         accountDao.insert(data.accounts)
         transactionDao.insert(data.transactions)
+    }
+
+    override fun sendLinkEvent(request: PlaidLinkEventCreateRequest) {
+        plaidItemApi.sendLinkEvent(request)
+    }
+
+    override fun createLinkToken(): Flow<CreateLinkTokenResponse?> = flow {
+        emit(plaidItemApi.createLinkToken().first().get())
+    }
+
+    override fun createPlaidItem(request: PlaidItemCreateRequest):
+        Flow<PlaidLinkResult> = flow {
+        val plaidLinkResult =
+            when (val dataResult = plaidItemApi.createPlaidItem(request).first()) {
+                is Success -> PlaidLinkResult.Success(dataResult.data)
+                is ErrorResult -> PlaidLinkResult.Error(dataResult.error)
+            }
+        emit(plaidLinkResult)
+    }
+
+    override fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>) {
+        plaidItemApi.setAccountsToHide(itemId, plaidAccountIds)
     }
 }

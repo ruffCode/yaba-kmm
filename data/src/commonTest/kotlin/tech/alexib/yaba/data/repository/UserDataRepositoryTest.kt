@@ -16,13 +16,11 @@
 package tech.alexib.yaba.data.repository
 
 import app.cash.turbine.test
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
-import store.HomeStore
 import tech.alexib.yaba.data.domain.dto.AccountDto
-import tech.alexib.yaba.data.domain.stubs.PlaidItemStubs
-import tech.alexib.yaba.data.domain.stubs.UserDataStubs
+import tech.alexib.yaba.data.domain.stubs.PlaidItemDtoStubs
+import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.model.AccountType
 import tech.alexib.yaba.util.InvokeStarted
 import tech.alexib.yaba.util.InvokeSuccess
@@ -31,8 +29,6 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 internal class UserDataRepositoryTest : BaseRepositoryTest() {
     private val userDataRepository = deps.userDataRepository
@@ -55,7 +51,7 @@ internal class UserDataRepositoryTest : BaseRepositoryTest() {
             assertEquals(0, awaitItem())
             expectNoEvents()
         }
-        userDataRepository.handleNewItem(PlaidItemStubs.wellsFargo.id).test {
+        userDataRepository.handleNewItem(PlaidItemDtoStubs.wellsFargo.id).test {
             assertEquals(InvokeStarted, awaitItem())
             assertEquals(InvokeSuccess, awaitItem())
             awaitComplete()
@@ -71,7 +67,7 @@ internal class UserDataRepositoryTest : BaseRepositoryTest() {
             expectNoEvents()
         }
         val balance =
-            UserDataStubs.newItemDtoStub.accounts.currentCashBalance()
+            UserDataDtoStubs.newItemDtoStub.accounts.currentCashBalance()
         accountRepository.currentCashBalance().test {
             assertEquals(balance, awaitItem())
             expectNoEvents()
@@ -81,45 +77,43 @@ internal class UserDataRepositoryTest : BaseRepositoryTest() {
     @Test
     fun handleInitialSync() = suspendTest {
         val final =
-            UserDataStubs.newItemDtoStub.transactions.size + UserDataStubs.userData.transactions.size
+            UserDataDtoStubs.newItemDtoStub.transactions.size +
+                UserDataDtoStubs.userData.transactions.size
         userDataRepository.handleInitialSync().test {
             assertEquals(InvokeStarted, awaitItem())
             assertEquals(InvokeSuccess, awaitItem())
             awaitComplete()
         }
         transactionRepository.getAll().test {
-            assertEquals(UserDataStubs.userData.transactions.size, awaitItem().size)
-            userDataRepository.handleNewItem(PlaidItemStubs.wellsFargo.id).collect()
+            assertEquals(UserDataDtoStubs.userData.transactions.size, awaitItem().size)
+            userDataRepository.handleNewItem(PlaidItemDtoStubs.wellsFargo.id).collect()
             delay(300)
             assertEquals(final, expectMostRecentItem().size)
             cancelAndIgnoreRemainingEvents()
         }
     }
 
-    @Test
-    fun initial() = suspendTest {
-
-        val homeStore = HomeStore(
-            deps.observeRecentTransactions,
-            deps.observeCurrentCashBalance,
-            deps.observeUserItemsCount,
-            deps.performInitialSync
-        )
-        homeStore.init(CoroutineScope(deps.backgroundDispatcher))
-        homeStore.state.test {
-
-            val one = awaitItem()
-            assertEquals(true, one.loading, "Loading one should be true")
-
-            val item = awaitItem()
-            assertTrue(
-                item.recentTransactions.isNotEmpty(),
-                "recent transactions should not be empty"
-            )
-            assertFalse(item.loading, "Loading two should be false")
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
+//    @Test
+//    fun initial() = suspendTest {
+//
+//        val homeStore = HomeStore(
+//            deps.observeRecentTransactions,
+//            deps.observeCurrentCashBalance,
+//            deps.observeUserItemsCount,
+//            deps.performInitialSync
+//        )
+//        homeStore.init(CoroutineScope(deps.backgroundDispatcher))
+//        homeStore.state.test {
+//            awaitItem()
+//            val item = awaitItem()
+//            assertTrue(
+//                item.recentTransactions.isNotEmpty(),
+//                "recent transactions should not be empty"
+//            )
+//            assertFalse(item.loading, "Loading two should be false")
+//            cancelAndIgnoreRemainingEvents()
+//        }
+//    }
 
     @AfterTest
     fun breakdown() = suspendTest {

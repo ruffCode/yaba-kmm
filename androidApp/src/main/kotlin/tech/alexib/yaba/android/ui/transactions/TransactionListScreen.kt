@@ -49,7 +49,8 @@ import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.format
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.model.Transaction
-import tech.alexib.yaba.model.TransactionStubs
+import tech.alexib.yaba.stubs.TransactionStubs
+
 
 @Composable
 fun TransactionListScreen(onBack: () -> Unit, onSelected: (Uuid) -> Unit) {
@@ -119,7 +120,7 @@ fun TransactionList(
             .padding(horizontal = 8.dp, vertical = 8.dp),
         elevation = 3.dp,
 
-    ) {
+        ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -157,7 +158,7 @@ fun TransactionDateHeader(date: LocalDate) {
 @Composable
 private fun TransactionItemPreview() {
     YabaTheme(darkTheme = true) {
-        TransactionItem(transaction = TransactionStubs.transaction) {}
+        TransactionItem(transaction = TransactionStubs.transactionsWellsFargo1.first()) {}
     }
 }
 
@@ -166,7 +167,7 @@ private fun TransactionItemPreview() {
 private fun TransactionListScreenPreview() {
     YabaTheme {
         TransactionListScreen(
-            transactions = TransactionStubs.transactions,
+            transactions = TransactionStubs.transactionsWellsFargo1,
             onSelected = {},
             handleBack = {}
         )

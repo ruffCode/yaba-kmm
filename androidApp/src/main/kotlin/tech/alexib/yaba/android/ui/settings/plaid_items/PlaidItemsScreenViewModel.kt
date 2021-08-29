@@ -18,7 +18,6 @@ package tech.alexib.yaba.android.ui.settings.plaid_items
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Kermit
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -29,9 +28,10 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.repository.ItemRepository
 import tech.alexib.yaba.model.PlaidItemWithAccounts
+import tech.alexib.yaba.util.stateInDefault
 
 class PlaidItemsScreenViewModel : ViewModel(), KoinComponent {
-
+    //TODO refactor to use interactor
     private val log: Kermit by inject { parametersOf("PlaidItemsScreenViewModel") }
     private val itemRepository: ItemRepository by inject()
     private val plaidItemsFlow = MutableStateFlow<List<PlaidItemWithAccounts>>(emptyList())
@@ -39,10 +39,10 @@ class PlaidItemsScreenViewModel : ViewModel(), KoinComponent {
     val loading: StateFlow<Boolean>
         get() = loadingFlow
 
-    val state: Flow<PlaidItemsScreenState> =
+    val state: StateFlow<PlaidItemsScreenState> =
         combine(plaidItemsFlow, loadingFlow) { items, loading ->
             PlaidItemsScreenState(items, loading)
-        }
+        }.stateInDefault(viewModelScope, PlaidItemsScreenState.Empty)
 
     init {
         viewModelScope.launch {
