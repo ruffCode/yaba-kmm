@@ -19,9 +19,10 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import tech.alexib.yaba.data.fcm.PushTokenManager
 import tech.alexib.yaba.data.repository.PushTokenRepository
 import tech.alexib.yaba.data.task.UserPushTokenWorker
-import tech.alexib.yaba.fcm.PushTokenManager
+
 
 class PushTokenManagerImpl : PushTokenManager, KoinComponent {
     private val workManager: WorkManager by inject()

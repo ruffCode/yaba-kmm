@@ -18,20 +18,21 @@ package tech.alexib.yaba.android.ui.auth.register
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Kermit
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.android.ui.auth.login.isValidEmail
-import tech.alexib.yaba.data.auth.SessionManagerAndroid
-import tech.alexib.yaba.data.repository.AuthResult
+import tech.alexib.yaba.data.repository.AuthRepository
+import tech.alexib.yaba.model.response.AuthResult
+import tech.alexib.yaba.util.stateInDefault
 
 class RegisterScreenViewModel : ViewModel(), KoinComponent {
 
-    private val sessionManager: SessionManagerAndroid by inject()
+    private val authRepository: AuthRepository by inject()
 
     private val log: Kermit by inject { parametersOf("RegisterUserViewModel") }
 
@@ -39,7 +40,7 @@ class RegisterScreenViewModel : ViewModel(), KoinComponent {
     private val password = MutableStateFlow("")
     private val errorMessage = MutableStateFlow<String?>(null)
     private val registrationSuccess = MutableStateFlow(false)
-    val state: Flow<RegistrationScreenState> = combine(
+    val state: StateFlow<RegistrationScreenState> = combine(
         email,
         password,
         errorMessage,
@@ -51,7 +52,7 @@ class RegisterScreenViewModel : ViewModel(), KoinComponent {
             errorMessage = errorMessage,
             registrationSuccess = registrationSuccess
         )
-    }
+    }.stateInDefault(viewModelScope, RegistrationScreenState.Empty)
 
     private fun credentialsAreValid(): Boolean {
         return when {
@@ -70,7 +71,7 @@ class RegisterScreenViewModel : ViewModel(), KoinComponent {
     fun register() {
         viewModelScope.launch {
             if (credentialsAreValid()) {
-                when (val result = sessionManager.register(email.value, password.value)) {
+                when (val result = authRepository.register(email.value, password.value)) {
                     AuthResult.Success -> registrationSuccess.value = true
                     is AuthResult.Error -> {
                         log.e { "registration error ${result.message}" }

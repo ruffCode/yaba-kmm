@@ -16,6 +16,8 @@
 package tech.alexib.yaba.android
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -36,7 +38,8 @@ import tech.alexib.yaba.android.ui.theme.SysDark
 import tech.alexib.yaba.android.ui.theme.SysLight
 import tech.alexib.yaba.android.ui.theme.SystemUiController
 import tech.alexib.yaba.android.ui.theme.YabaTheme
-import tech.alexib.yaba.data.auth.activityForBio
+import tech.alexib.yaba.data.biometrics.biometricActivity
+
 import tech.alexib.yaba.data.settings.AppSettings
 import tech.alexib.yaba.data.settings.Theme
 
@@ -56,15 +59,15 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityForBio = this
+        biometricActivity = this
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        // val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
-        //
-        // if (layout == Configuration.SCREENLAYOUT_SIZE_SMALL || layout ==
-        //     Configuration.SCREENLAYOUT_SIZE_NORMAL
-        // ) {
-        //     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        // }
+         val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
+
+         if (layout == Configuration.SCREENLAYOUT_SIZE_SMALL || layout ==
+             Configuration.SCREENLAYOUT_SIZE_NORMAL
+         ) {
+             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+         }
         setContent {
             val themeState = appSettings.theme().collectAsState(initial = Theme.SYSTEM)
             val useDarkTheme = when (themeState.value) {

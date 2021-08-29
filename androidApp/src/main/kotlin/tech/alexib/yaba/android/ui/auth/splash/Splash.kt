@@ -23,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import tech.alexib.yaba.android.ui.components.YabaLogo
 import tech.alexib.yaba.android.ui.theme.BlueSlate
 
@@ -44,9 +46,10 @@ fun Splash(
 @Composable
 fun Splash(
     splashScreenViewModel: SplashScreenViewModel,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    SideEffect { splashScreenViewModel.splashScreenNavigation() }
+    SideEffect { splashScreenViewModel.splashScreenNavigation(navController) }
 
     Splash(modifier)
 }

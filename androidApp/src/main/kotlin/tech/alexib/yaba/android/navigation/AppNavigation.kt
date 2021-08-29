@@ -112,12 +112,13 @@ fun AppNavigation(
     navController: NavHostController,
     finishActivity: () -> Unit,
 ) {
-    val authViewModel = getViewModel<SplashScreenViewModel> { parametersOf(navController) }
+//    val authViewModel = getViewModel<SplashScreenViewModel> { parametersOf(navController) }
 
+    val viewModel:SplashScreenViewModel = getViewModel()
     NavHost(navController = navController, startDestination = AuthRoute.Auth.route) {
 
         addHomeFeedRoute(navController, finishActivity)
-        addAuthRoute(navController, authViewModel, finishActivity)
+        addAuthRoute(navController, viewModel, finishActivity)
         addSettingsRoute(navController)
         addAccountsRoute(navController)
 
@@ -145,7 +146,7 @@ private fun NavGraphBuilder.addAuthRoute(
         route = AuthRoute.Auth.route,
         startDestination = AuthRoute.Splash.route
     ) {
-        addSplash(splashScreenViewModel)
+        addSplash(splashScreenViewModel,navController)
         addLogin(navController, finishActivity)
         addRegistration(navController, finishActivity)
         addBiometricSetup(navController)
@@ -181,10 +182,11 @@ private fun NavGraphBuilder.addTransactionsRoute(navController: NavController) {
 
 // -------------Auth routes
 private fun NavGraphBuilder.addSplash(
-    splashScreenViewModel: SplashScreenViewModel
+    splashScreenViewModel: SplashScreenViewModel,
+    navController: NavController
 ) {
     composable(AuthRoute.Splash.route) {
-        Splash(splashScreenViewModel)
+        Splash(splashScreenViewModel,navController)
     }
 }
 

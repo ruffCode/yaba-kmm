@@ -20,6 +20,7 @@ import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Kermit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -27,14 +28,15 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.data.auth.SessionManagerAndroid
-import tech.alexib.yaba.data.repository.AuthResult
+import tech.alexib.yaba.data.biometrics.BiometricsManager
+import tech.alexib.yaba.data.repository.AuthRepository
+import tech.alexib.yaba.model.response.AuthResult
+import tech.alexib.yaba.util.stateInDefault
 
 class LoginScreenViewModel(
-    private val sessionManager: SessionManagerAndroid
+    private val authRepository: AuthRepository,
+    private val biometricsManager: BiometricsManager
 ) : ViewModel(), KoinComponent {
-
-    private val log: Kermit by inject { parametersOf("LoginScreenViewModel") }
 
     private val isBioEnabledFlow = MutableStateFlow(false)
     private val hasCancelledBiometricLogin = MutableStateFlow(false)
@@ -48,7 +50,7 @@ class LoginScreenViewModel(
             isEnabled && !hasCancelled
         }
 
-    val state: Flow<LoginScreenState> =
+    val state: StateFlow<LoginScreenState> =
         combine(
             email,
             password,
@@ -64,14 +66,14 @@ class LoginScreenViewModel(
                 loggedIn = loggedIn,
                 isBiometricAuthEnabled = isBioEnabledFlow.value,
                 shouldPromptForBiometrics = shouldPromptForBiometrics,
-                shouldSetupBiometrics = sessionManager.shouldPromptSetupBiometrics().first()
+                shouldSetupBiometrics = biometricsManager.shouldPromptSetupBiometrics().first()
             )
-        }
+        }.stateInDefault(viewModelScope, LoginScreenState.Empty)
 
     fun login() {
         if (credentialsAreValid()) {
             viewModelScope.launch {
-                val result = sessionManager.login(email.value, password.value)
+                val result = authRepository.login(email.value, password.value)
                 handleAuthResult(result)
             }
         }
@@ -87,7 +89,7 @@ class LoginScreenViewModel(
     init {
 
         viewModelScope.launch {
-            sessionManager.isBioEnabled.collect {
+            biometricsManager.observeIsBiometricsEnabled().collect {
                 isBioEnabledFlow.emit(it)
             }
         }
@@ -95,11 +97,11 @@ class LoginScreenViewModel(
 
     fun loginBio() {
         viewModelScope.launch {
-            sessionManager.promptForBiometrics().first().let {
-                sessionManager.handleBiometricAuthResult(
+            biometricsManager.promptForBiometrics().first().let {
+                biometricsManager.handleBiometricAuthResult(
                     it,
                     onSuccess = {
-                        handleAuthResult(sessionManager.handleBioLogin())
+                        handleAuthResult(biometricsManager.handleBioLogin())
                     },
                     onError = {
                         errorMessage.value = "Authentication Failed"

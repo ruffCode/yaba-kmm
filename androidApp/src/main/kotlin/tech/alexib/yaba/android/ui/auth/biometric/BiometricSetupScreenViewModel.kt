@@ -20,36 +20,38 @@ import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Kermit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.data.auth.SessionManagerAndroid
+import tech.alexib.yaba.data.biometrics.BiometricsManager
+import tech.alexib.yaba.util.stateInDefault
 
 class BiometricSetupScreenViewModel : ViewModel(), KoinComponent {
     private val log: Kermit by inject { parametersOf("BiometricSetupScreenViewModel") }
-    private val sessionManager: SessionManagerAndroid by inject()
+    private val biometricsManager: BiometricsManager by inject()
 
     private val declined = MutableStateFlow(false)
     private val errorMessage = MutableStateFlow<String?>(null)
     private val setupSuccessful = MutableStateFlow(false)
 
-    val state: Flow<BiometricSetupScreenState> =
+    val state: StateFlow<BiometricSetupScreenState> =
         combine(
             setupSuccessful,
             errorMessage,
             declined
         ) { setupSuccessful, errorMessage, declined ->
             BiometricSetupScreenState(setupSuccessful, errorMessage, declined)
-        }
+        }.stateInDefault(viewModelScope, BiometricSetupScreenState.Empty)
 
     fun setupBiometrics() {
         viewModelScope.launch {
-            sessionManager.setBioEnabled(true)
-            sessionManager.promptForBiometrics().first().let {
-                sessionManager.handleBiometricAuthResult(
+            biometricsManager.setBioEnabled(true)
+            biometricsManager.promptForBiometrics().first().let {
+                biometricsManager.handleBiometricAuthResult(
                     it,
                     onSuccess = {
                         setupSuccessful.value = true

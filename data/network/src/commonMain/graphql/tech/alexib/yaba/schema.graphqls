@@ -1,0 +1,379 @@
+type Account {
+  availableBalance: Float
+
+  creditLimit: Float
+
+  currentBalance: Float!
+
+  hidden: Boolean!
+
+  id: UUID!
+
+  isoCurrencyCode: String
+
+  item: Item!
+
+  itemId: UUID!
+
+  mask: String!
+
+  name: String!
+
+  officialName: String
+
+  plaidAccountId: String!
+
+  subtype: AccountSubtype!
+
+  transactions: [Transaction!]!
+
+  type: AccountType!
+
+  unofficialCurrencyCode: String
+}
+
+type AccountInfo {
+  mask: String!
+
+  name: String!
+
+  plaidAccountId: String!
+}
+
+enum AccountSubtype {
+  CHECKING
+
+  SAVINGS
+
+  CD
+
+  CREDIT_CARD
+
+  MONEY_MARKET
+
+  IRA
+
+  FOUR_HUNDRED_ONE_K
+
+  STUDENT
+
+  MORTGAGE
+}
+
+enum AccountType {
+  DEPOSITORY
+
+  CREDIT
+
+  INVESTMENT
+
+  LOAN
+}
+
+enum CountryCode {
+  US
+
+  GB
+
+  ES
+
+  NL
+
+  FR
+
+  IE
+
+  CA
+}
+
+type Institution {
+  countryCodes: [CountryCode!]!
+
+  institutionId: String!
+
+  logo: String!
+
+  name: String!
+
+  primaryColor: String
+
+  products: [Product!]!
+
+  routingNumbers: [String!]
+
+  url: String
+}
+
+type Item {
+  accounts: [Account!]!
+
+  id: UUID!
+
+  institution: Institution!
+
+  plaidInstitutionId: String!
+
+  status: String!
+
+  transactions: [Transaction!]!
+
+  userId: UserId!
+}
+
+input ItemCreateInput {
+  institutionId: String!
+
+  publicToken: String!
+}
+
+type ItemCreateResponse {
+  accounts: [AccountInfo!]!
+
+  itemId: UUID!
+
+  logo: String!
+
+  name: String!
+}
+
+input LinkEventInput {
+  errorCode: String
+
+  errorType: String
+
+  linkSessionId: String!
+
+  requestId: String
+
+  type: String!
+}
+
+type LinkToken {
+  linkToken: String!
+}
+
+"""
+Represents java.util.LocalDate
+"""
+scalar LocalDate
+
+input LoginRequestInput {
+  email: String!
+
+  password: String!
+}
+
+"""
+Long type
+"""
+scalar Long
+
+type Mutation {
+  setAccountHidden(input: SetAccountHiddenInput!): Boolean!
+
+  itemCreate(input: ItemCreateInput!): ItemCreateResponse!
+
+  itemUnlink(itemId: UUID!): Boolean!
+
+  itemUpdateStatus(status: String!, itemId: UUID!): Item!
+
+  setAccountsToHide(plaidAccountIds: [String!]!, itemId: UUID!): Boolean!
+
+  login(input: LoginRequestInput!): UserWithTokenResponse!
+
+  register(input: UserRegisterInput!): UserWithTokenResponse!
+
+  createLinkEvent(input: LinkEventInput!): Boolean!
+
+  createLinkToken(itemId: UUID): LinkToken!
+
+  pushTokenDelete(token: String!): Boolean!
+
+  pushTokenInsert(token: String!): Boolean!
+}
+
+enum Product {
+  ASSETS
+
+  AUTH
+
+  BALANCE
+
+  IDENTITY
+
+  INVESTMENTS
+
+  LIABILITIES
+
+  PAYMENT_INITIATION
+
+  TRANSACTIONS
+
+  CREDIT_DETAILS
+
+  INCOME
+
+  DEPOSIT_SWITCH
+}
+
+type Query {
+  accountById(id: UUID!): Account!
+
+  accountsByItemId(itemId: UUID!): [Account!]!
+
+  """
+  Returns all of user's accounts
+  """
+  accountsByUser: [Account!]!
+
+  itemById(itemId: UUID!): Item!
+
+  """
+  Returns all of user's items
+  """
+  itemsByUser: [Item!]!
+
+  """
+  Returns all transactions for accountId
+  """
+  transactionByAccountId(accountId: UUID!): [Transaction!]!
+
+  transactionsByIds(ids: [UUID!]!): [Transaction!]!
+
+  transactionsByItemId(itemId: UUID!): [Transaction!]!
+
+  """
+  Returns all of user's transactions
+  """
+  transactionsByUser: [Transaction!]!
+
+  transactionsUpdated(updateId: UUID!): TransactionsUpdated
+
+  cleanUpUsers(testUser: Boolean!): Boolean!
+
+  institutionById(institutionId: String!): Institution
+
+  me: User!
+}
+
+input SetAccountHiddenInput {
+  accountId: UUID!
+
+  hide: Boolean!
+}
+
+type Subscription {
+  """
+  Returns a random number every second
+  """
+  counter(limit: Long): Int!
+
+  """
+  Returns a random number every second, errors if even
+  """
+  counterWithError: Int!
+
+  """
+  Returns stream of values
+  """
+  flow: Int!
+
+  """
+  Returns stream of errors
+  """
+  flowOfErrors: String
+
+  """
+  Returns a single value
+  """
+  singleValueSubscription: Int!
+
+  """
+  Returns one value then an error
+  """
+  singleValueThenError: Int!
+
+  """
+  Returns a value from the subscription context
+  """
+  subscriptionContext: String!
+}
+
+type Transaction {
+  accountId: UUID!
+
+  amount: Float!
+
+  category: String
+
+  date: LocalDate!
+
+  id: UUID!
+
+  isoCurrencyCode: String
+
+  itemId: UUID!
+
+  merchantName: String
+
+  name: String!
+
+  pending: Boolean!
+
+  subcategory: String
+
+  type: String!
+
+  unofficialCurrencyCode: String
+
+  userId: UUID!
+}
+
+type TransactionsUpdated {
+  added: [Transaction!]
+
+  removed: [UUID!]
+}
+
+"""
+A type representing a formatted java.util.UUID
+"""
+scalar UUID
+
+type User {
+  accounts: [Account!]!
+
+  email: String!
+
+  id: UUID!
+
+  items: [Item!]!
+
+  token: String
+
+  transactions: [Transaction!]!
+}
+
+type UserId {
+  value: UUID!
+}
+
+input UserRegisterInput {
+  email: String!
+
+  password: String!
+}
+
+type UserWithTokenResponse {
+  email: String!
+
+  id: UUID!
+
+  token: String!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}

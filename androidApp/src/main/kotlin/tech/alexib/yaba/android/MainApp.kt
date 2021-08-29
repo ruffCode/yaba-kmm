@@ -19,30 +19,22 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.util.Log
+import androidx.work.WorkManager
+import androidx.work.await
+import co.touchlab.kermit.Kermit
 import io.sentry.SentryLevel
 import io.sentry.android.core.SentryAndroid
-import org.koin.androidx.viewmodel.dsl.viewModel
+import kotlinx.coroutines.runBlocking
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import tech.alexib.yaba.AppInfo
-import tech.alexib.yaba.android.fcm.PushTokenManagerImpl
-import tech.alexib.yaba.android.ui.accounts.AccountsScreenViewModel
-import tech.alexib.yaba.android.ui.accounts.detail.AccountDetailScreenViewModel
-import tech.alexib.yaba.android.ui.auth.biometric.BiometricSetupScreenViewModel
-import tech.alexib.yaba.android.ui.auth.login.LoginScreenViewModel
-import tech.alexib.yaba.android.ui.auth.register.RegisterScreenViewModel
-import tech.alexib.yaba.android.ui.auth.splash.SplashScreenViewModel
-import tech.alexib.yaba.android.ui.home.HomeViewModel
-import tech.alexib.yaba.android.ui.plaid.PlaidLinkResultScreenViewModel
-import tech.alexib.yaba.android.ui.plaid.PlaidLinkViewModel
-import tech.alexib.yaba.android.ui.settings.SettingsScreenViewModel
-import tech.alexib.yaba.android.ui.settings.plaid_items.PlaidItemDetailScreenViewModel
-import tech.alexib.yaba.android.ui.settings.plaid_items.PlaidItemsScreenViewModel
-import tech.alexib.yaba.android.ui.transactions.TransactionDetailScreenViewModel
-import tech.alexib.yaba.android.ui.transactions.TransactionListScreenViewModel
-import tech.alexib.yaba.di.initKoin
-import tech.alexib.yaba.fcm.PushTokenManager
+import tech.alexib.yaba.android.di.viewModelModule
+import tech.alexib.yaba.data.di.initKoin
 
 class MainApp : Application() {
 
@@ -56,32 +48,6 @@ class MainApp : Application() {
         appInfo?.metaData?.getBoolean("isSandbox") ?: true
     }
 
-    private val appModule = module {
-        single<Context> { this@MainApp }
-        single<AppInfo> { AndroidAppInfo }
-        single(named("serverUrl")) { serverUrl }
-        single(named("isSandbox")) { isSandbox }
-        single {
-            { Log.i("Startup", "Hello from Android/Kotlin!") }
-        }
-
-        viewModel { parameters -> SplashScreenViewModel(parameters.get(), get()) }
-        viewModel { LoginScreenViewModel(get()) }
-        viewModel { RegisterScreenViewModel() }
-        viewModel { SettingsScreenViewModel() }
-        viewModel { PlaidLinkViewModel(get()) }
-        viewModel { PlaidLinkResultScreenViewModel() }
-        viewModel { BiometricSetupScreenViewModel() }
-        viewModel { HomeViewModel(get()) }
-        viewModel { PlaidItemsScreenViewModel() }
-        viewModel { PlaidItemDetailScreenViewModel() }
-        viewModel { TransactionListScreenViewModel() }
-        viewModel { TransactionDetailScreenViewModel() }
-        single<PushTokenManager> { PushTokenManagerImpl() }
-        viewModel { AccountsScreenViewModel() }
-        viewModel { AccountDetailScreenViewModel() }
-    }
-
     override fun onCreate() {
         super.onCreate()
 
@@ -90,7 +56,13 @@ class MainApp : Application() {
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
-        initKoin(appModule)
+
+        initKoin {
+            androidContext(this@MainApp)
+            workManagerFactory()
+            modules(createAppModule(serverUrl, isSandbox), viewModelModule)
+        }
+
         SentryAndroid.init(this) { options ->
             options.setBeforeSend { event, _ ->
                 if (SentryLevel.DEBUG == event.level) {
@@ -98,9 +70,29 @@ class MainApp : Application() {
                 } else event
             }
         }
+        cancelPendingWorkManager(this)
     }
 }
 
 object AndroidAppInfo : AppInfo {
     override val appId: String = BuildConfig.APPLICATION_ID
+}
+
+fun createAppModule(
+    serverUrl: String = "https://yabasandbox.alexib.dev/graphql",
+    isSandbox: Boolean = true
+) =
+    module {
+        single(named("serverUrl")) { serverUrl }
+        single(named("isSandbox")) { isSandbox }
+        single<AppInfo> { AndroidAppInfo }
+    }
+
+private fun cancelPendingWorkManager(mainApplication: MainApp) {
+    runBlocking {
+        WorkManager.getInstance(mainApplication)
+            .cancelAllWork()
+            .result
+            .await()
+    }
 }

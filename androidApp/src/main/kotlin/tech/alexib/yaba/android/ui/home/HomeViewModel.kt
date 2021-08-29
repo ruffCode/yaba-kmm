@@ -23,21 +23,18 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.data.Initializer
 import tech.alexib.yaba.data.repository.AccountRepository
 import tech.alexib.yaba.data.repository.ItemRepository
 import tech.alexib.yaba.data.repository.TransactionRepository
+import tech.alexib.yaba.data.store.HomeScreenState
+import tech.alexib.yaba.data.store.HomeStore
 import tech.alexib.yaba.model.Transaction
-import tech.alexib.yaba.util.ObservableLoadingCounter
-import tech.alexib.yaba.util.collectInto
+import tech.alexib.yaba.util.stateInDefault
 
 // !!TODO Placeholder/early prototype - hoping to extract this type of logic
 private class HomeDataLoader(
@@ -82,34 +79,38 @@ private class HomeDataLoader(
 }
 
 class HomeViewModel(
-    private val initializer: Initializer
+    private val homeStore: HomeStore
 ) : ViewModel(), KoinComponent {
 
-    private val homeDataLoaderState = ObservableLoadingCounter()
-    private val accountRepository: AccountRepository by inject()
-    private val transactionRepository: TransactionRepository by inject()
-    private val itemRepository: ItemRepository by inject()
+
+    //    private val homeDataLoaderState = ObservableLoadingCounter()
+//    private val accountRepository: AccountRepository by inject()
+//    private val transactionRepository: TransactionRepository by inject()
+//    private val itemRepository: ItemRepository by inject()
     private val log: Kermit by inject { parametersOf("HomeViewModel") }
     private val scope = viewModelScope
-    private val homeDataLoader =
-        HomeDataLoader(accountRepository, transactionRepository, itemRepository)
 
-    val state: Flow<HomeScreenState> =
-        combine(
-            homeDataLoaderState.observable,
-            homeDataLoader.observeCurrentBalance().distinctUntilChanged(),
-            homeDataLoader.observeRecentTransactions().distinctUntilChanged(),
-            homeDataLoader.observeUserItemCount().distinctUntilChanged(),
-        ) { loadingState, cashBalance, recentTransactions, userItemCount ->
-            HomeScreenState(loadingState, cashBalance, recentTransactions, userItemCount)
-        }
+    //    private val homeDataLoader =
+//        HomeDataLoader(accountRepository, transactionRepository, itemRepository)
+//
+//    val state: Flow<HomeScreenState> =
+//        combine(
+//            homeDataLoaderState.observable,
+//            homeDataLoader.observeCurrentBalance().distinctUntilChanged(),
+//            homeDataLoader.observeRecentTransactions().distinctUntilChanged(),
+//            homeDataLoader.observeUserItemCount().distinctUntilChanged(),
+//        ) { loadingState, cashBalance, recentTransactions, userItemCount ->
+//            HomeScreenState(loadingState, cashBalance, recentTransactions, userItemCount)
+//        }
+    val state = homeStore.state.stateInDefault(viewModelScope, HomeScreenState.Empty)
 
     init {
+        homeStore.init(viewModelScope)
         Firebase.messaging.isAutoInitEnabled = true
         Firebase.analytics.setAnalyticsCollectionEnabled(true)
-        homeDataLoader()
-        scope.launch {
-            initializer.init().collectInto(homeDataLoaderState)
-        }
+//        homeDataLoader()
+//        scope.launch {
+//            initializer.init().collectInto(homeDataLoaderState)
+//        }
     }
 }

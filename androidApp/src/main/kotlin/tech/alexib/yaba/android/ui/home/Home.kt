@@ -52,19 +52,20 @@ import tech.alexib.yaba.android.ui.components.TransactionItem
 import tech.alexib.yaba.android.ui.theme.MoneyGreen
 import tech.alexib.yaba.android.util.moneyFormat
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
+import tech.alexib.yaba.data.store.HomeScreenState
 import tech.alexib.yaba.model.Transaction
 
-@Immutable
-data class HomeScreenState(
-    val loading: Boolean = false,
-    val currentCashBalance: Double? = null,
-    val recentTransactions: List<Transaction> = emptyList(),
-    val userItemCount: Long? = null
-) {
-    companion object {
-        val Empty = HomeScreenState()
-    }
-}
+//@Immutable
+//data class HomeScreenState(
+//    val loading: Boolean = false,
+//    val currentCashBalance: Double? = null,
+//    val recentTransactions: List<Transaction> = emptyList(),
+//    val userItemCount: Long? = null
+//) {
+//    companion object {
+//        val Empty = HomeScreenState()
+//    }
+//}
 
 sealed class HomeScreenAction {
     object NavigateToPlaidLinkScreen : HomeScreenAction()

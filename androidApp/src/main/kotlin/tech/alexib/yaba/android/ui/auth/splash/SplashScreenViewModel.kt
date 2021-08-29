@@ -17,6 +17,7 @@ package tech.alexib.yaba.android.ui.auth.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -24,19 +25,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import tech.alexib.yaba.android.navigation.AuthRoute
 import tech.alexib.yaba.android.navigation.Route
-import tech.alexib.yaba.data.auth.SessionManagerAndroid
+import tech.alexib.yaba.data.repository.AuthRepository
 
 class SplashScreenViewModel(
-    private val navHostController: NavHostController,
-    private val sessionManager: SessionManagerAndroid
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private fun isLoggedIn(): Flow<Boolean> =
-        sessionManager.isLoggedIn()
+        authRepository.isLoggedIn()
 
-    private fun showOnBoarding(): Flow<Boolean> = sessionManager.isShowOnBoarding()
+    private fun showOnBoarding(): Flow<Boolean> = authRepository.isShowOnBoarding()
 
-    fun splashScreenNavigation() = viewModelScope.launch {
+    fun splashScreenNavigation(navHostController: NavController) = viewModelScope.launch {
         delay(500)
         when (isLoggedIn().first()) {
             true -> navHostController.navigate(Route.HomeFeed.route) { launchSingleTop = true }

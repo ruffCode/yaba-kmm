@@ -37,7 +37,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.statusBarsPadding
-import tech.alexib.yaba.android.YabaBottomBar
 import tech.alexib.yaba.android.navigation.AppNavigation
 import tech.alexib.yaba.android.navigation.Route
 import tech.alexib.yaba.android.navigation.shouldShowBottomBar

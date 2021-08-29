@@ -1,8 +1,10 @@
-pluginManagement {
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+dependencyResolutionManagement {
+//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
-        gradlePluginPortal()
         mavenCentral()
+        google()
     }
 }
 
@@ -19,4 +21,13 @@ gradleEnterprise {
 
 rootProject.name = "Yaba_KMM"
 include(":androidApp")
-include(":shared")
+//include(":shared")
+include(":base")
+include(":data")
+include(":data:domain")
+
+include(":data:network")
+
+
+include(":data:db")
+
