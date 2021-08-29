@@ -25,3 +25,10 @@ sqldelight {
         linkSqlite = true
     }
 }
+tasks {
+    ktlintFormat {
+        doLast {
+            delete("src/main")
+        }
+    }
+}

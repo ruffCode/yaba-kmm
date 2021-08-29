@@ -35,3 +35,12 @@ dependencies {
     androidMainImplementation(Lib.AndroidX.work)
     androidMainImplementation(Lib.AndroidX.workMultiProcess)
 }
+
+tasks {
+    ktlintFormat {
+        doLast {
+            delete("src/main")
+            delete("src/test")
+        }
+    }
+}

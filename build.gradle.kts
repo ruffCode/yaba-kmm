@@ -52,13 +52,6 @@ subprojects {
 //            dependsOn(tasks.getByName("ktlintCheck"))
 //        }
     }
-
-//    tasks.withType<org.jlleitschuh.gradle.ktlint.tasks.KtLintFormatTask>().all {
-//        doLast {
-//            println(p.name)
-//        }
-//    }
-//    println(p.name)
 }
 
 tasks.register("clean", Delete::class).configure {

@@ -10,3 +10,10 @@ dependencies {
     commonMainApi(Lib.KotlinX.Serialization.core)
     commonMainApi(Lib.KotlinX.Serialization.json)
 }
+tasks {
+    ktlintFormat {
+        doLast {
+            delete("src/main")
+        }
+    }
+}
