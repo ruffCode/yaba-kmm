@@ -55,8 +55,6 @@ import tech.alexib.yaba.data.repository.UserDataRepository
 import tech.alexib.yaba.data.repository.UserDataRepositoryImpl
 import tech.alexib.yaba.data.repository.UserRepository
 import tech.alexib.yaba.data.repository.UserRepositoryImpl
-
-
 import tech.alexib.yaba.data.settings.AuthSettings
 
 internal object TestDependencies {

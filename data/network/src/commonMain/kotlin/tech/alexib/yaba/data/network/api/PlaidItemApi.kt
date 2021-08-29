@@ -31,7 +31,11 @@ import tech.alexib.yaba.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
 import tech.alexib.yaba.model.response.CreateLinkTokenResponse
 import tech.alexib.yaba.model.response.PlaidItemCreateResponse
-import yaba.schema.*
+import yaba.schema.CreateItemMutation
+import yaba.schema.CreateLinkTokenMutation
+import yaba.schema.NewItemDataQuery
+import yaba.schema.SetAccountsToHideMutation
+import yaba.schema.UnlinkItemMutation
 
 interface PlaidItemApi {
     fun createLinkToken(): Flow<DataResult<CreateLinkTokenResponse>>
