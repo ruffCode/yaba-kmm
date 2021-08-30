@@ -61,7 +61,8 @@ object Lib {
         const val activity = "androidx.activity:activity-compose:1.3.0"
         const val biometric = "androidx.biometric:biometric-ktx:1.2.0-alpha03"
         const val browser = "androidx.browser:browser:1.3.0"
-        const val constrainLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02"
+        const val constrainLayout =
+            "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02"
         const val crypto = "androidx.security:security-crypto-ktx:1.1.0-alpha03"
         const val dataStore = "androidx.datastore:datastore-preferences:1.0.0"
         const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha04"
@@ -123,6 +124,10 @@ object Lib {
         const val coil = "com.google.accompanist:accompanist-coil:0.15.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val insetsUi = "com.google.accompanist:accompanist-insets-ui:$version"
+        const val navigationAnimation =
+            "com.google.accompanist:accompanist-navigation-animation:$version"
+        const val systemUiController =
+            "com.google.accompanist:accompanist-systemuicontroller:$version"
     }
 
 

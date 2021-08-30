@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="status_bar">#0e0e0e</color>
+    <color name="slash_background">@color/black30</color>
 </resources>
