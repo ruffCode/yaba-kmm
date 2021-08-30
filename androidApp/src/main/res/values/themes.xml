@@ -1,9 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.YabaSplash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/slash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/yaba_nbg</item>
+        <item name="postSplashScreenTheme">@style/Theme.Yaba.Home</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+    </style>
     <!-- Base application theme. -->
     <style name="Theme.Yaba" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
 
         <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
+        <item name="android:statusBarColor" tools:targetApi="l">#FF4f83cc</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -19,7 +26,7 @@
 
 
 
-<!--    <style name="Theme.Yaba.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
+    <style name="Theme.Yaba.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
 
-<!--    <style name="Theme.Yaba.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
+    <style name="Theme.Yaba.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 </resources>

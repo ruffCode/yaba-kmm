@@ -20,7 +20,7 @@ import tech.alexib.yaba.android.ui.transactions.TransactionListScreenViewModel
 import tech.alexib.yaba.data.fcm.PushTokenManager
 
 val viewModelModule = module {
-    viewModel { SplashScreenViewModel(get()) }
+    viewModel { parameters -> SplashScreenViewModel(parameters.get(), get()) }
     viewModel { LoginScreenViewModel(get(), get()) }
     viewModel { RegisterScreenViewModel() }
     viewModel { SettingsScreenViewModel() }

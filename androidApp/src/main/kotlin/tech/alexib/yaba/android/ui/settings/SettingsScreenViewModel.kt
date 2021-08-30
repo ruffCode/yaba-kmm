@@ -23,8 +23,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapLatest
@@ -45,7 +43,7 @@ class SettingsScreenViewModel : ViewModel(), KoinComponent {
     private val appSettings: AppSettings by inject()
     private val authRepository: AuthRepository by inject()
     private val pushTokenManager: PushTokenManager by inject()
-    private val clearAppData:ClearAppData by inject()
+    private val clearAppData: ClearAppData by inject()
     private val log: Kermit by inject { parametersOf("SettingsScreenViewModel") }
 
     val state: StateFlow<SettingsScreenState> = appSettings.theme().mapLatest {
@@ -55,20 +53,15 @@ class SettingsScreenViewModel : ViewModel(), KoinComponent {
     fun logout() {
         viewModelScope.launch {
             deleteToken()
-            delay(300)
             authRepository.logout()
-            delay(300)
         }
     }
 
     fun clearAppData() {
         viewModelScope.launch {
             deleteToken()
-            delay(300)
             clearAppData.executeSync(Unit)
-
             authRepository.logout()
-            delay(100)
         }
     }
 

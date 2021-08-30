@@ -17,10 +17,8 @@ package tech.alexib.yaba.android.ui.auth.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import tech.alexib.yaba.android.navigation.AuthRoute
@@ -28,21 +26,19 @@ import tech.alexib.yaba.android.navigation.Route
 import tech.alexib.yaba.data.repository.AuthRepository
 
 class SplashScreenViewModel(
+    private val navController: NavHostController,
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private fun isLoggedIn(): Flow<Boolean> =
-        authRepository.isLoggedIn()
+    suspend fun splashScreenNavigation() = viewModelScope.launch {
+//This is here to make sure we get the most recent value
+        delay(100)
 
-    private fun showOnBoarding(): Flow<Boolean> = authRepository.isShowOnBoarding()
-
-    fun splashScreenNavigation(navHostController: NavController) = viewModelScope.launch {
-        delay(500)
-        when (isLoggedIn().first()) {
-            true -> navHostController.navigate(Route.HomeFeed.route) { launchSingleTop = true }
-            false -> if (showOnBoarding().first()) navHostController
+        when (authRepository.isLoggedIn().first()) {
+            true -> navController.navigate(Route.HomeFeed.route) { launchSingleTop = true }
+            false -> if (authRepository.isShowOnBoarding().first()) navController
                 .navigate(AuthRoute.Registration.route)
-            else navHostController.navigate(AuthRoute.Login.route) {
+            else navController.navigate(AuthRoute.Login.route) {
                 launchSingleTop = true
             }
         }

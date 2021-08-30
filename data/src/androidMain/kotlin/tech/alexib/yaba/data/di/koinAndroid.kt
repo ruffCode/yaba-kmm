@@ -17,6 +17,7 @@ package tech.alexib.yaba.data.di
 
 import android.content.Context
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.work.WorkManager
 import co.touchlab.kermit.Kermit
 import co.touchlab.kermit.LogcatLogger
 import com.russhwolf.settings.coroutines.FlowSettings
@@ -57,10 +58,7 @@ actual val platformModule: Module = module {
     single<BiometricSettings> { BiometricSettingsImpl(get(), get()) }
     single { BiometricsManager(get(), getWith("BiometricsManager"), get(), get(), get()) }
     single { CipherWrapper() }
-//    single {
-//        val context: Context = get()
-//        WorkManager.getInstance(context)
-//    }
+    single { WorkManager.getInstance(get()) }
     single<AppSettings> { AppSettings.Impl(get()) }
     worker { UpdateTransactionsWorker(get(), get(), get()) }
     worker { UserPushTokenWorker(get(), get(), get()) }

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - Split shared library, now called data and contains db, network, & domain as separate sub-modules
 - Add tests for all repositories
+- Add Accompanist SystemUiController
+- Add Jetpack SplashScreen
 
 ## [v1.0.1-alpha] - 2021-07-18
 #### Initial release

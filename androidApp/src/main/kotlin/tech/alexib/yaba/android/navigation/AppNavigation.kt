@@ -17,6 +17,7 @@ package tech.alexib.yaba.android.navigation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -38,8 +39,8 @@ import tech.alexib.yaba.android.ui.accounts.detail.AccountDetailScreenParams
 import tech.alexib.yaba.android.ui.auth.biometric.BiometricSetupScreen
 import tech.alexib.yaba.android.ui.auth.login.Login
 import tech.alexib.yaba.android.ui.auth.register.RegistrationScreen
-import tech.alexib.yaba.android.ui.auth.splash.Splash
 import tech.alexib.yaba.android.ui.auth.splash.SplashScreenViewModel
+import tech.alexib.yaba.android.ui.components.LoadingScreen
 import tech.alexib.yaba.android.ui.home.Home
 import tech.alexib.yaba.android.ui.plaid.PlaidLinkResultScreen
 import tech.alexib.yaba.android.ui.plaid.PlaidLinkScreen
@@ -112,9 +113,9 @@ fun AppNavigation(
     navController: NavHostController,
     finishActivity: () -> Unit,
 ) {
-//    val authViewModel = getViewModel<SplashScreenViewModel> { parametersOf(navController) }
 
-    val viewModel:SplashScreenViewModel = getViewModel()
+    val viewModel = getViewModel<SplashScreenViewModel> { parametersOf(navController) }
+
     NavHost(navController = navController, startDestination = AuthRoute.Auth.route) {
 
         addHomeFeedRoute(navController, finishActivity)
@@ -146,7 +147,7 @@ private fun NavGraphBuilder.addAuthRoute(
         route = AuthRoute.Auth.route,
         startDestination = AuthRoute.Splash.route
     ) {
-        addSplash(splashScreenViewModel,navController)
+        addSplash(splashScreenViewModel)
         addLogin(navController, finishActivity)
         addRegistration(navController, finishActivity)
         addBiometricSetup(navController)
@@ -183,10 +184,13 @@ private fun NavGraphBuilder.addTransactionsRoute(navController: NavController) {
 // -------------Auth routes
 private fun NavGraphBuilder.addSplash(
     splashScreenViewModel: SplashScreenViewModel,
-    navController: NavController
 ) {
     composable(AuthRoute.Splash.route) {
-        Splash(splashScreenViewModel,navController)
+        LaunchedEffect(this) {
+            splashScreenViewModel.splashScreenNavigation()
+        }
+        LoadingScreen("\uD83D\uDC3B with us")
+
     }
 }
 

@@ -27,6 +27,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Kermit
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -59,13 +60,14 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         super.onCreate(savedInstanceState)
         biometricActivity = this
         WindowCompat.setDecorFitsSystemWindows(window, false)
-         val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
+        val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
 
-         if (layout == Configuration.SCREENLAYOUT_SIZE_SMALL || layout ==
-             Configuration.SCREENLAYOUT_SIZE_NORMAL
-         ) {
-             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-         }
+        if (layout == Configuration.SCREENLAYOUT_SIZE_SMALL || layout ==
+            Configuration.SCREENLAYOUT_SIZE_NORMAL
+        ) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        installSplashScreen()
         setContent {
             val themeState = appSettings.theme().collectAsState(initial = Theme.SYSTEM)
             val useDarkTheme = when (themeState.value) {
