@@ -50,6 +50,7 @@ import tech.alexib.yaba.android.ui.components.LoadingScreen
 import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.base64ToBitmap
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
+import tech.alexib.yaba.data.store.PlaidItemsScreenState
 import tech.alexib.yaba.model.PlaidItemStubs.itemsWithAccounts
 import tech.alexib.yaba.model.PlaidItemWithAccounts
 
@@ -58,15 +59,7 @@ sealed class PlaidItemsScreenAction {
     object NavigateToLinkInstitution : PlaidItemsScreenAction()
 }
 
-@Immutable
-data class PlaidItemsScreenState(
-    val items: List<PlaidItemWithAccounts> = emptyList(),
-    val loading: Boolean = false
-) {
-    companion object {
-        val Empty = PlaidItemsScreenState()
-    }
-}
+
 
 @Composable
 fun PlaidItemsScreen(

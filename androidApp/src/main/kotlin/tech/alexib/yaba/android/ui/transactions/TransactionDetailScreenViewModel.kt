@@ -18,41 +18,21 @@ package tech.alexib.yaba.android.ui.transactions
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.benasher44.uuid.Uuid
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import tech.alexib.yaba.data.repository.TransactionRepository
+import tech.alexib.yaba.data.store.TransactionDetailScreenState
+import tech.alexib.yaba.data.store.TransactionDetailStore
 import tech.alexib.yaba.util.stateInDefault
 
 class TransactionDetailScreenViewModel : ViewModel(), KoinComponent {
 
-    //TODO refactor to use interactor
-    private val repository: TransactionRepository by inject()
-
-    private val transactionId = MutableStateFlow<Uuid?>(null)
-
-    private val loadingFLow = MutableStateFlow(false)
-    private val transactionDetailFlow = transactionId.flatMapLatest {
-        loadingFLow.emit(true)
-        if (it == null) emptyFlow() else repository.getById(it).also {
-            loadingFLow.emit(false)
-        }
-    }
+    private val store: TransactionDetailStore by inject()
 
     val state: StateFlow<TransactionDetailScreenState> =
-        combine(loadingFLow, transactionDetailFlow) { loading, transaction ->
-            TransactionDetailScreenState(
-                loading,
-                transaction
-            )
-        }.stateInDefault(viewModelScope, TransactionDetailScreenState.Empty)
+        store.state.stateInDefault(viewModelScope, TransactionDetailScreenState.Empty)
 
     fun getDetail(id: Uuid) {
-        transactionId.value = id
+        store.init(id)
     }
 }

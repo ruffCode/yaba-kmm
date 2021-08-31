@@ -34,6 +34,7 @@ dependencies {
     androidMainImplementation(Lib.AndroidX.biometric)
     androidMainImplementation(Lib.AndroidX.work)
     androidMainImplementation(Lib.AndroidX.workMultiProcess)
+    androidMainApi(Lib.Compose.runtime)
 }
 
 tasks {

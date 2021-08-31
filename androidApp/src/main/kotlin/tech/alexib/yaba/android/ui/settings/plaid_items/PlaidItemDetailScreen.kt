@@ -94,9 +94,6 @@ fun PlaidItemDetailScreen(
                 }
             }
         },
-        // modifier = Modifier
-        //     .statusBarsPadding()
-        //     .navigationBarsPadding()
     ) {
         PlaidItemDetailScreen(
             item = item,

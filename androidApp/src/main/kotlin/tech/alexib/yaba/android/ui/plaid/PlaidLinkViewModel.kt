@@ -102,15 +102,6 @@ class PlaidLinkViewModel(
             )
             resultFlow.value = repository.createPlaidItem(request).first()
 
-//            when (val response = plaidItemApi.createPlaidItem(request).firstOrNull()) {
-//                is Success -> resultFlow.value = PlaidLinkResult.Success(response.data)
-//                is ErrorResult -> {
-//                    log.e { "Plaid response error ${response.error}" }
-//                    resultFlow.value = PlaidLinkResult.Error(response.error)
-//                }
-//                null -> {
-//                }
-//            }
         }
     }
 

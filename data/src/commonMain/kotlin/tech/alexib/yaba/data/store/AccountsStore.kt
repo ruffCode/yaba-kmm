@@ -13,10 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.android.ui.accounts
+package tech.alexib.yaba.data.store
 
-import androidx.compose.runtime.Immutable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
+import tech.alexib.yaba.data.Immutable
+import tech.alexib.yaba.data.observer.ObserveItemsWithAccounts
 import tech.alexib.yaba.model.PlaidItemWithAccounts
+
+class AccountsStore(
+    observeItemsWithAccounts: ObserveItemsWithAccounts,
+
+) {
+
+    val state: Flow<AccountsScreenState> =
+        observeItemsWithAccounts.flow.mapLatest {
+            AccountsScreenState(it, false)
+        }
+
+    init {
+        observeItemsWithAccounts(ObserveItemsWithAccounts.Params(false))
+    }
+}
 
 @Immutable
 data class AccountsScreenState(

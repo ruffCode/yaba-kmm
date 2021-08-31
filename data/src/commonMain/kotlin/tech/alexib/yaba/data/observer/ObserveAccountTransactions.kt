@@ -15,16 +15,19 @@
  */
 package tech.alexib.yaba.data.observer
 
-import org.koin.dsl.module
+import com.benasher44.uuid.Uuid
+import kotlinx.coroutines.flow.Flow
+import tech.alexib.yaba.SubjectInteractor
+import tech.alexib.yaba.data.repository.TransactionRepository
+import tech.alexib.yaba.model.Transaction
 
-internal val observersModule = module {
-    single { ObserveCurrentCashBalance(get()) }
-    single { ObserveRecentTransactions(get()) }
-    single { ObserveUserItemsCount(get()) }
-    single { ObserveItem(get()) }
-    single { ObserveAccountTransactions(get()) }
-    single { ObserveAccount(get()) }
-    single { ObserveItemsWithAccounts(get()) }
-    single { ObserveTransactionDetail(get()) }
-    single { ObserveTransactions(get()) }
+class ObserveAccountTransactions(
+    private val transactionRepository: TransactionRepository
+) : SubjectInteractor<ObserveAccountTransactions.Params, List<Transaction>>() {
+
+    override fun createObservable(params: Params): Flow<List<Transaction>> {
+        return transactionRepository.getAllByAccountId(params.accountId)
+    }
+
+    data class Params(val accountId: Uuid)
 }

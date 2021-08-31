@@ -21,19 +21,22 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.store.HomeScreenState
 import tech.alexib.yaba.data.store.HomeStore
 import tech.alexib.yaba.util.stateInDefault
 
 
-class HomeViewModel(
-    homeStore: HomeStore
-) : ViewModel(), KoinComponent {
+class HomeViewModel : ViewModel(), KoinComponent {
 
-    val state = homeStore.state.stateInDefault(viewModelScope, HomeScreenState.Empty)
+    private val homeStore: HomeStore by inject { parametersOf(viewModelScope) }
+
+    val state = homeStore.state
+        .stateInDefault(viewModelScope, HomeScreenState.Empty)
 
     init {
-        homeStore.init(viewModelScope)
+        homeStore.init()
         Firebase.messaging.isAutoInitEnabled = true
         Firebase.analytics.setAnalyticsCollectionEnabled(true)
     }

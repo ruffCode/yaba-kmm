@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.observer
+package tech.alexib.yaba.data
 
-import org.koin.dsl.module
-
-internal val observersModule = module {
-    single { ObserveCurrentCashBalance(get()) }
-    single { ObserveRecentTransactions(get()) }
-    single { ObserveUserItemsCount(get()) }
-    single { ObserveItem(get()) }
-    single { ObserveAccountTransactions(get()) }
-    single { ObserveAccount(get()) }
-    single { ObserveItemsWithAccounts(get()) }
-    single { ObserveTransactionDetail(get()) }
-    single { ObserveTransactions(get()) }
-}
+actual typealias Immutable = androidx.compose.runtime.Immutable

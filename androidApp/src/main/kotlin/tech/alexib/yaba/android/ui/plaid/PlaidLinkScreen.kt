@@ -15,7 +15,6 @@
  */
 package tech.alexib.yaba.android.ui.plaid
 
-import android.os.Parcelable
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,7 +31,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,18 +39,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.benasher44.uuid.Uuid
-import com.plaid.link.PlaidActivityResultContract
 import com.plaid.link.result.LinkResult
-import kotlinx.parcelize.Parcelize
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.LocalIsSandBoxProvider
 import tech.alexib.yaba.android.R
 import tech.alexib.yaba.android.ui.AddSpace
 import tech.alexib.yaba.android.ui.components.LoadingScreen
-import tech.alexib.yaba.android.ui.components.defaultLogoBase64
 import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
+import tech.alexib.yaba.data.store.PlaidLinkScreenResult
 import tech.alexib.yaba.model.response.PlaidItemCreateResponse
 import tech.alexib.yaba.model.response.PlaidLinkResult
 
@@ -72,8 +67,6 @@ sealed class PlaidLinkScreenAction {
     data class HandleSuccess(val data: PlaidLinkScreenResult) : PlaidLinkScreenAction()
     data class HandleLinkResult(val data: LinkResult) : PlaidLinkScreenAction()
 }
-
-
 
 
 @Composable
@@ -148,23 +141,23 @@ private fun PlaidLinkScreen(
     }
 }
 
-@Immutable
-@Parcelize
-data class PlaidLinkScreenResult(
-    val id: Uuid,
-    val name: String,
-    val logo: String = defaultLogoBase64,
-    val accounts: List<Account>
-) : Parcelable {
-    @Immutable
-    @Parcelize
-    data class Account(
-        val mask: String,
-        val name: String,
-        val plaidAccountId: String,
-        var show: Boolean = true
-    ) : Parcelable
-}
+//@Immutable
+//@Parcelize
+//data class PlaidLinkScreenResult(
+//    val id: Uuid,
+//    val name: String,
+//    val logo: String = defaultLogoBase64,
+//    val accounts: List<Account>
+//) : Parcelable {
+//    @Immutable
+//    @Parcelize
+//    data class Account(
+//        val mask: String,
+//        val name: String,
+//        val plaidAccountId: String,
+//        var show: Boolean = true
+//    ) : Parcelable
+//}
 
 private fun PlaidItemCreateResponse.toPlaidItem(): PlaidLinkScreenResult =
     PlaidLinkScreenResult(

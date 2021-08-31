@@ -58,12 +58,8 @@ import tech.alexib.yaba.android.ui.components.YabaRow
 import tech.alexib.yaba.android.ui.transactions.TransactionDateHeader
 import tech.alexib.yaba.android.util.base64ToBitmap
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
+import tech.alexib.yaba.data.store.AccountDetailScreenState
 import tech.alexib.yaba.model.Account
-
-sealed class AccountDetailScreenAction {
-    object NavigateBack : AccountDetailScreenAction()
-    data class OnTransactionSelected(val transactionId: Uuid) : AccountDetailScreenAction()
-}
 
 @Composable
 fun AccountDetailScreen(

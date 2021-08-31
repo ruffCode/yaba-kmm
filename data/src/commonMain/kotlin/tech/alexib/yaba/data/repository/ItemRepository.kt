@@ -46,7 +46,10 @@ interface ItemRepository {
     fun sendLinkEvent(request: PlaidLinkEventCreateRequest)
     fun createLinkToken(): Flow<CreateLinkTokenResponse?>
     fun createPlaidItem(request: PlaidItemCreateRequest): Flow<PlaidLinkResult>
-    fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>)
+    /**
+     * Sets accounts to hide and waits for transactions to be fetched
+     */
+    suspend fun setAccountsToHideSync(itemId: Uuid, plaidAccountIds: List<String>)
 }
 
 internal class ItemRepositoryImpl(
@@ -113,7 +116,7 @@ internal class ItemRepositoryImpl(
         emit(plaidLinkResult)
     }
 
-    override fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>) {
+    override suspend fun setAccountsToHideSync(itemId: Uuid, plaidAccountIds: List<String>) {
         plaidItemApi.setAccountsToHide(itemId, plaidAccountIds)
     }
 }

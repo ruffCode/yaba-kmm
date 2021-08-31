@@ -30,6 +30,7 @@ import kotlin.time.toDuration
 interface UserRepository {
     fun currentUser(): Flow<User?>
     suspend fun deleteCurrentUser()
+    suspend fun create(user: User)
 }
 
 internal class UserRepositoryImpl(
@@ -51,5 +52,9 @@ internal class UserRepositoryImpl(
     override suspend fun deleteCurrentUser() {
         userDao.deleteById(userIdProvider.userId.value)
         log.d { "User deleted" }
+    }
+
+    override suspend fun create(user: User) {
+        userDao.insert(user)
     }
 }

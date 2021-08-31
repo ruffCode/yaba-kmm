@@ -17,40 +17,36 @@ package tech.alexib.yaba.android.ui.settings.plaid_items
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Kermit
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
-import tech.alexib.yaba.data.repository.ItemRepository
-import tech.alexib.yaba.model.PlaidItemWithAccounts
+import tech.alexib.yaba.data.store.PlaidItemsScreenState
+import tech.alexib.yaba.data.store.PlaidItemsStore
 import tech.alexib.yaba.util.stateInDefault
 
 class PlaidItemsScreenViewModel : ViewModel(), KoinComponent {
-    //TODO refactor to use interactor
-    private val log: Kermit by inject { parametersOf("PlaidItemsScreenViewModel") }
-    private val itemRepository: ItemRepository by inject()
-    private val plaidItemsFlow = MutableStateFlow<List<PlaidItemWithAccounts>>(emptyList())
-    private val loadingFlow = MutableStateFlow(false)
-    val loading: StateFlow<Boolean>
-        get() = loadingFlow
 
-    val state: StateFlow<PlaidItemsScreenState> =
-        combine(plaidItemsFlow, loadingFlow) { items, loading ->
-            PlaidItemsScreenState(items, loading)
-        }.stateInDefault(viewModelScope, PlaidItemsScreenState.Empty)
+    private val store: PlaidItemsStore by inject()
 
-    init {
-        viewModelScope.launch {
-            loadingFlow.emit(true)
-            itemRepository.getAllWithAccounts().collect { items ->
-                plaidItemsFlow.emit(items)
-                loadingFlow.emit(false)
-            }
-        }
-    }
+    val state = store.state.stateInDefault(viewModelScope, PlaidItemsScreenState.Empty)
+//    private val log: Kermit by inject { parametersOf("PlaidItemsScreenViewModel") }
+//    private val itemRepository: ItemRepository by inject()
+//    private val plaidItemsFlow = MutableStateFlow<List<PlaidItemWithAccounts>>(emptyList())
+//    private val loadingFlow = MutableStateFlow(false)
+//    val loading: StateFlow<Boolean>
+//        get() = loadingFlow
+//
+//    val state: StateFlow<PlaidItemsScreenState> =
+//        combine(plaidItemsFlow, loadingFlow) { items, loading ->
+//            PlaidItemsScreenState(items, loading)
+//        }.stateInDefault(viewModelScope, PlaidItemsScreenState.Empty)
+//
+//    init {
+//        viewModelScope.launch {
+//            loadingFlow.emit(true)
+//            itemRepository.getAllWithAccounts(true).collect { items ->
+//                plaidItemsFlow.emit(items)
+//                loadingFlow.emit(false)
+//            }
+//        }
+//    }
 }

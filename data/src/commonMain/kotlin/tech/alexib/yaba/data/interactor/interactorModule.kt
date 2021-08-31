@@ -46,4 +46,5 @@ internal val interactorModule = module {
             get()
         )
     }
+    single { SetAccountsToHide(get(), get(ioDispatcherQualifier)) }
 }

@@ -39,7 +39,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ReceiptLong
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -55,22 +54,10 @@ import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.moneyFormat
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.android.util.shortFormat
+import tech.alexib.yaba.data.store.TransactionDetailScreenState
 import tech.alexib.yaba.model.TransactionDetail
 import tech.alexib.yaba.stubs.TransactionStubs
 
-@Immutable
-data class TransactionDetailScreenState(
-    val loading: Boolean = false,
-    val transaction: TransactionDetail? = null
-) {
-    companion object {
-        val Empty = TransactionDetailScreenState()
-    }
-}
-
-sealed class TransactionDetailScreenAction {
-    object NavigateBack : TransactionDetailScreenAction()
-}
 
 @Composable
 fun TransactionDetailScreen(id: Uuid, onBackPressed: () -> Unit) {
@@ -127,15 +114,11 @@ private fun TransactionDetailScreen(
         },
     ) {
         LoadingScreenWithCrossFade(loadingState = state.loading) {
-            if (state.transaction != null) TransactionDetailScreenContent(state.transaction)
-            else Text(text = "Nothing here")
+            state.transaction?.let {
+                TransactionDetailScreenContent(it)
+            } ?: Text(text = "Nothing here")
         }
-        //     when {
-        //         state.loading -> CircularProgressIndicator()
-        //         state.transaction != null -> TransactionDetailScreenContent(state.transaction)
-        //         else -> Text(text = "Nothing here")
-        //     }
-        // }
+
     }
 }
 

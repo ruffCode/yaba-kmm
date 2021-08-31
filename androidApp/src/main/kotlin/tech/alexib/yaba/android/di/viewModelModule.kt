@@ -27,7 +27,7 @@ val viewModelModule = module {
     viewModel { PlaidLinkViewModel(get()) }
     viewModel { PlaidLinkResultScreenViewModel() }
     viewModel { BiometricSetupScreenViewModel() }
-    viewModel { HomeViewModel(get()) }
+    viewModel { HomeViewModel() }
     viewModel { PlaidItemsScreenViewModel() }
     viewModel { PlaidItemDetailScreenViewModel() }
     viewModel { TransactionListScreenViewModel() }

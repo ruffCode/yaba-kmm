@@ -45,13 +45,14 @@ internal class PlaidItemApiMock : PlaidItemApi {
     override fun sendLinkEvent(request: PlaidLinkEventCreateRequest) {
     }
 
-    override fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>) {
-    }
-
     override fun fetchNewItemData(itemId: Uuid): Flow<DataResult<NewItemDto>> = flow {
         emit(Success(UserDataDtoStubs.newItemDtoStub))
     }
 
     override suspend fun unlink(itemId: Uuid) {
+    }
+
+    override suspend fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>) {
+        delay(200)
     }
 }

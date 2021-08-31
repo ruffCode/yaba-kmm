@@ -18,6 +18,7 @@ package tech.alexib.yaba.data.store
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import tech.alexib.yaba.data.Immutable
 import tech.alexib.yaba.data.interactor.PerformInitialSync
 import tech.alexib.yaba.data.observer.ObserveCurrentCashBalance
 import tech.alexib.yaba.data.observer.ObserveRecentTransactions
@@ -30,7 +31,8 @@ class HomeStore(
     private val observeRecentTransactions: ObserveRecentTransactions,
     private val observeCurrentCashBalance: ObserveCurrentCashBalance,
     private val observeUserItemsCount: ObserveUserItemsCount,
-    private val performInitialSync: PerformInitialSync
+    private val performInitialSync: PerformInitialSync,
+    private val coroutineScope: CoroutineScope
 ) {
 
     private val loader = ObservableLoadingCounter()
@@ -46,16 +48,16 @@ class HomeStore(
         )
     }
 
-    fun init(scope: CoroutineScope) {
+    fun init() {
         observeCurrentCashBalance(Unit)
         observeRecentTransactions(Unit)
         observeUserItemsCount(Unit)
-        scope.launch {
+        coroutineScope.launch {
             performInitialSync(Unit).collectInto(loader)
         }
     }
 }
-
+@Immutable
 data class HomeScreenState(
     val loading: Boolean = false,
     val currentCashBalance: Double? = null,
