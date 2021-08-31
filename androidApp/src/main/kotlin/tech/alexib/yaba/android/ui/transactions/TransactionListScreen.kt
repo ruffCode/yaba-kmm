@@ -40,6 +40,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemsIndexed
 import com.benasher44.uuid.Uuid
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.getViewModel
@@ -68,7 +71,47 @@ private fun TransactionListScreen(
         initial = emptyList()
     )
 
-    TransactionListScreen(state, onBack, onSelected)
+    val l = viewModel.pagedState.collectAsLazyPagingItems()
+//    TransactionListScreen(state, onBack, onSelected)
+    PagedTransactions(l, onBack, onSelected)
+}
+
+@Composable
+fun PagedTransactions(
+    transactions: LazyPagingItems<Transaction>,
+    handleBack: () -> Unit,
+    onSelected: (Uuid) -> Unit
+) {
+    Scaffold(
+        topBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(Alignment.CenterVertically)
+            ) {
+                IconButton(
+                    onClick = {
+                        handleBack()
+                    },
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 4.dp)
+                ) {
+                    Icon(Icons.Filled.ArrowBack, stringResource(R.string.back_arrow))
+                }
+                Text(
+                    text = stringResource(R.string.transactions),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(12.dp)
+                )
+            }
+        },
+    ) {
+        TransactionList(transactions = transactions) {
+            onSelected(it)
+        }
+    }
 }
 
 @Composable
@@ -137,6 +180,40 @@ fun TransactionList(
             }
         }
     }
+}
+
+@Composable
+fun TransactionList(
+    transactions: LazyPagingItems<Transaction>,
+    onSelected: (Uuid) -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .wrapContentHeight(Alignment.CenterVertically)
+            .padding(horizontal = 8.dp, vertical = 8.dp),
+        elevation = 3.dp,
+
+        ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.surface)
+        ) {
+//            transactions.groupBy { it.date }.forEach { (date, transactions) ->
+//                stickyHeader {
+//                    TransactionDateHeader(date)
+//                }
+
+
+            itemsIndexed(transactions) { index, transaction ->
+                transaction?.let {
+                    val needsDivider = index != transactions.itemCount
+                    TransactionItem(transaction = transaction, needsDivider, onSelected)
+                }
+            }
+        }
+    }
+
 }
 
 @Composable

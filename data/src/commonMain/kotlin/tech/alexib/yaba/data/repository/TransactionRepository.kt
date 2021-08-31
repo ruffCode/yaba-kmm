@@ -29,6 +29,7 @@ interface TransactionRepository {
     fun getAll(): Flow<List<Transaction>>
     fun getById(id: Uuid): Flow<TransactionDetail?>
     fun getAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
+    fun getAllPaged(limit: Long = 50, offset: Long = 0): Flow<List<Transaction>>
 }
 
 internal class TransactionRepositoryImpl(
@@ -46,7 +47,12 @@ internal class TransactionRepositoryImpl(
     override fun getById(id: Uuid): Flow<TransactionDetail?> = flow {
         emitAll(dao.selectById(id))
     }
+
     override fun getAllByAccountId(accountId: Uuid): Flow<List<Transaction>> = flow {
         emitAll(dao.selectAllByAccountId(accountId))
+    }
+
+    override fun getAllPaged(limit: Long, offset: Long): Flow<List<Transaction>> = flow {
+        emitAll(dao.selectAllPaged(userIdProvider.userId.value, limit, offset))
     }
 }

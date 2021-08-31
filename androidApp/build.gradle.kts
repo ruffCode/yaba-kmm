@@ -72,6 +72,11 @@ dependencies {
     testImplementation(Lib.AndroidXTest.robolectric)
     testImplementation(Lib.AndroidXTest.mockito)
     testImplementation(Lib.KotlinX.Coroutines.test)
+
+    val paging_version = "3.0.1"
+
+    implementation("androidx.paging:paging-runtime:$paging_version")
+    implementation("androidx.paging:paging-compose:1.0.0-alpha12")
 }
 
 android {

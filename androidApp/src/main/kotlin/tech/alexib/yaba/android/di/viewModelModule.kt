@@ -16,8 +16,10 @@ import tech.alexib.yaba.android.ui.settings.SettingsScreenViewModel
 import tech.alexib.yaba.android.ui.settings.plaid_items.PlaidItemDetailScreenViewModel
 import tech.alexib.yaba.android.ui.settings.plaid_items.PlaidItemsScreenViewModel
 import tech.alexib.yaba.android.ui.transactions.TransactionDetailScreenViewModel
+import tech.alexib.yaba.android.ui.transactions.TransactionListPager
 import tech.alexib.yaba.android.ui.transactions.TransactionListScreenViewModel
 import tech.alexib.yaba.data.fcm.PushTokenManager
+import tech.alexib.yaba.util.getWith
 
 val viewModelModule = module {
     viewModel { parameters -> SplashScreenViewModel(parameters.get(), get()) }
@@ -35,4 +37,5 @@ val viewModelModule = module {
     single<PushTokenManager> { PushTokenManagerImpl() }
     viewModel { AccountsScreenViewModel() }
     viewModel { AccountDetailScreenViewModel() }
+    single { TransactionListPager(get(),getWith("TransactionListPager")) }
 }

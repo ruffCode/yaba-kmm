@@ -17,12 +17,32 @@ package tech.alexib.yaba.android.ui.transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import tech.alexib.yaba.data.repository.TransactionRepository
+import org.koin.core.parameter.parametersOf
+import tech.alexib.yaba.data.store.TransactionsStore
+import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.util.stateInDefault
 
 class TransactionListScreenViewModel : ViewModel(), KoinComponent {
-    private val transactionRepository: TransactionRepository by inject()
-    val state = transactionRepository.getAll().stateInDefault(viewModelScope, emptyList())
+
+    private val store: TransactionsStore by inject()
+
+    private val listPager: TransactionListPager by inject()
+    val state: StateFlow<List<Transaction>> =
+        store.state.stateInDefault(viewModelScope, emptyList())
+
+    val pagedState = Pager(
+        PagingConfig(50)
+    ) {
+        listPager
+    }.flow.cachedIn(viewModelScope)
+
+    init {
+        store.init()
+    }
 }

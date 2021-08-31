@@ -39,6 +39,7 @@ interface TransactionDao {
     fun selectAll(userId: Uuid): Flow<List<Transaction>>
     fun selectById(id: Uuid): Flow<TransactionDetail?>
     fun selectAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
+    fun selectAllPaged(userId: Uuid, limit: Long = 50, offset: Long = 0): Flow<List<Transaction>>
     suspend fun deleteById(id: Uuid)
 
     class Impl(
@@ -82,6 +83,14 @@ interface TransactionDao {
                 queries.deleteById(id)
             }
         }
+
+        override fun selectAllPaged(
+            userId: Uuid,
+            limit: Long,
+            offset: Long
+        ): Flow<List<Transaction>> =
+            queries.selectAllPaged(userId, limit, offset, transactionMapper).asFlow().mapToList()
+                .flowOn(backgroundDispatcher)
     }
 
     val transactionMapper: (

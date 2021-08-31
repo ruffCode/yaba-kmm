@@ -124,3 +124,10 @@ WHERE account_id = ?;
 deleteById:
 DELETE FROM TransactionEntity
 WHERE id = ?;
+
+selectAllPaged:
+SELECT * FROM UserTransaction
+WHERE user_id = :userId
+ORDER BY date DESC
+LIMIT :limit
+OFFSET :offset;
