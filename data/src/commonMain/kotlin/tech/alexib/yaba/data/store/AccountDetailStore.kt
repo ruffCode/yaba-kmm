@@ -13,12 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.android.ui.accounts.detail
+package tech.alexib.yaba.data.store
 
-import androidx.compose.runtime.Immutable
+import com.benasher44.uuid.Uuid
+import kotlinx.coroutines.flow.combine
+import tech.alexib.yaba.data.Immutable
+import tech.alexib.yaba.data.observer.ObserveAccount
+import tech.alexib.yaba.data.observer.ObserveAccountTransactions
+import tech.alexib.yaba.data.observer.ObserveItem
 import tech.alexib.yaba.model.Account
 import tech.alexib.yaba.model.PlaidItem
 import tech.alexib.yaba.model.Transaction
+
+class AccountDetailStore(
+    private val observeAccountTransactions: ObserveAccountTransactions,
+    private val observeItem: ObserveItem,
+    private val observeAccount: ObserveAccount,
+) {
+
+    val state = combine(
+        observeAccount.flow,
+        observeItem.flow,
+        observeAccountTransactions.flow
+    ) { account, item, transactions ->
+        AccountDetailScreenState(false, item, account, transactions)
+    }
+
+    fun init(accountId: Uuid, itemId: Uuid) {
+        observeAccount(ObserveAccount.Params(accountId))
+        observeItem(ObserveItem.Params(itemId))
+        observeAccountTransactions(ObserveAccountTransactions.Params(accountId))
+    }
+}
 
 @Immutable
 data class AccountDetailScreenState(

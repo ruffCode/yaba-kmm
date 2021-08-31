@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.observer
+package tech.alexib.yaba.data.store
 
+import org.koin.core.module.Module
 import org.koin.dsl.module
+import tech.alexib.yaba.util.getWith
 
-internal val observersModule = module {
-    single { ObserveCurrentCashBalance(get()) }
-    single { ObserveRecentTransactions(get()) }
-    single { ObserveUserItemsCount(get()) }
-    single { ObserveItem(get()) }
-    single { ObserveAccountTransactions(get()) }
-    single { ObserveAccount(get()) }
-    single { ObserveItemsWithAccounts(get()) }
-    single { ObserveTransactionDetail(get()) }
-    single { ObserveTransactions(get()) }
+val storeModule: Module = module {
+    single { parameters -> HomeStore(get(), get(), get(), get(), parameters.get()) }
+    single { AccountDetailStore(get(), get(), get()) }
+    single { AccountsStore(get()) }
+    single { TransactionDetailStore(get()) }
+    single { TransactionsStore(get()) }
+    single { params ->
+        PlaidLinkResultStore(
+            get(),
+            get(),
+            getWith("PlaidLinkResultStore"),
+            params.get()
+        )
+    }
+    single { PlaidItemsStore(get()) }
 }

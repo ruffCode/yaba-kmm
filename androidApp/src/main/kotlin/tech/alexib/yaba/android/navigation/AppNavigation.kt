@@ -44,7 +44,6 @@ import tech.alexib.yaba.android.ui.components.LoadingScreen
 import tech.alexib.yaba.android.ui.home.Home
 import tech.alexib.yaba.android.ui.plaid.PlaidLinkResultScreen
 import tech.alexib.yaba.android.ui.plaid.PlaidLinkScreen
-import tech.alexib.yaba.android.ui.plaid.PlaidLinkScreenResult
 import tech.alexib.yaba.android.ui.settings.SettingsScreen
 import tech.alexib.yaba.android.ui.settings.SettingsScreenAction
 import tech.alexib.yaba.android.ui.settings.plaid_items.PlaidItemDetail
@@ -52,6 +51,7 @@ import tech.alexib.yaba.android.ui.settings.plaid_items.PlaidItemDetailScreen
 import tech.alexib.yaba.android.ui.settings.plaid_items.PlaidItemsScreen
 import tech.alexib.yaba.android.ui.transactions.TransactionDetailScreen
 import tech.alexib.yaba.android.ui.transactions.TransactionListScreen
+import tech.alexib.yaba.data.store.PlaidLinkScreenResult
 import tech.alexib.yaba.util.jSerializer
 
 sealed class Route(val route: String) {
@@ -374,9 +374,9 @@ private fun NavGraphBuilder.addPlaidLinkLauncher(navController: NavController) {
         }
         PlaidLinkScreen({ navController.navigateHome() }) { plaidItem ->
 
-            navController.currentBackStackEntry?.arguments?.putParcelable(
+            navController.currentBackStackEntry?.arguments?.putString(
                 "plaidItem",
-                plaidItem
+                jSerializer.encodeToString(plaidItem)
             )
             navController.navigate(PlaidLinkRoute.PlaidLinkResult.route)
         }
@@ -388,7 +388,7 @@ private fun NavGraphBuilder.addPlaidLinkResult(navController: NavController) {
         PlaidLinkRoute.PlaidLinkResult.route,
         arguments = listOf(
             navArgument("plaidItem") {
-                NavType.ParcelableType(PlaidLinkScreenResult::class.java)
+                NavType.StringType
             }
         )
     ) {
@@ -396,9 +396,10 @@ private fun NavGraphBuilder.addPlaidLinkResult(navController: NavController) {
             navController.navigateHome()
         }
         val result: PlaidLinkScreenResult? =
-            navController.previousBackStackEntry?.arguments?.getParcelable(
+            navController.previousBackStackEntry?.arguments?.getString(
                 "plaidItem"
-            )
+            )?.let { jSerializer.decodeFromString(it) }
+
         checkNotNull(result) {
             "PlaidLinkScreenResult was null"
         }

@@ -19,6 +19,7 @@ import co.touchlab.kermit.Kermit
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import tech.alexib.yaba.data.domain.DataResult
@@ -41,9 +42,8 @@ interface PlaidItemApi {
     fun createLinkToken(): Flow<DataResult<CreateLinkTokenResponse>>
     fun createPlaidItem(request: PlaidItemCreateRequest): Flow<DataResult<PlaidItemCreateResponse>>
     fun sendLinkEvent(request: PlaidLinkEventCreateRequest)
-    fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>)
     fun fetchNewItemData(itemId: Uuid): Flow<DataResult<NewItemDto>>
-
+    suspend fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>)
     suspend fun unlink(itemId: Uuid)
 
     class Impl(
@@ -74,17 +74,6 @@ interface PlaidItemApi {
             }
         }
 
-        override fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>) {
-            val mutation = SetAccountsToHideMutation(itemId, plaidAccountIds)
-            CoroutineScope(client.backgroundDispatcher).launch {
-                runCatching {
-                    client.mutate(mutation).firstOrNull()
-                }.getOrElse {
-                    log.e { "error setting accounts to hide ${it.message}" }
-                }
-            }
-        }
-
         override suspend fun unlink(itemId: Uuid) {
             val mutation = UnlinkItemMutation(itemId)
             CoroutineScope(client.backgroundDispatcher).launch {
@@ -99,6 +88,11 @@ interface PlaidItemApi {
         override fun fetchNewItemData(itemId: Uuid): Flow<DataResult<NewItemDto>> {
             val query = NewItemDataQuery(itemId)
             return client.query(query) { it.toDto() }
+        }
+
+        override suspend fun setAccountsToHide(itemId: Uuid, plaidAccountIds: List<String>) {
+            val mutation = SetAccountsToHideMutation(itemId, plaidAccountIds)
+            client.mutate(mutation) { it.setAccountsToHide }.first().getOrThrow()
         }
     }
 }

@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.observer
+package tech.alexib.yaba.data.store
 
-import org.koin.dsl.module
+import kotlinx.coroutines.flow.Flow
+import tech.alexib.yaba.data.observer.ObserveTransactions
+import tech.alexib.yaba.model.Transaction
 
-internal val observersModule = module {
-    single { ObserveCurrentCashBalance(get()) }
-    single { ObserveRecentTransactions(get()) }
-    single { ObserveUserItemsCount(get()) }
-    single { ObserveItem(get()) }
-    single { ObserveAccountTransactions(get()) }
-    single { ObserveAccount(get()) }
-    single { ObserveItemsWithAccounts(get()) }
-    single { ObserveTransactionDetail(get()) }
-    single { ObserveTransactions(get()) }
+class TransactionsStore(
+    private val observeTransactions: ObserveTransactions,
+) {
+
+    val state: Flow<List<Transaction>> = observeTransactions.flow
+
+    fun init() {
+        observeTransactions(Unit)
+    }
 }

@@ -39,7 +39,8 @@ interface AuthRepository {
     class Impl(
         private val authApi: AuthApi,
         private val authSettings: AuthSettings,
-        private val log: Kermit
+        private val log: Kermit,
+        private val userRepository: UserRepository
     ) : AuthRepository {
         override fun isLoggedIn(): Flow<Boolean> = authSettings.token().map { !it.isNullOrEmpty() }
 
@@ -62,7 +63,7 @@ interface AuthRepository {
         override suspend fun register(email: String, password: String): AuthResult {
             return runCatching {
                 handleAuthResponse(
-                    authApi.register(UserRegisterInput(email, password)).first().getOrThrow()
+                    authApi.register(UserRegisterInput(email, password)).first().getOrThrow(), true
                 )
             }.getOrElse {
                 AuthResult.Error(it.message ?: "User Registration Error")
@@ -71,10 +72,16 @@ interface AuthRepository {
 
         override fun isShowOnBoarding(): Flow<Boolean> = authSettings.showOnboarding()
 
-        private suspend fun handleAuthResponse(authResponse: AuthResponse): AuthResult {
+        private suspend fun handleAuthResponse(
+            authResponse: AuthResponse,
+            createUser: Boolean = false
+        ): AuthResult {
             return if (authResponse.token.isNotEmpty()) {
                 authSettings.setToken(authResponse.token)
                 authSettings.setUserId(authResponse.id)
+                if (createUser) {
+                    userRepository.create(User(authResponse.id, authResponse.email))
+                }
                 AuthResult.Success
             } else AuthResult.Error("Authentication Error")
         }

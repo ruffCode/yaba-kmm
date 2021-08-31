@@ -39,13 +39,13 @@ import tech.alexib.yaba.data.repository.UserDataRepository
 import tech.alexib.yaba.data.repository.UserDataRepositoryImpl
 import tech.alexib.yaba.data.repository.UserRepository
 import tech.alexib.yaba.data.repository.UserRepositoryImpl
-import tech.alexib.yaba.data.store.HomeStore
+import tech.alexib.yaba.data.store.storeModule
 import tech.alexib.yaba.di.CoreDependencies.ioDispatcherQualifier
 import tech.alexib.yaba.util.getWith
 
 internal val repositoryModule = module {
 
-    single<AuthRepository> { AuthRepository.Impl(get(), get(), getWith("AuthRepository")) }
+    single<AuthRepository> { AuthRepository.Impl(get(), get(), getWith("AuthRepository"), get()) }
     single<AuthTokenProvider> { AuthTokenProviderImpl(get()) }
     single<UserIdProvider> {
         UserIdProvider.Impl(
@@ -80,14 +80,13 @@ internal val repositoryModule = module {
         )
     }
     single<UserRepository> { UserRepositoryImpl(get(), getWith("UserRepository"), get()) }
-    single { HomeStore(get(), get(), get(), get()) }
 }
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) = startKoin {
     appDeclaration()
     modules(
         apiModule, dbModule, dbPlatformModule, repositoryModule,
-        interactorModule, observersModule, platformModule
+        interactorModule, observersModule, platformModule, storeModule
     )
 }
 

@@ -52,6 +52,7 @@ import tech.alexib.yaba.android.ui.components.LoadingScreenWithCrossFade
 import tech.alexib.yaba.android.ui.components.Money
 import tech.alexib.yaba.android.util.base64ToBitmap
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
+import tech.alexib.yaba.data.store.AccountsScreenState
 import tech.alexib.yaba.model.AccountType
 import tech.alexib.yaba.model.PlaidItemStubs
 import tech.alexib.yaba.model.PlaidItemWithAccounts
@@ -106,7 +107,7 @@ fun AccountsList(
             .padding(4.dp),
         elevation = 3.dp,
 
-    ) {
+        ) {
         LazyColumn(
             modifier = Modifier
                 .background(MaterialTheme.colors.surface)
@@ -179,7 +180,7 @@ fun AccountItem(balance: Double, logo: Bitmap, label: String) {
             Money(balance)
         },
 
-    ) {
+        ) {
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
                 text = label,
