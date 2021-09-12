@@ -22,13 +22,13 @@ import kotlinx.coroutines.withContext
 import tech.alexib.yaba.Interactor
 import tech.alexib.yaba.data.db.dao.UserDao
 import tech.alexib.yaba.data.network.api.UserDataApi
-import tech.alexib.yaba.data.repository.UserRepository
+import tech.alexib.yaba.data.repository.ItemRepository
 
 class PerformInitialSync(
-    private val userRepository: UserRepository,
     private val userDataApi: UserDataApi,
     private val userDao: UserDao,
     private val log: Kermit,
+    private val itemRepository: ItemRepository,
     private val backgroundDispatcher: CoroutineDispatcher,
 ) : Interactor<Unit>() {
     override suspend fun doWork(params: Unit) {
@@ -36,11 +36,9 @@ class PerformInitialSync(
         withContext(backgroundDispatcher) {
 
             runCatching {
-                userRepository.currentUser().first().let { user ->
-                    if (user == null) {
-                        userDataApi.getAllUserData().first().getOrThrow()
-                            .let { userDao.insertUserData(it) }
-                    }
+                if (itemRepository.userItemsCount().first() == 0L) {
+                    userDataApi.getAllUserData().first().getOrThrow()
+                        .let { userDao.insertUserData(it) }
                 }
             }.getOrElse {
                 log.e { "Initial sync error ${it.message}" }
