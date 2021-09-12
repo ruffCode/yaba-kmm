@@ -24,7 +24,7 @@ val storeModule: Module = module {
     single { AccountDetailStore(get(), get(), get()) }
     single { AccountsStore(get()) }
     single { TransactionDetailStore(get()) }
-    single { TransactionsStore(get()) }
+    single { params -> TransactionsStore(get(), params.get()) }
     single { params ->
         PlaidLinkResultStore(
             get(),

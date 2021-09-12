@@ -26,7 +26,7 @@ import tech.alexib.yaba.model.TransactionDetail
 
 interface TransactionRepository {
     fun recentTransactions(): Flow<List<Transaction>>
-    fun getAll(): Flow<List<Transaction>>
+    fun getAll(query: String? = null): Flow<List<Transaction>>
     fun getById(id: Uuid): Flow<TransactionDetail?>
     fun getAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
 }
@@ -40,12 +40,20 @@ internal class TransactionRepositoryImpl(
         emitAll(dao.selectRecent(userIdProvider.userId.value))
     }
 
-    override fun getAll(): Flow<List<Transaction>> =
-        flow { emitAll(dao.selectAll(userIdProvider.userId.value)) }
+    override fun getAll(query: String?): Flow<List<Transaction>> =
+        flow {
+            emitAll(
+                if (!query.isNullOrEmpty()) dao.selectAllLikeName(
+                    userIdProvider.userId.value,
+                    query
+                ) else dao.selectAll(userIdProvider.userId.value)
+            )
+        }
 
     override fun getById(id: Uuid): Flow<TransactionDetail?> = flow {
         emitAll(dao.selectById(id))
     }
+
     override fun getAllByAccountId(accountId: Uuid): Flow<List<Transaction>> = flow {
         emitAll(dao.selectAllByAccountId(accountId))
     }

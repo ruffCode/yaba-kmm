@@ -15,6 +15,7 @@
  */
 package tech.alexib.yaba.android.ui.transactions
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -30,24 +31,35 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
+import kotlinx.coroutines.delay
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.R
+import tech.alexib.yaba.android.ui.components.LoadingScreenWithCrossFade
 import tech.alexib.yaba.android.ui.components.TransactionItem
 import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.format
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
+import tech.alexib.yaba.data.store.TransactionsStore
 import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.stubs.TransactionStubs
 
@@ -55,6 +67,7 @@ import tech.alexib.yaba.stubs.TransactionStubs
 @Composable
 fun TransactionListScreen(onBack: () -> Unit, onSelected: (Uuid) -> Unit) {
     val viewModel: TransactionListScreenViewModel = getViewModel()
+
     TransactionListScreen(viewModel, onBack, onSelected)
 }
 
@@ -64,19 +77,34 @@ private fun TransactionListScreen(
     onBack: () -> Unit,
     onSelected: (Uuid) -> Unit,
 ) {
-    val state by rememberFlowWithLifecycle(flow = viewModel.state).collectAsState(
-        initial = emptyList()
+    val state by rememberFlowWithLifecycle(
+        flow = viewModel.state
+    ).collectAsState(
+        initial = TransactionsStore.State.Empty
     )
 
-    TransactionListScreen(state, onBack, onSelected)
+    val loading = remember { mutableStateOf(state.transactions.isEmpty()) }
+
+    LaunchedEffect(Unit) {
+        delay(1000)
+        loading.value = false
+    }
+    LoadingScreenWithCrossFade(loadingState = state.transactions.isEmpty()) {
+        TransactionListScreen(state, onBack, onSelected) {
+            viewModel.store.submit(it)
+        }
+    }
 }
 
 @Composable
 private fun TransactionListScreen(
-    transactions: List<Transaction>,
+    state: TransactionsStore.State,
     handleBack: () -> Unit,
-    onSelected: (Uuid) -> Unit
+    onSelected: (Uuid) -> Unit,
+    actioner: (TransactionsStore.Action) -> Unit
 ) {
+
+
     Scaffold(
         topBar = {
             Box(
@@ -94,23 +122,75 @@ private fun TransactionListScreen(
                 ) {
                     Icon(Icons.Filled.ArrowBack, stringResource(R.string.back_arrow))
                 }
-                Text(
-                    text = stringResource(R.string.transactions),
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(12.dp)
-                )
+
+                AnimatedVisibility(
+                    visible = state.searching,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                ) {
+                    val query = remember { mutableStateOf(TextFieldValue(state.query)) }
+                    TextField(
+                        value = query.value,
+                        onValueChange = {
+                            query.value = it
+                            actioner(TransactionsStore.Action.SetQuery(it.text))
+                        },
+                        maxLines = 1,
+                        singleLine = true,
+                        modifier = Modifier
+                            .wrapContentHeight(),
+                        colors = TextFieldDefaults
+                            .textFieldColors(backgroundColor = MaterialTheme.colors.surface),
+
+                        leadingIcon = {
+                            AnimatedVisibility(visible = state.query.isEmpty()) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Search,
+                                    contentDescription = "search"
+                                )
+                            }
+                        },
+                        trailingIcon = {
+                            AnimatedVisibility(visible = state.query.isNotEmpty()) {
+                                IconButton(onClick = {
+                                    query.value = TextFieldValue("")
+                                    actioner(
+                                        TransactionsStore.Action.SetQuery(
+                                            ""
+                                        )
+                                    )
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Clear,
+                                        contentDescription = "Clear input"
+                                    )
+                                }
+                            }
+
+                        }
+                    )
+                }
+                AnimatedVisibility(
+                    visible = !state.searching, modifier = Modifier.align(
+                        Alignment.TopEnd
+                    )
+                ) {
+                    IconButton(
+                        onClick = { actioner(TransactionsStore.Action.SetSearching) },
+                    ) {
+                        Icon(imageVector = Icons.Outlined.Search, contentDescription = "search")
+                    }
+                }
             }
         },
     ) {
-        TransactionList(transactions = transactions) {
+        TransactionList(transactions = state.transactions) {
             onSelected(it)
         }
     }
 }
 
 @Composable
-fun TransactionList(
+private fun TransactionList(
     transactions: List<Transaction>,
     onSelected: (Uuid) -> Unit
 ) {
@@ -167,9 +247,9 @@ private fun TransactionItemPreview() {
 private fun TransactionListScreenPreview() {
     YabaTheme {
         TransactionListScreen(
-            transactions = TransactionStubs.transactionsWellsFargo1,
+            TransactionsStore.State(transactions = TransactionStubs.transactionsWellsFargo1),
             onSelected = {},
             handleBack = {}
-        )
+        ) {}
     }
 }

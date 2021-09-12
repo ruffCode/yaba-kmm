@@ -17,12 +17,25 @@ package tech.alexib.yaba.android.ui.transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import tech.alexib.yaba.data.repository.TransactionRepository
+import org.koin.core.parameter.parametersOf
+import tech.alexib.yaba.data.store.TransactionsStore
 import tech.alexib.yaba.util.stateInDefault
 
 class TransactionListScreenViewModel : ViewModel(), KoinComponent {
-    private val transactionRepository: TransactionRepository by inject()
-    val state = transactionRepository.getAll().stateInDefault(viewModelScope, emptyList())
+
+    val store: TransactionsStore by inject { parametersOf(Dispatchers.Main) }
+    val state = store.state.stateInDefault(viewModelScope, TransactionsStore.State.Empty)
+
+    override fun onCleared() {
+        store.dispose()
+        super.onCleared()
+    }
+
+    init {
+        store.init()
+    }
+
 }
