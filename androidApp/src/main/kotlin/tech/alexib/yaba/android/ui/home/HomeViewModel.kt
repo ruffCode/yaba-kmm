@@ -20,6 +20,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -30,7 +31,7 @@ import tech.alexib.yaba.util.stateInDefault
 
 class HomeViewModel : ViewModel(), KoinComponent {
 
-    private val homeStore: HomeStore by inject { parametersOf(viewModelScope) }
+    private val homeStore: HomeStore by inject { parametersOf(Dispatchers.Main) }
 
     val state = homeStore.state
         .stateInDefault(viewModelScope, HomeScreenState.Empty)
@@ -39,5 +40,10 @@ class HomeViewModel : ViewModel(), KoinComponent {
         homeStore.init()
         Firebase.messaging.isAutoInitEnabled = true
         Firebase.analytics.setAnalyticsCollectionEnabled(true)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        homeStore.dispose()
     }
 }

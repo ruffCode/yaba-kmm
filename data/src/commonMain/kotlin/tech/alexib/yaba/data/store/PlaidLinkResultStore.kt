@@ -17,7 +17,7 @@ package tech.alexib.yaba.data.store
 
 import co.touchlab.kermit.Kermit
 import com.benasher44.uuid.Uuid
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -28,6 +28,7 @@ import kotlinx.serialization.Serializable
 import tech.alexib.yaba.data.Immutable
 import tech.alexib.yaba.data.interactor.AddItem
 import tech.alexib.yaba.data.interactor.SetAccountsToHide
+import tech.alexib.yaba.data.util.SupervisorScope
 import tech.alexib.yaba.model.defaultLogoBase64
 import tech.alexib.yaba.util.InvokeError
 import tech.alexib.yaba.util.InvokeStarted
@@ -38,8 +39,9 @@ class PlaidLinkResultStore(
     private val addItem: AddItem,
     private val setAccountsToHide: SetAccountsToHide,
     private val log: Kermit,
-    private val coroutineScope: CoroutineScope
+    dispatcher: CoroutineDispatcher
 ) {
+    private val coroutineScope = SupervisorScope(dispatcher)
     private lateinit var itemId: Uuid
     private val loader = ObservableLoadingCounter()
     private val accountsFlow = MutableStateFlow<List<PlaidLinkScreenResult.Account>>(emptyList())
@@ -85,6 +87,10 @@ class PlaidLinkResultStore(
                 }
             }
         }
+    }
+
+    fun dispose() {
+        coroutineScope.clear()
     }
 }
 

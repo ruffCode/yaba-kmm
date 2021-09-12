@@ -17,6 +17,7 @@ package tech.alexib.yaba.android.ui.plaid
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -27,7 +28,7 @@ import tech.alexib.yaba.util.stateInDefault
 
 class PlaidLinkResultScreenViewModel : ViewModel(), KoinComponent {
 
-    val store: PlaidLinkResultStore by inject { parametersOf(viewModelScope) }
+    val store: PlaidLinkResultStore by inject { parametersOf(Dispatchers.Main) }
 
     fun init(plaidLinkScreenResult: PlaidLinkScreenResult) {
         store.init(plaidLinkScreenResult)
@@ -35,4 +36,8 @@ class PlaidLinkResultScreenViewModel : ViewModel(), KoinComponent {
 
     val state = store.state.stateInDefault(viewModelScope, PlaidLinkResultScreenState.Empty)
 
+    override fun onCleared() {
+        super.onCleared()
+        store.dispose()
+    }
 }
