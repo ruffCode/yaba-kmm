@@ -51,8 +51,6 @@ import tech.alexib.yaba.data.repository.ItemRepository
 import tech.alexib.yaba.data.repository.ItemRepositoryImpl
 import tech.alexib.yaba.data.repository.TransactionRepository
 import tech.alexib.yaba.data.repository.TransactionRepositoryImpl
-import tech.alexib.yaba.data.repository.UserDataRepository
-import tech.alexib.yaba.data.repository.UserDataRepositoryImpl
 import tech.alexib.yaba.data.repository.UserRepository
 import tech.alexib.yaba.data.repository.UserRepositoryImpl
 import tech.alexib.yaba.data.settings.AuthSettings
@@ -105,20 +103,6 @@ internal object TestDependencies {
         AuthRepository.Impl(authApi, authSettings, kermit, userRepository)
     }
 
-    val userDataRepository: UserDataRepository by lazy {
-        UserDataRepositoryImpl(
-            plaidItemApi = plaidItemApi,
-            userDataApi = userDataApi,
-            transactionDao = transactionDao,
-            accountRepository = accountRepository,
-            log = kermit.withTag("UserDataRepository"),
-            backgroundDispatcher = backgroundDispatcher,
-            userRepository = userRepository,
-            userDao = userDao,
-            itemRepository = itemRepository,
-        )
-    }
-
     val itemRepository: ItemRepository by lazy {
         ItemRepositoryImpl(
             plaidItemApi = plaidItemApi,
@@ -157,10 +141,10 @@ internal object TestDependencies {
     }
     val performInitialSync: PerformInitialSync by lazy {
         PerformInitialSync(
-            userRepository,
             userDataApi,
             userDao,
             kermit,
+            itemRepository,
             backgroundDispatcher
         )
     }

@@ -16,7 +16,7 @@
 package tech.alexib.yaba.data.repository
 
 import app.cash.turbine.test
-import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
+import tech.alexib.yaba.data.stubs.UserDataDtoStubs
 import tech.alexib.yaba.util.suspendTest
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -40,8 +40,6 @@ internal class UserRepositoryTest : BaseRepositoryTest() {
 
     @Test
     fun getsCurrentUser() = suspendTest {
-//        authSettings.setUserId(userId)
-//        userDao.insert(user)
         userRepository.currentUser().test {
             assertEquals(user, awaitItem())
         }
@@ -49,8 +47,6 @@ internal class UserRepositoryTest : BaseRepositoryTest() {
 
     @Test
     fun deletesCurrentUser() = suspendTest {
-//        authSettings.setUserId(userId)
-//        userDao.insert(user)
         userDao.selectById(userId).test {
             assertEquals(user, awaitItem())
             expectNoEvents()
@@ -70,10 +66,5 @@ internal class UserRepositoryTest : BaseRepositoryTest() {
             assertEquals(user, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
-
-//        yabaDb.accountQueries.selectAll(userId, accountMapper).asFlow().mapToList().test {
-//            assertTrue(awaitItem().isNotEmpty())
-//            cancelAndIgnoreRemainingEvents()
-//        }
     }
 }

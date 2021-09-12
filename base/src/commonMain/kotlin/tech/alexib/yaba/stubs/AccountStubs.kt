@@ -27,12 +27,10 @@ object AccountStubs {
         jSerializer.decodeFromString(accountsChaseJson)
     }
 
-    // ** 4 of 9 hidden
     val wellsFargoAccounts: List<Account> by lazy {
         jSerializer.decodeFromString(accountsWellsJson)
     }
 
-    // 18
     val allAccounts: List<Account> by lazy {
         chaseAccounts + wellsFargoAccounts
     }

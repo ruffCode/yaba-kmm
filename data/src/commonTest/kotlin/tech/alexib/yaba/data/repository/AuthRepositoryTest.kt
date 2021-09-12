@@ -16,7 +16,7 @@
 package tech.alexib.yaba.data.repository
 
 import app.cash.turbine.test
-import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
+import tech.alexib.yaba.data.stubs.UserDataDtoStubs
 import tech.alexib.yaba.model.response.AuthResult
 import tech.alexib.yaba.util.suspendTest
 import kotlin.test.AfterTest

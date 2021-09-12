@@ -35,8 +35,6 @@ import tech.alexib.yaba.data.repository.ItemRepositoryImpl
 import tech.alexib.yaba.data.repository.PushTokenRepository
 import tech.alexib.yaba.data.repository.TransactionRepository
 import tech.alexib.yaba.data.repository.TransactionRepositoryImpl
-import tech.alexib.yaba.data.repository.UserDataRepository
-import tech.alexib.yaba.data.repository.UserDataRepositoryImpl
 import tech.alexib.yaba.data.repository.UserRepository
 import tech.alexib.yaba.data.repository.UserRepositoryImpl
 import tech.alexib.yaba.data.store.storeModule
@@ -66,19 +64,6 @@ internal val repositoryModule = module {
     single<ItemRepository> { ItemRepositoryImpl(get(), get(), get(), get(), get(), get()) }
     single<PushTokenRepository> { PushTokenRepository.Impl(get(), get(ioDispatcherQualifier)) }
     single<TransactionRepository> { TransactionRepositoryImpl(get(), get()) }
-    single<UserDataRepository> {
-        UserDataRepositoryImpl(
-            get(),
-            get(),
-            get(),
-            get(),
-            getWith("UserDataRepository"),
-            get(ioDispatcherQualifier),
-            get(),
-            get(),
-            get()
-        )
-    }
     single<UserRepository> { UserRepositoryImpl(get(), getWith("UserRepository"), get()) }
 }
 

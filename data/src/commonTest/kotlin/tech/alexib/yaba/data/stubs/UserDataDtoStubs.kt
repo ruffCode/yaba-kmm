@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.domain.stubs
+package tech.alexib.yaba.data.stubs
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
@@ -25,12 +25,12 @@ import tech.alexib.yaba.data.domain.dto.ItemDto
 import tech.alexib.yaba.data.domain.dto.NewItemDto
 import tech.alexib.yaba.data.domain.dto.TransactionDto
 import tech.alexib.yaba.data.domain.dto.UserDataDto
-import tech.alexib.yaba.data.domain.stubs.json.userJson
 import tech.alexib.yaba.model.User
 import tech.alexib.yaba.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.model.request.UserLoginInput
 import tech.alexib.yaba.model.response.AuthResponse
 import tech.alexib.yaba.model.response.PlaidItemCreateResponse
+import tech.alexib.yaba.stubs.json.userJson
 import tech.alexib.yaba.util.jSerializer
 
 object UserDataDtoStubs {

@@ -13,15 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.stubs
+package tech.alexib.yaba.data.stubs
 
 import kotlinx.serialization.decodeFromString
-import tech.alexib.yaba.model.PlaidItem
-import tech.alexib.yaba.stubs.json.plaidItemChaseJson
-import tech.alexib.yaba.stubs.json.plaidItemWellsFargoJson
+import tech.alexib.yaba.data.domain.dto.AccountDto
+import tech.alexib.yaba.stubs.json.accountsChaseJson
+import tech.alexib.yaba.stubs.json.accountsWellsJson
 import tech.alexib.yaba.util.jSerializer
 
-object PlaidItemStubs {
-    val chase: PlaidItem by lazy { jSerializer.decodeFromString(plaidItemChaseJson) }
-    val wellsFargo: PlaidItem by lazy { jSerializer.decodeFromString(plaidItemWellsFargoJson) }
+object AccountDtoStubs {
+
+    val chaseAccounts: List<AccountDto> by lazy {
+        jSerializer.decodeFromString(accountsChaseJson)
+    }
+
+    // ** 4 of 9 hidden
+    val wellsFargoAccounts: List<AccountDto> by lazy {
+        jSerializer.decodeFromString(accountsWellsJson)
+    }
+
+    // 18
+    val allAccounts: List<AccountDto> by lazy {
+        chaseAccounts + wellsFargoAccounts
+    }
 }

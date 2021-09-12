@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.domain
+package tech.alexib.yaba.data
 
-import co.touchlab.kermit.CommonLogger
-import co.touchlab.kermit.Kermit
-import tech.alexib.yaba.data.domain.stubs.AccountDtoStubs
-import tech.alexib.yaba.data.domain.stubs.InstitutionDtoStubs
-import tech.alexib.yaba.data.domain.stubs.PlaidItemDtoStubs
-import tech.alexib.yaba.data.domain.stubs.TransactionDtoStubs
-import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
+import tech.alexib.yaba.data.stubs.AccountDtoStubs
+import tech.alexib.yaba.data.stubs.InstitutionDtoStubs
+import tech.alexib.yaba.data.stubs.PlaidItemDtoStubs
+import tech.alexib.yaba.data.stubs.TransactionDtoStubs
+import tech.alexib.yaba.data.stubs.UserDataDtoStubs
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class StubTests {
-    private val log = Kermit(CommonLogger())
 
     @Test
     fun parsesJson() {
@@ -39,9 +36,9 @@ class StubTests {
             val userData = UserDataDtoStubs.userData
             assertTrue(userData.transactions.isNotEmpty())
 
-            assertEquals(340, TransactionDtoStubs.allTransactions.size)
+            assertEquals(382, TransactionDtoStubs.allTransactions.size)
 
-            assertEquals(18, AccountDtoStubs.allAccounts.size)
+            assertEquals(8, AccountDtoStubs.allAccounts.size)
 
             assertEquals("Wells Fargo", InstitutionDtoStubs.wellsFargo.name)
             assertEquals("ins_4", PlaidItemDtoStubs.wellsFargo.plaidInstitutionId)

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.stubs.json
+package tech.alexib.yaba.data.stubs.json
 
-internal const val institutionWellsFargoJson = """
+const val institutionWellsFargoJson = """
     {
       "institutionId": "ins_4",
       "name": "Wells Fargo",
@@ -24,7 +24,7 @@ internal const val institutionWellsFargoJson = """
     }
 """
 
-internal const val institutionChaseJson = """
+const val institutionChaseJson = """
     {
        "institutionId": "ins_3",
        "name": "Chase",

@@ -21,8 +21,8 @@ import kotlinx.coroutines.flow.flow
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.ErrorResult
 import tech.alexib.yaba.data.domain.Success
-import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.data.network.api.AuthApi
+import tech.alexib.yaba.data.stubs.UserDataDtoStubs
 import tech.alexib.yaba.model.User
 import tech.alexib.yaba.model.request.UserLoginInput
 import tech.alexib.yaba.model.request.UserRegisterInput

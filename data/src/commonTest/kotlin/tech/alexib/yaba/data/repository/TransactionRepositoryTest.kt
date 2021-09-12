@@ -53,15 +53,15 @@ internal class TransactionRepositoryTest : BaseRepositoryTest() {
     @Test
     fun getAll() = suspendTest {
         transactionRepository.getAll().test {
-            assertEquals(awaitItem().size, 81)
+            assertEquals(80, awaitItem().size)
             expectNoEvents()
         }
     }
 
     @Test
     fun getById() = suspendTest {
-        transactionRepository.getById(uuidFrom("e15ece09-3781-4de9-8360-d6351edb8765")).test {
-            assertEquals(awaitItem()?.amount, 5.4)
+        transactionRepository.getById(uuidFrom("1889ae96-3c6d-49c1-96e4-c5939be87873")).test {
+            assertEquals(12.17, awaitItem()?.amount,)
             expectNoEvents()
         }
     }
@@ -76,9 +76,9 @@ internal class TransactionRepositoryTest : BaseRepositoryTest() {
 
     @Test
     fun getAllByAccountId() = suspendTest {
-        transactionRepository.getAllByAccountId(uuidFrom("228021f2-7fbc-4929-9c36-01e262c1e858"))
+        transactionRepository.getAllByAccountId(uuidFrom("f4dd6752-dc3c-4695-8bb6-afdd0f121cd2"))
             .test {
-                assertEquals(30, awaitItem().size)
+                assertEquals(80, awaitItem().size)
                 expectNoEvents()
             }
     }

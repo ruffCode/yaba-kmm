@@ -23,8 +23,8 @@ import tech.alexib.yaba.data.domain.ErrorResult
 import tech.alexib.yaba.data.domain.Success
 import tech.alexib.yaba.data.domain.dto.AccountDto
 import tech.alexib.yaba.data.domain.dto.AccountWithTransactionsDto
-import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.data.network.api.AccountApi
+import tech.alexib.yaba.data.stubs.UserDataDtoStubs
 
 internal class AccountApiMock : AccountApi {
     override suspend fun setHideAccount(hide: Boolean, accountId: Uuid) {

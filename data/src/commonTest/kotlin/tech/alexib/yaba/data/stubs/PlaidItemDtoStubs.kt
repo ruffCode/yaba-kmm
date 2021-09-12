@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.domain.stubs.json
+package tech.alexib.yaba.data.stubs
 
-internal const val userJson = """
-    {
-     "id": "6accd19f-1db5-430f-8fdd-0d406df2d334",
-    "email": "alexi3@test.com"
-    }
-"""
+import kotlinx.serialization.decodeFromString
+import tech.alexib.yaba.data.domain.dto.ItemDto
+import tech.alexib.yaba.data.stubs.json.plaidItemChaseJson
+import tech.alexib.yaba.data.stubs.json.plaidItemWellsFargoJson
+import tech.alexib.yaba.util.jSerializer
+
+object PlaidItemDtoStubs {
+    val chase: ItemDto by lazy { jSerializer.decodeFromString(plaidItemChaseJson) }
+    val wellsFargo: ItemDto by lazy { jSerializer.decodeFromString(plaidItemWellsFargoJson) }
+}

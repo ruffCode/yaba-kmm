@@ -22,8 +22,8 @@ import kotlinx.coroutines.flow.flow
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.Success
 import tech.alexib.yaba.data.domain.dto.NewItemDto
-import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.data.network.api.PlaidItemApi
+import tech.alexib.yaba.data.stubs.UserDataDtoStubs
 import tech.alexib.yaba.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
 import tech.alexib.yaba.model.response.CreateLinkTokenResponse

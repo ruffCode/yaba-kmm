@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.alexib.yaba.data.domain.stubs
+package tech.alexib.yaba.data.stubs
 
 import kotlinx.serialization.decodeFromString
 import tech.alexib.yaba.data.domain.dto.TransactionDto
-import tech.alexib.yaba.data.domain.stubs.json.transactionsChaseJson1
-import tech.alexib.yaba.data.domain.stubs.json.transactionsChaseJson2
-import tech.alexib.yaba.data.domain.stubs.json.transactionsChaseJson3
-import tech.alexib.yaba.data.domain.stubs.json.transactionsWellsJson1
-import tech.alexib.yaba.data.domain.stubs.json.transactionsWellsJson2
+import tech.alexib.yaba.stubs.json.transactionsChaseJson1
+import tech.alexib.yaba.stubs.json.transactionsChaseJson2
+import tech.alexib.yaba.stubs.json.transactionsChaseJson3
+import tech.alexib.yaba.stubs.json.transactionsWellsJson1
+import tech.alexib.yaba.stubs.json.transactionsWellsJson2
 import tech.alexib.yaba.util.jSerializer
 
 object TransactionDtoStubs {
@@ -29,30 +29,37 @@ object TransactionDtoStubs {
     val transactionsChase1: List<TransactionDto> by lazy {
         jSerializer.decodeFromString(transactionsChaseJson1)
     }
+
     // 46
     val transactionsChase2: List<TransactionDto> by lazy {
         jSerializer.decodeFromString(transactionsChaseJson2)
     }
+
     // 66
     val transactionsChase3: List<TransactionDto> by lazy {
         jSerializer.decodeFromString(transactionsChaseJson3)
     }
+
     // 85
     val transactionsWellsFargo1: List<TransactionDto> by lazy {
         jSerializer.decodeFromString(transactionsWellsJson1)
     }
+
     // 62
     val transactionsWellsFargo2: List<TransactionDto> by lazy {
         jSerializer.decodeFromString(transactionsWellsJson2)
     }
+
     // 193
     val allChaseTransactions by lazy {
         transactionsChase1 + transactionsChase2 + transactionsChase3
     }
+
     // 147
     val allWellsTransactions by lazy {
         transactionsWellsFargo1 + transactionsWellsFargo2
     }
+
     // 340
     val allTransactions by lazy {
         allChaseTransactions + allWellsTransactions

@@ -22,8 +22,8 @@ import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.Success
 import tech.alexib.yaba.data.domain.dto.TransactionsUpdateDto
 import tech.alexib.yaba.data.domain.dto.UserDataDto
-import tech.alexib.yaba.data.domain.stubs.UserDataDtoStubs
 import tech.alexib.yaba.data.network.api.UserDataApi
+import tech.alexib.yaba.data.stubs.UserDataDtoStubs
 
 internal class UserDataApiMock : UserDataApi {
     override fun getTransactionsUpdate(updateId: Uuid): Flow<DataResult<TransactionsUpdateDto?>> =

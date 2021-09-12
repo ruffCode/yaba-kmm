@@ -15,9 +15,9 @@
  */
 package tech.alexib.yaba.stubs.json
 
-internal const val userJson = """
+const val userJson = """
     {
-     "id": "6accd19f-1db5-430f-8fdd-0d406df2d334",
+     "id": "eb15d547-a558-4c2f-9337-1155253cd2db",
     "email": "alexi3@test.com"
     }
 """

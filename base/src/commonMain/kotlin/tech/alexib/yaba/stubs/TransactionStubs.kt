@@ -19,51 +19,17 @@ import kotlinx.serialization.decodeFromString
 import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.model.TransactionDetail
 import tech.alexib.yaba.stubs.json.transactionsChaseJson1
-import tech.alexib.yaba.stubs.json.transactionsChaseJson2
-import tech.alexib.yaba.stubs.json.transactionsChaseJson3
 import tech.alexib.yaba.stubs.json.transactionsWellsJson1
-import tech.alexib.yaba.stubs.json.transactionsWellsJson2
 import tech.alexib.yaba.util.jSerializer
 
 object TransactionStubs {
-    // 81
+
     val transactionsChase1: List<Transaction> by lazy {
         jSerializer.decodeFromString(transactionsChaseJson1)
     }
 
-    // 46
-    val transactionsChase2: List<Transaction> by lazy {
-        jSerializer.decodeFromString(transactionsChaseJson2)
-    }
-
-    // 66
-    val transactionsChase3: List<Transaction> by lazy {
-        jSerializer.decodeFromString(transactionsChaseJson3)
-    }
-
-    // 85
     val transactionsWellsFargo1: List<Transaction> by lazy {
         jSerializer.decodeFromString(transactionsWellsJson1)
-    }
-
-    // 62
-    val transactionsWellsFargo2: List<Transaction> by lazy {
-        jSerializer.decodeFromString(transactionsWellsJson2)
-    }
-
-    // 193
-    val allChaseTransactions by lazy {
-        transactionsChase1 + transactionsChase2 + transactionsChase3
-    }
-
-    // 147
-    val allWellsTransactions by lazy {
-        transactionsWellsFargo1 + transactionsWellsFargo2
-    }
-
-    // 340
-    val allTransactions by lazy {
-        allChaseTransactions + allWellsTransactions
     }
 
     val transactionDetail by lazy {
