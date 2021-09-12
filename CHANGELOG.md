@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add tests for all repositories
 - Add Accompanist SystemUiController
 - Add Jetpack SplashScreen
+- Add transaction search feature
 
 ## [v1.0.1-alpha] - 2021-07-18
 #### Initial release

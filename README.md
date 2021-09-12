@@ -32,8 +32,8 @@ When linking a financial institution use the sandbox credentials below. If promp
 choose any of them and enter 1234 for the code. Bank of America does prompt for MFA so take note when linking.
 
 ```
-username: user_good
-password: pass_good
+username: custom_user1 or custom_user2
+password: any non-empty string
 pin: credential_good (when required)
 MFA code: 1234 (when required)
 ```

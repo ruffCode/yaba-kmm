@@ -141,24 +141,6 @@ private fun PlaidLinkScreen(
     }
 }
 
-//@Immutable
-//@Parcelize
-//data class PlaidLinkScreenResult(
-//    val id: Uuid,
-//    val name: String,
-//    val logo: String = defaultLogoBase64,
-//    val accounts: List<Account>
-//) : Parcelable {
-//    @Immutable
-//    @Parcelize
-//    data class Account(
-//        val mask: String,
-//        val name: String,
-//        val plaidAccountId: String,
-//        var show: Boolean = true
-//    ) : Parcelable
-//}
-
 private fun PlaidItemCreateResponse.toPlaidItem(): PlaidLinkScreenResult =
     PlaidLinkScreenResult(
         id = id,
@@ -209,15 +191,16 @@ fun SandboxInstructions(modifier: Modifier = Modifier, onProceed: () -> Unit) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                         Text(
-                            text = "Username: user_good",
+                            text = "usernames:\ncustom_user1\ncustom_user2",
                             style = MaterialTheme.typography.body1.copy(fontSize = 20.sp)
                         )
                     }
 
                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                         Text(
-                            text = "Password:  pass_good",
-                            style = MaterialTheme.typography.body1.copy(fontSize = 20.sp)
+                            text = "Any password will work",
+                            style = MaterialTheme.typography.body1.copy(fontSize = 20.sp),
+                            modifier = Modifier.padding(top = 20.dp)
                         )
                     }
                 }
