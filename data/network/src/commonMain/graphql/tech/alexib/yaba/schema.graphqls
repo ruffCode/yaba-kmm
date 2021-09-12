@@ -58,6 +58,118 @@ enum AccountSubtype {
   STUDENT
 
   MORTGAGE
+
+  FOUR_HUNDRED_ONE_A
+
+  FOUR_HUNDRED_THREE_B
+
+  FOUR_HUNDRED_FIFTY_SEVEN_B
+
+  FIVE_HUNDRED_TWENTY_NINE
+
+  BROKERAGE
+
+  CASH_ISA
+
+  EDUCATION_SAVINGS_ACCOUNT
+
+  GIC
+
+  HEALTH_REIMBURSEMENT_ARRANGEMENT
+
+  HSA
+
+  ISA
+
+  LIF
+
+  LIRA
+
+  LRIF
+
+  LRSP
+
+  NON_TAXABLE_BROKERAGE_ACCOUNT
+
+  OTHER
+
+  PRIF
+
+  RDSP
+
+  RESP
+
+  RLIF
+
+  RRIF
+
+  PENSION
+
+  PROFIT_SHARING_PLAN
+
+  RETIREMENT
+
+  ROTH
+
+  ROTH_401_K
+
+  RRSP
+
+  SEP_IRA
+
+  SIMPLE_IRA
+
+  SIPP
+
+  STOCK_PLAN
+
+  THRIFT_SAVINGS_PLAN
+
+  TFSA
+
+  TRUST
+
+  UGMA
+
+  UTMA
+
+  VARIABLE_ANNUITY
+
+  PAYPAL
+
+  PREPAID
+
+  AUTO
+
+  COMMERCIAL
+
+  CONSTRUCTION
+
+  CONSUMER
+
+  HOME
+
+  HOME_EQUITY
+
+  LOAN
+
+  OVERDRAFT
+
+  LINE_OF_CREDIT
+
+  CASH_MANAGEMENT
+
+  KEOGH
+
+  MUTUAL_FUND
+
+  RECURRING
+
+  REWARDS
+
+  SAFE_DEPOSIT
+
+  SARSEP
 }
 
 enum AccountType {
@@ -68,6 +180,8 @@ enum AccountType {
   INVESTMENT
 
   LOAN
+
+  OTHER
 }
 
 enum CountryCode {
@@ -163,11 +277,6 @@ input LoginRequestInput {
   password: String!
 }
 
-"""
-Long type
-"""
-scalar Long
-
 type Mutation {
   setAccountHidden(input: SetAccountHiddenInput!): Boolean!
 
@@ -262,43 +371,6 @@ input SetAccountHiddenInput {
   hide: Boolean!
 }
 
-type Subscription {
-  """
-  Returns a random number every second
-  """
-  counter(limit: Long): Int!
-
-  """
-  Returns a random number every second, errors if even
-  """
-  counterWithError: Int!
-
-  """
-  Returns stream of values
-  """
-  flow: Int!
-
-  """
-  Returns stream of errors
-  """
-  flowOfErrors: String
-
-  """
-  Returns a single value
-  """
-  singleValueSubscription: Int!
-
-  """
-  Returns one value then an error
-  """
-  singleValueThenError: Int!
-
-  """
-  Returns a value from the subscription context
-  """
-  subscriptionContext: String!
-}
-
 type Transaction {
   accountId: UUID!
 
@@ -375,5 +447,4 @@ type UserWithTokenResponse {
 schema {
   query: Query
   mutation: Mutation
-  subscription: Subscription
 }

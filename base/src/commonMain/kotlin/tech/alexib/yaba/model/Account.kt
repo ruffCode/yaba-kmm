@@ -49,134 +49,201 @@ enum class AccountType {
     DEPOSITORY,
     CREDIT,
     INVESTMENT,
-    LOAN
+    LOAN,
+    OTHER
 }
 
 @Serializable
 enum class AccountSubtype(val text: String) {
-    CHECKING("Checking"),
-    SAVINGS("Savings"),
-    CD("CD"),
-    CREDIT_CARD("Credit card"),
-    MONEY_MARKET("Money market"),
-    IRA("IRA"),
+//    CHECKING("Checking"),
+//    SAVINGS("Savings"),
+//    CD("CD"),
+//    CREDIT_CARD("Credit card"),
+//    MONEY_MARKET("Money market"),
+//    IRA("IRA"),
+//    FOUR_HUNDRED_ONE_K("401k"),
+//    STUDENT("Student Loan"),
+//    MORTGAGE("Mortgage"),
+    FOUR_HUNDRED_ONE_A("401a"),
     FOUR_HUNDRED_ONE_K("401k"),
-    STUDENT("Student Loan"),
-    MORTGAGE("Mortgage")
+    FOUR_HUNDRED_THREE_B("403B"),
+    FOUR_HUNDRED_FIFTY_SEVEN_B("457b"),
+    FIVE_HUNDRED_TWENTY_NINE("529"),
+    BROKERAGE("Brokerage"),
+    CASH_ISA("Cash ISA"),
+    EDUCATION_SAVINGS_ACCOUNT("education savings account"),
+    GIC("gic"),
+    HEALTH_REIMBURSEMENT_ARRANGEMENT("health reimbursement arrangement"),
+    HSA("hsa"),
+    ISA("isa"),
+    IRA("ira"),
+    LIF("lif"),
+    LIRA("lira"),
+    LRIF("lrif"),
+    LRSP("lrsp"),
+    NON_TAXABLE_BROKERAGE_ACCOUNT("non-taxable brokerage account"),
+    OTHER("other"),
+    PRIF("prif"),
+    RDSP("rdsp"),
+    RESP("resp"),
+    RLIF("rlif"),
+    RRIF("rrif"),
+    PENSION("pension"),
+    PROFIT_SHARING_PLAN("profit sharing plan"),
+    RETIREMENT("retirement"),
+    ROTH("roth"),
+    ROTH_401_K("roth 401k"),
+    RRSP("rrsp"),
+    SEP_IRA("sep ira"),
+    SIMPLE_IRA("simple ira"),
+    SIPP("sipp"),
+    STOCK_PLAN("stock plan"),
+    THRIFT_SAVINGS_PLAN("thrift savings plan"),
+    TFSA("tfsa"),
+    TRUST("trust"),
+    UGMA("ugma"),
+    UTMA("utma"),
+    VARIABLE_ANNUITY("variable annuity"),
+    CREDIT_CARD("credit card"),
+    PAYPAL("paypal"),
+    CD("cd"),
+    CHECKING("checking"),
+    SAVINGS("savings"),
+    MONEY_MARKET("money market"),
+    PREPAID("prepaid"),
+    AUTO("auto"),
+    COMMERCIAL("commercial"),
+    CONSTRUCTION("construction"),
+    CONSUMER("consumer"),
+    HOME("home"),
+    HOME_EQUITY("home equity"),
+    LOAN("loan"),
+    MORTGAGE("mortgage"),
+    OVERDRAFT("overdraft"),
+    LINE_OF_CREDIT("line of credit"),
+    STUDENT("student"),
+    CASH_MANAGEMENT("cash management"),
+    KEOGH("keogh"),
+    MUTUAL_FUND("mutual fund"),
+    RECURRING("recurring"),
+    REWARDS("rewards"),
+    SAFE_DEPOSIT("safe deposit"),
+    SARSEP("sarsep")
 }
 
-sealed class AccountModel {
-    abstract val id: Uuid
-    abstract val name: String
-    abstract val currentBalance: Double
-    abstract val mask: String
-    abstract val itemId: Uuid
-    abstract val hidden: Boolean
-    abstract val institutionName: String
-}
-
-data class DepositoryAccount(
-    override val id: Uuid,
-    override val name: String,
-    override val currentBalance: Double,
-    val availableBalance: Double? = null,
-    override val mask: String,
-    override val itemId: Uuid,
-    override val hidden: Boolean = false,
-    override val institutionName: String,
-    val type: Type
-) : AccountModel() {
-    enum class Type {
-        CHECKING,
-        SAVINGS,
-        MONEY_MARKET,
-        CD
-    }
-}
-
-data class CreditCardAccount(
-    override val id: Uuid,
-    override val name: String,
-    override val currentBalance: Double,
-    val limit: Double,
-    override val mask: String,
-    override val itemId: Uuid,
-    override val hidden: Boolean = false,
-    override val institutionName: String,
-) : AccountModel()
-
-data class InvestmentAccount(
-    override val id: Uuid,
-    override val name: String,
-    override val currentBalance: Double,
-    override val mask: String,
-    override val itemId: Uuid,
-    override val hidden: Boolean = false,
-    override val institutionName: String,
-    val type: Type
-) : AccountModel() {
-    enum class Type {
-        IRA,
-        FOUR_HUNDRED_ONE_K,
-    }
-}
-
-data class LoanAccount(
-    override val id: Uuid,
-    override val name: String,
-    override val currentBalance: Double,
-    override val mask: String,
-    override val itemId: Uuid,
-    override val hidden: Boolean = false,
-    override val institutionName: String,
-    val type: Type
-) : AccountModel() {
-    enum class Type {
-        STUDENT,
-        MORTGAGE
-    }
-}
-
-fun Account.toModel(): AccountModel = when (this.type) {
-    AccountType.DEPOSITORY -> DepositoryAccount(
-        id = id,
-        name = name,
-        currentBalance = currentBalance,
-        availableBalance = availableBalance,
-        mask = mask,
-        itemId = itemId,
-        hidden = hidden,
-        institutionName = institutionName,
-        type = DepositoryAccount.Type.valueOf(subtype.name)
-    )
-    AccountType.LOAN -> LoanAccount(
-        id = id,
-        name = name,
-        currentBalance = currentBalance,
-        mask = mask,
-        itemId = itemId,
-        hidden = hidden,
-        institutionName = institutionName,
-        type = LoanAccount.Type.valueOf(subtype.name)
-    )
-    AccountType.INVESTMENT -> InvestmentAccount(
-        id = id,
-        name = name,
-        currentBalance = currentBalance,
-        mask = mask,
-        itemId = itemId,
-        hidden = hidden,
-        institutionName = institutionName,
-        type = InvestmentAccount.Type.valueOf(subtype.name)
-    )
-    AccountType.CREDIT -> CreditCardAccount(
-        id = id,
-        name = name,
-        currentBalance = currentBalance,
-        mask = mask,
-        itemId = itemId,
-        hidden = hidden,
-        institutionName = institutionName,
-        limit = creditLimit ?: 0.0
-    )
-}
+// TODO think about implementing this
+// sealed class AccountModel {
+//    abstract val id: Uuid
+//    abstract val name: String
+//    abstract val currentBalance: Double
+//    abstract val mask: String
+//    abstract val itemId: Uuid
+//    abstract val hidden: Boolean
+//    abstract val institutionName: String
+// }
+//
+// data class DepositoryAccount(
+//    override val id: Uuid,
+//    override val name: String,
+//    override val currentBalance: Double,
+//    val availableBalance: Double? = null,
+//    override val mask: String,
+//    override val itemId: Uuid,
+//    override val hidden: Boolean = false,
+//    override val institutionName: String,
+//    val type: Type
+// ) : AccountModel() {
+//    enum class Type {
+//        CHECKING,
+//        SAVINGS,
+//        MONEY_MARKET,
+//        CD
+//    }
+// }
+//
+// data class CreditCardAccount(
+//    override val id: Uuid,
+//    override val name: String,
+//    override val currentBalance: Double,
+//    val limit: Double,
+//    override val mask: String,
+//    override val itemId: Uuid,
+//    override val hidden: Boolean = false,
+//    override val institutionName: String,
+// ) : AccountModel()
+//
+// data class InvestmentAccount(
+//    override val id: Uuid,
+//    override val name: String,
+//    override val currentBalance: Double,
+//    override val mask: String,
+//    override val itemId: Uuid,
+//    override val hidden: Boolean = false,
+//    override val institutionName: String,
+//    val type: Type
+// ) : AccountModel() {
+//    enum class Type {
+//        IRA,
+//        FOUR_HUNDRED_ONE_K,
+//    }
+// }
+//
+// data class LoanAccount(
+//    override val id: Uuid,
+//    override val name: String,
+//    override val currentBalance: Double,
+//    override val mask: String,
+//    override val itemId: Uuid,
+//    override val hidden: Boolean = false,
+//    override val institutionName: String,
+//    val type: Type
+// ) : AccountModel() {
+//    enum class Type {
+//        STUDENT,
+//        MORTGAGE
+//    }
+// }
+//
+// fun Account.toModel(): AccountModel = when (this.type) {
+//    AccountType.DEPOSITORY -> DepositoryAccount(
+//        id = id,
+//        name = name,
+//        currentBalance = currentBalance,
+//        availableBalance = availableBalance,
+//        mask = mask,
+//        itemId = itemId,
+//        hidden = hidden,
+//        institutionName = institutionName,
+//        type = DepositoryAccount.Type.valueOf(subtype.name)
+//    )
+//    AccountType.LOAN -> LoanAccount(
+//        id = id,
+//        name = name,
+//        currentBalance = currentBalance,
+//        mask = mask,
+//        itemId = itemId,
+//        hidden = hidden,
+//        institutionName = institutionName,
+//        type = LoanAccount.Type.valueOf(subtype.name)
+//    )
+//    AccountType.INVESTMENT -> InvestmentAccount(
+//        id = id,
+//        name = name,
+//        currentBalance = currentBalance,
+//        mask = mask,
+//        itemId = itemId,
+//        hidden = hidden,
+//        institutionName = institutionName,
+//        type = InvestmentAccount.Type.valueOf(subtype.name)
+//    )
+//    AccountType.CREDIT -> CreditCardAccount(
+//        id = id,
+//        name = name,
+//        currentBalance = currentBalance,
+//        mask = mask,
+//        itemId = itemId,
+//        hidden = hidden,
+//        institutionName = institutionName,
+//        limit = creditLimit ?: 0.0
+//    )
+// }
