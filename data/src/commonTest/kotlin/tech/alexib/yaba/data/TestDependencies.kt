@@ -102,7 +102,7 @@ internal object TestDependencies {
         )
     }
     val authRepository: AuthRepository by lazy {
-        AuthRepository.Impl(authApi, authSettings, kermit)
+        AuthRepository.Impl(authApi, authSettings, kermit, userRepository)
     }
 
     val userDataRepository: UserDataRepository by lazy {

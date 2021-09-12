@@ -36,6 +36,7 @@ interface TransactionDao {
     suspend fun insert(transactions: List<TransactionDto>)
     suspend fun deleteByAccountId(accountId: Uuid)
     fun selectRecent(userId: Uuid): Flow<List<Transaction>>
+    fun selectAllLikeName(userId: Uuid, query: String? = null): Flow<List<Transaction>>
     fun selectAll(userId: Uuid): Flow<List<Transaction>>
     fun selectById(id: Uuid): Flow<TransactionDetail?>
     fun selectAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
@@ -82,6 +83,10 @@ interface TransactionDao {
                 queries.deleteById(id)
             }
         }
+
+        override fun selectAllLikeName(userId: Uuid, query: String?): Flow<List<Transaction>> =
+            queries.selectAllByName(userId, query ?: "", transactionMapper).asFlow().mapToList()
+                .flowOn(backgroundDispatcher)
     }
 
     val transactionMapper: (

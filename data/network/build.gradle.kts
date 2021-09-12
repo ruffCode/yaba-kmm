@@ -7,15 +7,6 @@ plugins {
     id("com.apollographql.apollo3")
 }
 
-kotlin {
-    sourceSets {
-        all {
-            languageSettings.apply {
-                useExperimentalAnnotation("com.apollographql.apollo.api.ApolloExperimental")
-            }
-        }
-    }
-}
 dependencies {
     commonMainImplementation(Lib.Apollo.runtimeKotlin)
     commonMainImplementation(Lib.Apollo.adapters)

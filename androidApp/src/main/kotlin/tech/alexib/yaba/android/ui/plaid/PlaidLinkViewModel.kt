@@ -25,12 +25,10 @@ import com.plaid.link.linkTokenConfiguration
 import com.plaid.link.result.LinkExit
 import com.plaid.link.result.LinkResult
 import com.plaid.link.result.LinkSuccess
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -39,13 +37,15 @@ import tech.alexib.yaba.data.repository.ItemRepository
 import tech.alexib.yaba.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
 import tech.alexib.yaba.model.response.PlaidLinkResult
+import tech.alexib.yaba.util.stateInDefault
 
 class PlaidLinkViewModel(
     private val repository: ItemRepository
 ) : ViewModel(), KoinComponent {
 
     private val resultFlow = MutableStateFlow<PlaidLinkResult>(PlaidLinkResult.Empty)
-    val result: StateFlow<PlaidLinkResult> = resultFlow
+    val result: StateFlow<PlaidLinkResult> =
+        resultFlow.stateInDefault(viewModelScope, PlaidLinkResult.Empty)
     private val log: Kermit by inject { parametersOf("PlaidLinkViewModel") }
 
     fun handleResult(linkResult: LinkResult) {
@@ -77,9 +77,7 @@ class PlaidLinkViewModel(
 
     fun linkInstitution(handleToken: (LinkTokenConfiguration) -> Unit) {
         viewModelScope.launch {
-            val token: String? = withContext(Dispatchers.IO) {
-                return@withContext repository.createLinkToken().first()?.linkToken
-            }
+            val token: String? = repository.createLinkToken().first()?.linkToken
             token?.let {
                 handleToken(
                     linkTokenConfiguration {

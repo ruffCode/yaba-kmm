@@ -175,7 +175,7 @@ object Version {
 
 object GradleVersions {
     const val detekt = "1.17.1"
-    const val androidTools = "7.1.0-alpha10"
+    const val androidTools = "7.1.0-alpha11"
     const val ktLint = "10.1.0"
     const val spotless = "5.14.1"
     const val googleServices = "4.3.8"

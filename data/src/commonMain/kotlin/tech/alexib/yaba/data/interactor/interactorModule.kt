@@ -28,7 +28,7 @@ internal val interactorModule = module {
             get()
         )
     }
-    single { ClearAppData(get()) }
+    single { ClearAppData(get(), get()) }
     single {
         PerformInitialSync(
             get(), get(), get(), getWith("PerformInitialSyncInteractor"),

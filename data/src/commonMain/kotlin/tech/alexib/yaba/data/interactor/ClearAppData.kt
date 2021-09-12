@@ -16,12 +16,15 @@
 package tech.alexib.yaba.data.interactor
 
 import tech.alexib.yaba.Interactor
+import tech.alexib.yaba.data.repository.UserRepository
 import tech.alexib.yaba.data.settings.AuthSettings
 
 class ClearAppData(
-    private val authSettings: AuthSettings
+    private val authSettings: AuthSettings,
+    private val userRepository: UserRepository
 ) : Interactor<Unit>() {
     override suspend fun doWork(params: Unit) {
         authSettings.clearAppSettings()
+        userRepository.deleteCurrentUser()
     }
 }

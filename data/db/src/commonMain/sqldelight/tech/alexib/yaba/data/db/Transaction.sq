@@ -124,3 +124,10 @@ WHERE account_id = ?;
 deleteById:
 DELETE FROM TransactionEntity
 WHERE id = ?;
+
+selectAllByName:
+SELECT * FROM UserTransaction
+WHERE user_id = :userId
+AND merchant_name LIKE ('%' || :query || '%')
+OR name LIKE ('%' || :query || '%')
+ORDER BY date DESC;

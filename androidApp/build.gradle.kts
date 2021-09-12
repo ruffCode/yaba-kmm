@@ -15,7 +15,7 @@ val hasReleaseKey: Boolean = project.rootProject.file("release/yaba-release.jks"
 dependencies {
 
     implementation(projects.data)
-    implementation("androidx.core:core-ktx:1.7.0-alpha01")
+    implementation("androidx.core:core-ktx:1.7.0-alpha02")
     implementation("com.google.android.material:material:1.4.0")
     implementation(Lib.Compose.animation)
     implementation(Lib.Compose.foundation)
@@ -208,22 +208,18 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 
 sentry {
     val upload = System.getenv("AUTO_UPLOAD")?.toBoolean() ?: false
-    upload.let {
-        // Enables or disables the automatic upload of mapping files
-        // during a build.  If you disable this, you'll need to manually
-        // upload the mapping files with sentry-cli when you do a release.
-        autoUpload.set(true)
-
-        // Disables or enables the automatic configuration of Native Symbols
-        // for Sentry. This executes sentry-cli automatically so
-        // you don't need to do it manually.
-        // Default is disabled.
-        uploadNativeSymbols.set(true)
-
-        // Does or doesn't include the source code of native code for Sentry.
-        // This executes sentry-cli with the --include-sources param. automatically so
-        // you don't need to do it manually.
-        // Default is disabled.
-        includeNativeSources.set(true)
-    }
+    // Enables or disables the automatic upload of mapping files
+    // during a build.  If you disable this, you'll need to manually
+    // upload the mapping files with sentry-cli when you do a release.
+    autoUpload.set(upload)
+    // Disables or enables the automatic configuration of Native Symbols
+    // for Sentry. This executes sentry-cli automatically so
+    // you don't need to do it manually.
+    // Default is disabled.
+    uploadNativeSymbols.set(upload)
+    // Does or doesn't include the source code of native code for Sentry.
+    // This executes sentry-cli with the --include-sources param. automatically so
+    // you don't need to do it manually.
+    // Default is disabled.
+    includeNativeSources.set(upload)
 }

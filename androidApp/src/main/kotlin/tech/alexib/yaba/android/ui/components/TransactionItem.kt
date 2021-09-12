@@ -44,6 +44,7 @@ import tech.alexib.yaba.android.ui.theme.YabaTheme
 import tech.alexib.yaba.android.util.moneyFormat
 import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.stubs.TransactionStubs
+import kotlin.math.absoluteValue
 
 
 @Composable
@@ -126,9 +127,12 @@ private fun TransactionItemContent(
         }
 
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+            val textStyle =
+                if (transaction.amount <= 0) MaterialTheme.typography.body2.copy(color = MoneyGreen)
+                else MaterialTheme.typography.body2
             Text(
-                text = "$${moneyFormat.format(transaction.amount)}",
-                style = MaterialTheme.typography.body2,
+                text = "$${moneyFormat.format(transaction.amount.absoluteValue)}",
+                style = textStyle,
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth(0.2f)
