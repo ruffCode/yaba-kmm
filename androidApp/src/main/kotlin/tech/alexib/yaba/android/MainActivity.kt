@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                             systemUiController.setStatusBarColor(
                                 if (!useDarkTheme) Color.White else Color.Black.copy(alpha = 0.9f)
                             )
-                            systemUiController.statusBarDarkContentEnabled = !useDarkTheme
+                            systemUiController.systemBarsDarkContentEnabled = !useDarkTheme
                         }
                         MainAppLayout {
                             finish()
