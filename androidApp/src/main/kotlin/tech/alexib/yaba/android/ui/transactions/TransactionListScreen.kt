@@ -21,13 +21,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Card
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -38,19 +42,23 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.R
@@ -83,17 +91,21 @@ private fun TransactionListScreen(
         initial = TransactionsStore.State.Empty
     )
 
-    val loading = remember { mutableStateOf(state.transactions.isEmpty()) }
+    val scope = rememberCoroutineScope()
+    val loading = remember(state.transactions) { mutableStateOf(state.transactions.isEmpty()) }
 
-    LaunchedEffect(Unit) {
-        delay(1000)
-        loading.value = false
+    SideEffect {
+        scope.launch {
+            delay(400)
+            loading.value = false
+        }
     }
-    LoadingScreenWithCrossFade(loadingState = state.transactions.isEmpty()) {
+    LoadingScreenWithCrossFade(loadingState = loading.value) {
         TransactionListScreen(state, onBack, onSelected) {
             viewModel.store.submit(it)
         }
     }
+
 }
 
 @Composable
@@ -103,7 +115,6 @@ private fun TransactionListScreen(
     onSelected: (Uuid) -> Unit,
     actioner: (TransactionsStore.Action) -> Unit
 ) {
-
 
     Scaffold(
         topBar = {
@@ -139,7 +150,11 @@ private fun TransactionListScreen(
                         modifier = Modifier
                             .wrapContentHeight(),
                         colors = TextFieldDefaults
-                            .textFieldColors(backgroundColor = MaterialTheme.colors.surface),
+                            .textFieldColors(
+                                backgroundColor = MaterialTheme.colors.surface.copy(
+                                    alpha = 0.4f
+                                )
+                            ),
 
                         leadingIcon = {
                             AnimatedVisibility(visible = state.query.isEmpty()) {
@@ -183,9 +198,29 @@ private fun TransactionListScreen(
             }
         },
     ) {
-        TransactionList(transactions = state.transactions) {
-            onSelected(it)
+        if (state.transactions.isNotEmpty()) {
+            TransactionList(transactions = state.transactions) {
+                onSelected(it)
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .heightIn(50.dp)
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Text(
+                        text = "We couldn't find any transactions",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.body1.merge(),
+                        modifier = Modifier.paddingFromBaseline(top = 30.dp)
+                    )
+                }
+            }
         }
+
     }
 }
 

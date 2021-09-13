@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Accompanist SystemUiController
 - Add Jetpack SplashScreen
 - Add transaction search feature
+- Add pie chart for spending by category with menu for date ranges
 
 ## [v1.0.1-alpha] - 2021-07-18
 #### Initial release

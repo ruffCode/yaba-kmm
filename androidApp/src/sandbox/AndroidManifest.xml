@@ -8,5 +8,8 @@
             android:name="isSandbox"
             android:value="true"
             tools:replace="android:value" />
+        <meta-data
+            android:name="base_url"
+            android:value="${serverUrl}" />
     </application>
 </manifest>

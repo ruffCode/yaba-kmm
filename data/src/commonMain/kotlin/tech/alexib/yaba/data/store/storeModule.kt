@@ -20,7 +20,7 @@ import org.koin.dsl.module
 import tech.alexib.yaba.util.getWith
 
 val storeModule: Module = module {
-    single { parameters -> HomeStore(get(), get(), get(), get(), parameters.get()) }
+    single { parameters -> HomeStore(get(), get(), get(), get(), get(), parameters.get()) }
     single { AccountDetailStore(get(), get(), get()) }
     single { AccountsStore(get()) }
     single { TransactionDetailStore(get()) }

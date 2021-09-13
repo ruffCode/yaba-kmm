@@ -16,14 +16,21 @@
 package tech.alexib.yaba.data.store
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import tech.alexib.yaba.data.Immutable
 import tech.alexib.yaba.data.interactor.PerformInitialSync
 import tech.alexib.yaba.data.observer.ObserveCurrentCashBalance
 import tech.alexib.yaba.data.observer.ObserveRecentTransactions
+import tech.alexib.yaba.data.observer.ObserveSpendingCategoriesByDate
 import tech.alexib.yaba.data.observer.ObserveUserItemsCount
 import tech.alexib.yaba.data.util.SupervisorScope
+import tech.alexib.yaba.model.AllCategoriesSpend
+import tech.alexib.yaba.model.RangeOption
 import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.util.ObservableLoadingCounter
 import tech.alexib.yaba.util.collectInto
@@ -33,20 +40,31 @@ class HomeStore(
     private val observeCurrentCashBalance: ObserveCurrentCashBalance,
     private val observeUserItemsCount: ObserveUserItemsCount,
     private val performInitialSync: PerformInitialSync,
+    private val observeSpendingCategoriesByDate: ObserveSpendingCategoriesByDate,
     dispatcher: CoroutineDispatcher
 ) {
 
     private val loader = ObservableLoadingCounter()
     private val coroutineScope = SupervisorScope(dispatcher)
 
+    private val actions = MutableSharedFlow<HomeScreenAction>()
+
+    private val spendingCategoryDateRange =
+        MutableStateFlow(
+            ObserveSpendingCategoriesByDate.Params(
+                null
+            )
+        )
+
     val state = combine(
         loader.observable,
         observeCurrentCashBalance.flow,
         observeRecentTransactions.flow,
-        observeUserItemsCount.flow
-    ) { loading, balance, transactions, itemCount ->
+        observeUserItemsCount.flow,
+        observeSpendingCategoriesByDate.flow
+    ) { loading, balance, transactions, itemCount, spending ->
         HomeScreenState(
-            loading, balance, transactions, itemCount
+            loading, balance, transactions, itemCount, spending
         )
     }
 
@@ -57,11 +75,49 @@ class HomeStore(
         coroutineScope.launch {
             performInitialSync(Unit).collectInto(loader)
         }
+        coroutineScope.launch {
+            actions.collect { action ->
+                when (action) {
+                    is HomeScreenAction.SetSpendingWidgetDateRange -> {
+                        spendingCategoryDateRange.emit(
+                            ObserveSpendingCategoriesByDate.Params(
+                                action.range
+                            )
+                        )
+                    }
+                    else -> {
+                    }
+                }
+            }
+        }
+        coroutineScope.launch {
+            spendingCategoryDateRange.collectLatest {
+                val job = launch {
+                    loader.addLoader()
+                    observeSpendingCategoriesByDate(it)
+                }
+                job.invokeOnCompletion { loader.removeLoader() }
+                job.join()
+            }
+        }
     }
 
     fun dispose() {
         coroutineScope.clear()
     }
+
+    fun submit(action: HomeScreenAction) {
+        coroutineScope.launch {
+            actions.emit(action)
+        }
+    }
+}
+
+sealed class HomeScreenAction {
+    object NavigateToPlaidLinkScreen : HomeScreenAction()
+    object NavigateToTransactionsScreen : HomeScreenAction()
+    data class SetSpendingWidgetDateRange(val range: RangeOption) :
+        HomeScreenAction()
 }
 
 @Immutable
@@ -69,7 +125,8 @@ data class HomeScreenState(
     val loading: Boolean = false,
     val currentCashBalance: Double? = null,
     val recentTransactions: List<Transaction> = emptyList(),
-    val userItemCount: Long? = null
+    val userItemCount: Long? = null,
+    val spendingByCategory: AllCategoriesSpend? = null
 ) {
     companion object {
         val Empty = HomeScreenState()

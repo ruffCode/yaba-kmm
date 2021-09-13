@@ -54,8 +54,8 @@ fun TransactionItem(
     onSelected: (Uuid) -> Unit
 ) {
     val modifier = Modifier
-        .height(60.dp)
-        .padding(horizontal = 8.dp, vertical = 4.dp)
+        .height(50.dp)
+        .padding(horizontal = 4.dp, vertical = 2.dp)
         .clickable {
             onSelected(transaction.id)
         }
@@ -79,7 +79,7 @@ private fun TransactionItemContent(
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(vertical = 2.dp)
     ) {
         val (iconRef, nameRef, amountRef, pendingRef) = createRefs()
 
@@ -88,7 +88,7 @@ private fun TransactionItemContent(
             contentDescription = "receipt",
             tint = MoneyGreen,
             modifier = Modifier
-                .size(45.dp)
+                .size(40.dp)
                 .padding(4.dp)
                 .constrainAs(iconRef) {
                     start.linkTo(parent.start)
@@ -153,6 +153,8 @@ private fun TransactionItemContent(
 @Composable
 fun TransactionItemPreview() {
     YabaTheme(darkTheme = true) {
-        TransactionItem(transaction = TransactionStubs.transactionsChase1.first(), false) {}
+        TransactionItem(
+            transaction = TransactionStubs.transactionsChase1.first().copy(pending = true), false
+        ) {}
     }
 }
