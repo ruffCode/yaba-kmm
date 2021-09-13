@@ -44,3 +44,5 @@ fun LocalDate.format(): String {
 }
 
 fun Transaction.formattedDate() = this.date.format()
+
+fun Double.asMoneyString() = "$${moneyFormat.format(this)}"

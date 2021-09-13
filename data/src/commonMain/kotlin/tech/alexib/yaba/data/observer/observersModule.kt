@@ -27,4 +27,5 @@ internal val observersModule = module {
     single { ObserveItemsWithAccounts(get()) }
     single { ObserveTransactionDetail(get()) }
     single { ObserveTransactions(get()) }
+    single { ObserveSpendingCategoriesByDate(get()) }
 }

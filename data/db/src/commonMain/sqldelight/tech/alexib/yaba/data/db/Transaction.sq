@@ -131,3 +131,10 @@ WHERE user_id = :userId
 AND merchant_name LIKE ('%' || :query || '%')
 OR name LIKE ('%' || :query || '%')
 ORDER BY date DESC;
+
+spendingCategoriesByDate:
+SELECT category, SUM(amount) AS amount
+FROM UserTransaction
+WHERE user_id = :userId
+AND date BETWEEN :date1 AND :date2
+GROUP BY category;

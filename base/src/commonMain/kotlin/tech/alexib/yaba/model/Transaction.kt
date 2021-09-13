@@ -72,3 +72,54 @@ data class TransactionDetail(
     @Transient
     val label = "$institutionName \n $accountName ****$accountMask"
 }
+
+data class CategorySpend(
+    val total: Double,
+    val rangeOption: RangeOption,
+    val category: String,
+    val percentage: Float
+)
+
+data class AllCategoriesSpend(
+    val total: Double,
+    val rangeOption: RangeOption,
+    val spend: List<CategorySpend>
+) {
+    companion object {
+        fun from(
+            rangeOption: RangeOption,
+            categories: List<Pair<String, Double>>
+        ): AllCategoriesSpend {
+            val spendingCategories = categories.filter { it.second >= 0 }
+            val sum = spendingCategories.sumOf { it.second }
+
+            return AllCategoriesSpend(
+                sum,
+                rangeOption,
+                spendingCategories.sortedByDescending { it.second / sum }.map {
+                    CategorySpend(
+                        total = it.second,
+                        category = it.first,
+                        percentage = (it.second / sum).toFloat(),
+                        rangeOption = rangeOption
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Serializable
+enum class TransactionCategory(val value: String) {
+    Bank_Fees("Bank Fees"),
+    Recreation("Recreation"),
+    Tax("Tax"),
+    Shops("Shopping"),
+    Healthcare("Healthcare"),
+    Transfer("Transfer"),
+    Food_and_Drink("Food and Drink"),
+    Travel("Travel"),
+    Service("Service"),
+    Community("Community"),
+    Interest("Interest");
+}

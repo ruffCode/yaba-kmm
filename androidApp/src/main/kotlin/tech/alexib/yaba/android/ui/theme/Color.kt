@@ -38,7 +38,27 @@ val BlueGray = Color(0xFFeceff1)
 val MoneyGreen = Color(0xFF529c64)
 val ErrorDark = Color(0xFFB00020)
 val ErrorLight = Color(0xFFEF5350)
+val green200 = Color(0xffa5d6a7)
+val green700 = Color(0xff388e3c)
+val purple200a = Color(0xFFB39DDB)
+val deepOrange200 = Color(0xFFFFAB91)
+val teal200a = Color(0xff80deea)
+val blue200 = Color(0xFF90CAF9)
 
+
+
+val lightColorsForChart = listOf(
+    green200,
+    purple200a,
+    teal200a,
+    deepOrange200,
+    blue200,
+    green200,
+    purple200a,
+    teal200a,
+    deepOrange200,
+    blue200
+)
 /**
  * Return the fully opaque color that results from compositing [onSurface] atop [surface] with the
  * given [alpha]. Useful for situations where semi-transparent colors are undesirable.

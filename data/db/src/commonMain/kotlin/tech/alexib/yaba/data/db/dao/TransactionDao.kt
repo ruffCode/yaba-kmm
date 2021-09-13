@@ -40,6 +40,12 @@ interface TransactionDao {
     fun selectAll(userId: Uuid): Flow<List<Transaction>>
     fun selectById(id: Uuid): Flow<TransactionDetail?>
     fun selectAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
+    fun spendingCategoriesByDate(
+        userId: Uuid,
+        start: LocalDate,
+        end: LocalDate
+    ): Flow<List<Pair<String, Double>>>
+
     suspend fun deleteById(id: Uuid)
 
     class Impl(
@@ -87,6 +93,15 @@ interface TransactionDao {
         override fun selectAllLikeName(userId: Uuid, query: String?): Flow<List<Transaction>> =
             queries.selectAllByName(userId, query ?: "", transactionMapper).asFlow().mapToList()
                 .flowOn(backgroundDispatcher)
+
+        override fun spendingCategoriesByDate(
+            userId: Uuid,
+            start: LocalDate,
+            end: LocalDate
+        ): Flow<List<Pair<String, Double>>> =
+            queries.spendingCategoriesByDate(userId, start, end) { category, amount ->
+                category!! to amount!!
+            }.asFlow().mapToList().flowOn(backgroundDispatcher)
     }
 
     val transactionMapper: (

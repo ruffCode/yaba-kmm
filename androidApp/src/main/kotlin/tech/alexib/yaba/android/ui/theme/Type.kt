@@ -71,9 +71,10 @@ val Typography = Typography(
     ),
     h6 = TextStyle(
         fontFamily = Montserrat,
-        fontSize = 20.sp,
-        fontWeight = FontWeight.SemiBold,
-        lineHeight = 24.sp
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Medium,
+        lineHeight = 22.sp,
+        letterSpacing = 1.25.sp
     ),
     subtitle1 = TextStyle(
         fontFamily = Montserrat,
@@ -125,4 +126,3 @@ val Typography = Typography(
         letterSpacing = 1.sp
     )
 )
-// val Typography = Typography()

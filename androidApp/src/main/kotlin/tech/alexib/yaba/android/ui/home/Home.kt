@@ -15,6 +15,7 @@
  */
 package tech.alexib.yaba.android.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,51 +27,41 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayAt
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.R
 import tech.alexib.yaba.android.ui.AddSpace
 import tech.alexib.yaba.android.ui.components.LoadingScreenWithCrossFade
 import tech.alexib.yaba.android.ui.components.SlideInContent
+import tech.alexib.yaba.android.ui.components.SpendingWidget
+import tech.alexib.yaba.android.ui.components.TotalCashBalanceRow
 import tech.alexib.yaba.android.ui.components.TransactionItem
-import tech.alexib.yaba.android.ui.theme.MoneyGreen
-import tech.alexib.yaba.android.util.moneyFormat
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
+import tech.alexib.yaba.data.store.HomeScreenAction
 import tech.alexib.yaba.data.store.HomeScreenState
+import tech.alexib.yaba.model.RangeOption
 import tech.alexib.yaba.model.Transaction
-
-//@Immutable
-//data class HomeScreenState(
-//    val loading: Boolean = false,
-//    val currentCashBalance: Double? = null,
-//    val recentTransactions: List<Transaction> = emptyList(),
-//    val userItemCount: Long? = null
-//) {
-//    companion object {
-//        val Empty = HomeScreenState()
-//    }
-//}
-
-sealed class HomeScreenAction {
-    object NavigateToPlaidLinkScreen : HomeScreenAction()
-    object NavigateToTransactionsScreen : HomeScreenAction()
-}
 
 @Composable
 fun Home(
@@ -99,6 +90,7 @@ private fun Home(
         when (action) {
             is HomeScreenAction.NavigateToPlaidLinkScreen -> navigateToPlaidLinkScreen()
             is HomeScreenAction.NavigateToTransactionsScreen -> navigateToTransactionsScreen()
+            is HomeScreenAction.SetSpendingWidgetDateRange -> viewModel.submit(action)
         }
     }
 }
@@ -108,88 +100,81 @@ private fun Home(
     state: HomeScreenState,
     actioner: (HomeScreenAction) -> Unit
 ) {
-    LoadingScreenWithCrossFade(state.loading) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            AddSpace()
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
-            SlideInContent(visible = state.userItemCount == 0L) {
-                Button(
-                    onClick = {
-                        actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.link_first_institution),
-                        style = MaterialTheme.typography.button
-                    )
+    ModalBottomSheetLayout(
+        sheetState = sheetState,
+        sheetContent = {
+
+            val modifier = Modifier
+                .verticalScroll(rememberScrollState())
+
+            DateRangeBottomSheet(modifier) { rangeOption ->
+                coroutineScope.launch {
+                    sheetState.hide()
                 }
-            }
+                actioner(HomeScreenAction.SetSpendingWidgetDateRange(rangeOption))
 
-            SlideInContent(
-                visible = state.currentCashBalance != null &&
-                    state.userItemCount != 0L
+            }
+        }
+    ) {
+        LoadingScreenWithCrossFade(state.loading) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                TotalCashBalanceRow(state.currentCashBalance)
                 AddSpace()
-            }
 
-            SlideInContent(visible = state.recentTransactions.isNotEmpty()) {
-                RecentTransactions(transactions = state.recentTransactions) {
-                    actioner(HomeScreenAction.NavigateToTransactionsScreen)
+                SlideInContent(visible = state.userItemCount == 0L) {
+                    Button(
+                        onClick = {
+                            actioner(HomeScreenAction.NavigateToPlaidLinkScreen)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.link_first_institution),
+                            style = MaterialTheme.typography.button
+                        )
+                    }
+                }
+
+                SlideInContent(
+                    visible = state.currentCashBalance != null &&
+                        state.userItemCount != 0L
+                ) {
+                    TotalCashBalanceRow(state.currentCashBalance)
+                    AddSpace()
+                }
+
+                SlideInContent(visible = state.recentTransactions.isNotEmpty()) {
+                    RecentTransactions(transactions = state.recentTransactions) {
+                        actioner(HomeScreenAction.NavigateToTransactionsScreen)
+                    }
+
+                }
+
+                SlideInContent(visible = state.spendingByCategory != null) {
+                    SpendingWidget(state.spendingByCategory!!) {
+                        coroutineScope.launch {
+                            sheetState.show()
+                        }
+                    }
+
                 }
             }
         }
+
     }
+
 }
 
-@Composable
-fun TotalCashBalanceRow(
-    balance: Double?
-) {
-    Card(
-        modifier = Modifier
-            .wrapContentHeight(Alignment.CenterVertically),
-        elevation = 3.dp
-    ) {
-        BalanceRow(
-            balance = balance ?: 0.0,
-            description = stringResource(id = R.string.current_cash_balance),
-            modifier = Modifier.padding(16.dp)
-        )
-    }
-}
-
-@Composable
-fun BalanceRow(
-    balance: Double,
-    description: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-            Text(text = description)
-            Text(
-                text = "$${moneyFormat.format(balance)}",
-                color = if (balance > 0) MoneyGreen else Color.Red,
-                textAlign = TextAlign.End
-            )
-        }
-    }
-}
 
 @Composable
 private fun RecentTransactions(
@@ -232,3 +217,85 @@ private fun RecentTransactions(
         }
     }
 }
+
+
+@Composable
+private fun DateRangeBottomSheet(
+    modifier: Modifier = Modifier,
+    handleSelect: (RangeOption) -> Unit
+) {
+    val today = remember { Clock.System.todayAt(TimeZone.currentSystemDefault()) }
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.background),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        val buttonModifier = Modifier
+            .fillMaxWidth()
+
+        val months = today.monthNumber
+
+        fun Int.monthString() = when (this) {
+            1 -> "January"
+            2 -> "February"
+            3 -> "March"
+            4 -> "April"
+            5 -> "May"
+            6 -> "June"
+            7 -> "July"
+            8 -> "August"
+            9 -> "September"
+            10 -> "October"
+            11 -> "November"
+            12 -> "December"
+            else -> throw IllegalArgumentException("month cannot be $this")
+        }
+
+        (1..months).forEach {
+            val buttonColors = if (it == months) {
+                ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+            } else ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface)
+
+            TextButton(
+                onClick = { handleSelect(RangeOption.values()[it - 1]) },
+                colors = buttonColors,
+                modifier = buttonModifier
+            ) {
+                Text(text = it.monthString())
+            }
+            Divider()
+
+        }
+        val whiteButtons =
+            ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface)
+        TextButton(
+            onClick = { handleSelect(RangeOption.ThisYear) },
+            colors = whiteButtons,
+            modifier = buttonModifier
+        ) {
+            Text(text = "This year")
+        }
+        Divider()
+        TextButton(
+            onClick = { handleSelect(RangeOption.LastYear) },
+            colors = whiteButtons,
+            modifier = buttonModifier
+        ) {
+            Text(text = "Last year")
+        }
+        Divider()
+        TextButton(
+            onClick = { handleSelect(RangeOption.AllTime) },
+            colors = whiteButtons,
+            modifier = buttonModifier
+        ) {
+            Text(text = "All time")
+        }
+    }
+
+}
+
+

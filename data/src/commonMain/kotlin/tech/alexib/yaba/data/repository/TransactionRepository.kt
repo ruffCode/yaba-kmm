@@ -19,6 +19,7 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.datetime.LocalDate
 import tech.alexib.yaba.data.db.dao.TransactionDao
 import tech.alexib.yaba.data.provider.UserIdProvider
 import tech.alexib.yaba.model.Transaction
@@ -29,6 +30,7 @@ interface TransactionRepository {
     fun getAll(query: String? = null): Flow<List<Transaction>>
     fun getById(id: Uuid): Flow<TransactionDetail?>
     fun getAllByAccountId(accountId: Uuid): Flow<List<Transaction>>
+    fun spendingCategoriesByDate(start: LocalDate, end: LocalDate): Flow<List<Pair<String, Double>>>
 }
 
 internal class TransactionRepositoryImpl(
@@ -56,5 +58,12 @@ internal class TransactionRepositoryImpl(
 
     override fun getAllByAccountId(accountId: Uuid): Flow<List<Transaction>> = flow {
         emitAll(dao.selectAllByAccountId(accountId))
+    }
+
+    override fun spendingCategoriesByDate(
+        start: LocalDate,
+        end: LocalDate
+    ): Flow<List<Pair<String, Double>>> = flow {
+        emitAll(dao.spendingCategoriesByDate(userIdProvider.userId.value, start, end))
     }
 }
