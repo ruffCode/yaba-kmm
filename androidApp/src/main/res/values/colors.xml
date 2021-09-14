@@ -14,4 +14,5 @@
     <color name="blue_slate_light">#FF84b2ff</color>
     <color name="black30">#4D000000</color>
     <color name="slash_background">@color/blue_slate</color>
+    <color name="logo_fg">@color/white</color>
 </resources>

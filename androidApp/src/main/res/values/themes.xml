@@ -2,7 +2,7 @@
 
     <style name="Theme.YabaSplash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/slash_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/yaba_nbg</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/yaba_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.Yaba.Home</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
     </style>

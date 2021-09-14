@@ -2,4 +2,5 @@
 <resources>
     <color name="status_bar">#0e0e0e</color>
     <color name="slash_background">@color/black30</color>
+    <color name="logo_fg">@color/blue_slate</color>
 </resources>

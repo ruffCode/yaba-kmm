@@ -31,6 +31,6 @@ fun YabaLogo(modifier: Modifier = Modifier, size: Int = 500) {
         contentScale = ContentScale.Fit,
         contentDescription = "yaba logo",
         modifier = modifier.width(size.dp),
-        bitmap = ImageBitmap.imageResource(id = R.drawable.yaba_bg_bl),
+        bitmap = ImageBitmap.imageResource(id = R.drawable.yaba_logo_blue),
     )
 }
