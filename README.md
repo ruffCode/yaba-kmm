@@ -3,13 +3,11 @@
 # yaba (yet another budgeting app)
 ![yaba logo](./assets/dark.gif) ![yaba logo](./assets/light.gif)
 
-## Kotlin Multiplatform Mobile
+## Kotlin Multiplatform Mobile ready (*only the Android app is being developed as I am just starting to learn Swift*)
 
 #### Learning in public
 
 #### An app which uses Plaid's APIs and allows users to track the balances and transactions for any financial institution they choose to link.
-
-#### *This is a work in progress and for now, only the Android app is being developed as I am just starting to learn Swift.*
 
 The [backend](https://github.com/ruffCode/yaba-server) is using Plaid's sandbox API, so you can
 only get fake data.
@@ -61,6 +59,10 @@ and interactors. Credit is given where used.
 ### [KaMPKit by Touchlab](https://github.com/touchlab/KaMPKit)
 
 Great starter template for KMM. I used the Koin setup logic as well as some Koin extensions.
+
+### [ComposeCookbook by Gurupreet Singh](https://github.com/Gurupreet/ComposeCookBook)
+
+Thanks for the pie chart!
 
 ## 📝 License
 
