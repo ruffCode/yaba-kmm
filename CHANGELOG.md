@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/ruffcode/yaba-kmm/tree/HEAD)
+## [v1.1.0-alpha](https://github.com/ruffcode/yaba-kmm/tree/v1.1.0-alpha) (2021-09-14)
 
-[Full Changelog](https://github.com/ruffcode/yaba-kmm/compare/v1.0.1-alpha...HEAD)
+[Full Changelog](https://github.com/ruffcode/yaba-kmm/compare/v1.0.1-alpha...v1.1.0-alpha)
 
 **Implemented enhancements:**
 
@@ -15,6 +15,7 @@
 
 **Merged pull requests:**
 
+- 1.1.0-alpha android release [\#46](https://github.com/ruffCode/yaba-kmm/pull/46) ([ruffCode](https://github.com/ruffCode))
 - Implement transaction search [\#43](https://github.com/ruffCode/yaba-kmm/pull/43) ([ruffCode](https://github.com/ruffCode))
 - move data fetching logic from viewmodels to common code closes \#41 [\#42](https://github.com/ruffCode/yaba-kmm/pull/42) ([ruffCode](https://github.com/ruffCode))
 - modularize shared code [\#40](https://github.com/ruffCode/yaba-kmm/pull/40) ([ruffCode](https://github.com/ruffCode))
