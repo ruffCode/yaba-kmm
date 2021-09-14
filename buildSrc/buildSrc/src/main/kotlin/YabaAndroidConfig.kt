@@ -17,8 +17,8 @@
 
 object YabaAndroidConfig {
     private const val versionMajor = 1
-    private const val versionMinor = 0
-    private const val versionPatch = 3
+    private const val versionMinor = 1
+    private const val versionPatch = 0
     const val minSdk = 29
     const val targetSdk = 31
     val versionCode = generateVersionCode()
