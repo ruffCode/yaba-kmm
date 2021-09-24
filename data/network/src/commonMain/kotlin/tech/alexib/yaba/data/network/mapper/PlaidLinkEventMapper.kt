@@ -15,7 +15,7 @@
  */
 package tech.alexib.yaba.data.network.mapper
 
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.api.Optional.Companion.presentIfNotNull
 import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
 import yaba.schema.CreateLinkEventMutation
 
@@ -23,9 +23,9 @@ internal fun PlaidLinkEventCreateRequest.toMutation(): CreateLinkEventMutation {
     return when (this) {
         is PlaidLinkEventCreateRequest.Exit -> CreateLinkEventMutation(
             type = "LinkExit",
-            requestId = Optional.Absent.presentIfNotNull(requestId),
-            errorCode = Optional.Absent.presentIfNotNull(errorCode),
-            errorType = Optional.Absent.presentIfNotNull(errorType),
+            requestId = presentIfNotNull(requestId),
+            errorCode = presentIfNotNull(errorCode),
+            errorType = presentIfNotNull(errorType),
             linkSessionId = linkSessionId
         )
         is PlaidLinkEventCreateRequest.Success -> CreateLinkEventMutation(

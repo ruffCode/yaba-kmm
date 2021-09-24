@@ -172,7 +172,7 @@ object Lib {
 object Version {
     const val kotlin = "1.5.30"
     const val sqlDelight = "1.5.1"
-    const val apollo = "3.0.0-alpha03"
+    const val apollo = "3.0.0-alpha06"
     const val compose = "1.1.0-alpha04"
     const val coroutines = "1.5.2-native-mt"
     const val ktLint = "0.42.1"

@@ -17,17 +17,20 @@ package tech.alexib.yaba.data.network.api
 
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
 import tech.alexib.yaba.data.domain.DataResult
 import tech.alexib.yaba.data.domain.dto.TransactionsUpdateDto
 import tech.alexib.yaba.data.domain.dto.UserDataDto
 import tech.alexib.yaba.data.network.apollo.YabaApolloClient
 import tech.alexib.yaba.data.network.mapper.toDto
 import yaba.schema.AllUserDataQuery
+import yaba.schema.TestSubSubscription
 import yaba.schema.TransactionsUpdateQuery
 
 interface UserDataApi {
     fun getTransactionsUpdate(updateId: Uuid): Flow<DataResult<TransactionsUpdateDto?>>
     fun getAllUserData(): Flow<DataResult<UserDataDto>>
+    fun testSub(): Flow<Int>
 
     class Impl(
         private val client: YabaApolloClient
@@ -41,6 +44,11 @@ interface UserDataApi {
         override fun getAllUserData(): Flow<DataResult<UserDataDto>> {
             val query = AllUserDataQuery()
             return client.query(query) { it.toDto() }
+        }
+
+        override fun testSub(): Flow<Int> {
+            val sub = TestSubSubscription("Alexi")
+            return client.subscribe(sub).mapLatest { it.dataOrThrow.testSub }
         }
     }
 }

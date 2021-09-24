@@ -16,6 +16,7 @@
 package tech.alexib.yaba.data.mock.api
 
 import com.benasher44.uuid.Uuid
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import tech.alexib.yaba.data.domain.DataResult
@@ -33,5 +34,12 @@ internal class UserDataApiMock : UserDataApi {
 
     override fun getAllUserData(): Flow<DataResult<UserDataDto>> = flow {
         emit(Success(UserDataDtoStubs.userData))
+    }
+
+    override fun testSub(): Flow<Int> = flow {
+        (0..500).forEach {
+            emit(it)
+            delay(1000)
+        }
     }
 }
