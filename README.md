@@ -5,7 +5,7 @@
 
 ![yaba logo](./assets/dark.gif) ![yaba logo](./assets/light.gif)
 
-## Kotlin Multiplatform Mobile
+## Kotlin Multiplatform Mobile ready (*only the Android app is being developed as I am just starting to learn Swift*)
 
 #### Learning in public
 
@@ -28,7 +28,7 @@ get fake data.
 Register with any email address you'd like, the format needs to be valid but nothing will be emailed
 to you.
 
-#### *You can also grab the latest signed APK from the releases tab.*####
+#### *You can also grab the latest signed APK from the releases tab.*
 
 ### Linking financial institutions
 
@@ -74,6 +74,10 @@ observers and interactors. Credit is given where used.
 ### [KaMPKit by Touchlab](https://github.com/touchlab/KaMPKit)
 
 Great starter template for KMM. I used the Koin setup logic as well as some Koin extensions.
+
+### [ComposeCookbook by Gurupreet Singh](https://github.com/Gurupreet/ComposeCookBook)
+
+Thanks for the pie chart!
 
 ## 📝 License
 
