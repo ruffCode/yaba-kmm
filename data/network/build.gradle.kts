@@ -21,4 +21,5 @@ configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
         )
     )
     packageName.set("yaba.schema")
+    generateSchema.set(true)
 }

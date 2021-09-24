@@ -371,6 +371,10 @@ input SetAccountHiddenInput {
   hide: Boolean!
 }
 
+type Subscription {
+  testSub(user: String!): Int!
+}
+
 type Transaction {
   accountId: UUID!
 
@@ -447,4 +451,5 @@ type UserWithTokenResponse {
 schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }
