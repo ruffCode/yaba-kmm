@@ -1,18 +1,15 @@
-![yaba logo](./assets/yaba.png)
-[![yaba](https://img.shields.io/badge/MAD-Score-green)](https://madscorecard.withgoogle.com/scorecards/117769992/)
-
 # yaba (yet another budgeting app)
+[![yaba](https://img.shields.io/badge/MAD-Score-green)](https://madscorecard.withgoogle.com/scorecards/4171954699/)
+[![yaba](https://img.shields.io/badge/KMM-Project-blue)](https://kotlinlang.org/lp/mobile)
+[![yaba](https://img.shields.io/badge/Jetpack-Compose-blue)](https://developer.android.com/jetpack/compose)
 
 ![yaba logo](./assets/dark.gif) ![yaba logo](./assets/light.gif)
+### Kotlin Multiplatform Mobile ready 
+#### (*only the Android app is being developed as I am just starting to learn Swift*)
 
-## Kotlin Multiplatform Mobile ready (*only the Android app is being developed as I am just starting to learn Swift*)
+An app which uses Plaid's APIs and allows users to track the balances and transactions for any financial institution they choose to link.
 
-#### Learning in public
-
-#### An app which uses Plaid's APIs and allows users to track the balances and transactions for any financial institution they choose to link.
-
-#### *This is a work in progress and for now, only the Android app is being developed as I am just
-starting to learn Swift.*
+*This is a work in progress and for now, only the Android app is being developed as I am just starting to learn Swift.*
 
 The [backend](https://github.com/ruffCode/yaba-server) is using Plaid's sandbox API, so you can only
 get fake data.

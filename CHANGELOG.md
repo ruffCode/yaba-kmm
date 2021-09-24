@@ -1,5 +1,22 @@
 # Changelog
 
+## [Unreleased](https://github.com/ruffcode/yaba-kmm/tree/HEAD)
+
+[Full Changelog](https://github.com/ruffcode/yaba-kmm/compare/v1.1.0-alpha...HEAD)
+
+**Implemented enhancements:**
+
+- migrate navigation to accompanist navigation-animation [\#48](https://github.com/ruffCode/yaba-kmm/issues/48)
+
+**Closed issues:**
+
+- update sandbox instructions [\#53](https://github.com/ruffCode/yaba-kmm/issues/53)
+- update apollo to 3.0.0-alpha06 [\#52](https://github.com/ruffCode/yaba-kmm/issues/52)
+
+**Merged pull requests:**
+
+- migrate to navigation-animation, update deps closes \#48 closes \#53 [\#54](https://github.com/ruffCode/yaba-kmm/pull/54) ([ruffCode](https://github.com/ruffCode))
+
 ## [v1.1.0-alpha](https://github.com/ruffcode/yaba-kmm/tree/v1.1.0-alpha) (2021-09-14)
 
 [Full Changelog](https://github.com/ruffcode/yaba-kmm/compare/v1.0.1-alpha...v1.1.0-alpha)
