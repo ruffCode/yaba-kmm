@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/ruffcode/yaba-kmm/tree/HEAD)
+## [v1.1.1-alpha](https://github.com/ruffcode/yaba-kmm/tree/v1.1.1-alpha) (2021-09-24)
 
-[Full Changelog](https://github.com/ruffcode/yaba-kmm/compare/v1.1.0-alpha...HEAD)
+[Full Changelog](https://github.com/ruffcode/yaba-kmm/compare/v1.1.0-alpha...v1.1.1-alpha)
 
 **Implemented enhancements:**
 
