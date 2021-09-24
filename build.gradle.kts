@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-serialization:1.5.21")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:1.5.30")
         classpath("dev.icerock.moko:resources-generator:0.16.1")
         classpath("com.squareup.sqldelight:gradle-plugin:1.5.1")
         classpath("com.apollographql.apollo3:apollo-gradle-plugin:3.0.0-alpha03")
@@ -27,7 +27,6 @@ allprojects {
 }
 
 subprojects {
-    val p = this
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
         kotlinOptions {
             jvmTarget = "11"
@@ -40,10 +39,10 @@ subprojects {
                     all {
                         languageSettings.apply {
                             progressiveMode = true
-                            useExperimentalAnnotation("kotlin.RequiresOptIn")
-                            useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-                            useExperimentalAnnotation("kotlinx.serialization.ExperimentalSerializationApi")
-                            useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                            optIn("kotlin.RequiresOptIn")
+                            optIn("kotlin.time.ExperimentalTime")
+                            optIn("kotlinx.serialization.ExperimentalSerializationApi")
+                            optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
                         }
                     }
                 }

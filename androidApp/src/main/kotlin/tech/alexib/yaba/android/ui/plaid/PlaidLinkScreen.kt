@@ -32,6 +32,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -39,8 +40,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.plaid.link.configuration.LinkTokenConfiguration
 import com.plaid.link.result.LinkResult
-import org.koin.androidx.compose.getViewModel
+import logcat.logcat
+import org.koin.androidx.compose.get
 import tech.alexib.yaba.android.LocalIsSandBoxProvider
 import tech.alexib.yaba.android.R
 import tech.alexib.yaba.android.ui.AddSpace
@@ -53,12 +56,10 @@ import tech.alexib.yaba.model.response.PlaidLinkResult
 
 @Composable
 fun PlaidLinkScreen(
-    navigateHome: () -> Unit,
     handleResult: (PlaidLinkScreenResult) -> Unit,
+    navigateHome: () -> Unit,
 ) {
-    val viewModel: PlaidLinkViewModel = getViewModel()
-
-    PlaidLinkScreen(viewModel, navigateHome = navigateHome, handleResult = handleResult)
+    PlaidLinkScreen(navigateHome, handleResult)
 }
 
 sealed class PlaidLinkScreenAction {
@@ -70,25 +71,28 @@ sealed class PlaidLinkScreenAction {
 
 
 @Composable
-fun PlaidLinkScreen(
-    viewModel: PlaidLinkViewModel,
+private fun PlaidLinkScreen(
     navigateHome: () -> Unit,
     handleResult: (PlaidLinkScreenResult) -> Unit,
+    viewModel: PlaidLinkViewModel = get(),
 ) {
-    val state =
-        rememberFlowWithLifecycle(flow = viewModel.result)
-            .collectAsState(initial = PlaidLinkResult.Empty)
+    val state by rememberFlowWithLifecycle(flow = viewModel.result)
+        .collectAsState(initial = PlaidLinkResult.Empty)
 
-    PlaidLinkScreen(state = state.value, viewModel) { action ->
+    PlaidLinkScreen(state = state, viewModel::linkInstitution) { action ->
         when (action) {
             PlaidLinkScreenAction.NavigateHome -> navigateHome()
             is PlaidLinkScreenAction.ShowError -> {
-                Log.e("PlaidLinkScreenAction", action.error)
+                logcat("PlaidLinkScreenAction") { action.error }
                 navigateHome()
             }
 
-            is PlaidLinkScreenAction.HandleLinkResult -> viewModel.handleResult(action.data)
-            is PlaidLinkScreenAction.HandleSuccess -> handleResult(action.data)
+            is PlaidLinkScreenAction.HandleLinkResult -> {
+                viewModel.handleResult(action.data)
+            }
+            is PlaidLinkScreenAction.HandleSuccess -> {
+                handleResult(action.data)
+            }
         }
     }
 }
@@ -96,9 +100,10 @@ fun PlaidLinkScreen(
 @Composable
 private fun PlaidLinkScreen(
     state: PlaidLinkResult,
-    viewModel: PlaidLinkViewModel,
+    linkInstitution: ((LinkTokenConfiguration) -> Unit) -> Unit,
     actioner: (PlaidLinkScreenAction) -> Unit
 ) {
+
     val isSandbox = LocalIsSandBoxProvider.current
     Box {
         when (state) {
@@ -113,12 +118,12 @@ private fun PlaidLinkScreen(
                 content = { linkLauncher ->
                     if (isSandbox.value) {
                         SandboxInstructions(modifier = Modifier.align(Alignment.Center)) {
-                            viewModel.linkInstitution { config ->
+                            linkInstitution { config ->
                                 linkLauncher.launch(config)
                             }
                         }
                     } else {
-                        viewModel.linkInstitution { config ->
+                        linkInstitution { config ->
                             linkLauncher.launch(config)
                         }
                     }
@@ -169,7 +174,7 @@ fun SandboxInstructions(modifier: Modifier = Modifier, onProceed: () -> Unit) {
         ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                 Text(
-                    text = "This is a sandbox version of yaba",
+                    text = stringResource(R.string.this_is_sandbox),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.h5
                         .copy(color = MaterialTheme.colors.primary),
@@ -191,14 +196,14 @@ fun SandboxInstructions(modifier: Modifier = Modifier, onProceed: () -> Unit) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                         Text(
-                            text = "usernames:\ncustom_user1\ncustom_user2",
+                            text = "usernames:\ncustom_user1\ncustom_user2\nuser_good",
                             style = MaterialTheme.typography.body1.copy(fontSize = 20.sp)
                         )
                     }
 
                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                         Text(
-                            text = "Any password will work",
+                            text = "password: pass_good",
                             style = MaterialTheme.typography.body1.copy(fontSize = 20.sp),
                             modifier = Modifier.padding(top = 20.dp)
                         )
@@ -210,7 +215,7 @@ fun SandboxInstructions(modifier: Modifier = Modifier, onProceed: () -> Unit) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                 Text(
                     text = stringResource(R.string.multifactor_instructions),
-                    style = MaterialTheme.typography.body1.merge(),
+                    style = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.primary).merge(),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(8.dp)
                 )

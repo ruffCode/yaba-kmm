@@ -15,24 +15,27 @@
  */
 package tech.alexib.yaba.android.ui.transactions
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import tech.alexib.yaba.android.navigation.NestedRoute
 import tech.alexib.yaba.data.store.TransactionDetailScreenState
 import tech.alexib.yaba.data.store.TransactionDetailStore
 import tech.alexib.yaba.util.stateInDefault
 
-class TransactionDetailScreenViewModel : ViewModel(), KoinComponent {
+class TransactionDetailScreenViewModel(handle: SavedStateHandle) : ViewModel(),
+    KoinComponent {
 
+    private val id = NestedRoute.TransactionDetail.getArg(handle)
     private val store: TransactionDetailStore by inject()
 
     val state: StateFlow<TransactionDetailScreenState> =
         store.state.stateInDefault(viewModelScope, TransactionDetailScreenState.Empty)
 
-    fun getDetail(id: Uuid) {
+    init {
         store.init(id)
     }
 }

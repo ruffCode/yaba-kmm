@@ -30,7 +30,7 @@ val storeModule: Module = module {
             get(),
             get(),
             getWith("PlaidLinkResultStore"),
-            params.get()
+            params.get(),
         )
     }
     single { PlaidItemsStore(get()) }

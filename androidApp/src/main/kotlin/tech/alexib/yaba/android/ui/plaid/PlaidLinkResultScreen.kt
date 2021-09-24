@@ -31,8 +31,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -41,61 +46,70 @@ import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.ui.AddSpace
 import tech.alexib.yaba.android.ui.components.BankLogo
 import tech.alexib.yaba.android.ui.components.LoadingScreen
+import tech.alexib.yaba.android.ui.components.LoadingScreenWithCrossFade
 import tech.alexib.yaba.android.util.base64ToBitmap
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.data.store.PlaidLinkResultScreenState
+import tech.alexib.yaba.data.store.PlaidLinkResultStore.Action
 import tech.alexib.yaba.data.store.PlaidLinkScreenResult
 
-sealed class PlaidLinkResultScreenAction {
-    object Submit : PlaidLinkResultScreenAction()
-    data class SetAccountShown(val plaidAccountId: String, val show: Boolean) :
-        PlaidLinkResultScreenAction()
-
-    object NavigateHome : PlaidLinkResultScreenAction()
-}
 
 @Composable
 fun PlaidLinkResultScreen(
-    result: PlaidLinkScreenResult,
+    plaidLinkResult: PlaidLinkScreenResult,
+    viewModel: PlaidLinkResultScreenViewModel = getViewModel(),
     navigateHome: () -> Unit
 ) {
-    val viewModel: PlaidLinkResultScreenViewModel = getViewModel()
-    viewModel.init(result)
 
+    val logo = remember { base64ToBitmap(plaidLinkResult.logo) }
+
+    LaunchedEffect(plaidLinkResult.id) {
+        viewModel.init(plaidLinkResult.accounts, plaidLinkResult.id)
+    }
+
+    PlaidLinkResultScreen(
+        logo = logo,
+        viewModel = viewModel
+    ) {
+        navigateHome()
+    }
+}
+
+@Composable
+private fun PlaidLinkResultScreen(
+    logo: Bitmap,
+    viewModel: PlaidLinkResultScreenViewModel,
+    navigateHome: () -> Unit
+) {
     val state by rememberFlowWithLifecycle(viewModel.state)
         .collectAsState(initial = PlaidLinkResultScreenState.Empty)
 
-    PlaidLinkResultScreen(result, state) { action ->
-        when (action) {
-            is PlaidLinkResultScreenAction.Submit -> viewModel.store.submitAccountsToHide()
-            is PlaidLinkResultScreenAction.SetAccountShown -> viewModel.store.setAccountShown(
-                action.plaidAccountId,
-                action.show
-            )
-            is PlaidLinkResultScreenAction.NavigateHome -> navigateHome()
+    SideEffect {
+        if (state.shouldNavigateHome) {
+            navigateHome()
         }
-
+    }
+    PlaidLinkResultScreen(logo, state) { action ->
+        viewModel.submit(action)
     }
 }
 
 @Composable
-fun PlaidLinkResultScreen(
-    result: PlaidLinkScreenResult,
+private fun PlaidLinkResultScreen(
+    logo: Bitmap,
     state: PlaidLinkResultScreenState,
-    actioner: (PlaidLinkResultScreenAction) -> Unit
+    actioner: (Action) -> Unit
 ) {
-    when {
-        state.loading && !state.shouldNavigateHome -> LoadingScreen()
-        state.shouldNavigateHome -> actioner(PlaidLinkResultScreenAction.NavigateHome)
-        else -> PlaidLinkResultScreen(
-            logo = base64ToBitmap(result.logo),
+
+    LoadingScreenWithCrossFade(loadingState = state.loading) {
+        PlaidLinkResultScreen(
+            logo = logo,
             accounts = state.accounts,
-            handleSubmit = { actioner(PlaidLinkResultScreenAction.Submit) },
+            handleSubmit = { actioner(Action.Submit) },
         ) { plaidAccountsId, show ->
-            actioner(PlaidLinkResultScreenAction.SetAccountShown(plaidAccountsId, show))
+            actioner(Action.SetAccountShown(plaidAccountsId, show))
         }
     }
-
 }
 
 
@@ -127,21 +141,7 @@ private fun PlaidLinkResultScreen(
                 AddSpace()
             }
             items(accounts) { item ->
-                ListItem(
-                    trailing = {
-                        Checkbox(
-                            checked = item.show,
-                            onCheckedChange = { setShowHide(item.plaidAccountId, it) }
-                        )
-                    },
-                    icon = {
-                        BankLogo(logoBitmap = logo)
-                    }
-                ) {
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Text(text = "${item.name}  ****${item.mask}")
-                    }
-                }
+                AccountItem(logo, item, setShowHide)
             }
         }
         Button(
@@ -160,3 +160,29 @@ private fun PlaidLinkResultScreen(
 }
 
 
+@Composable
+private fun AccountItem(
+    logo: Bitmap,
+    item: PlaidLinkScreenResult.Account,
+    setShowHide: (String, Boolean) -> Unit
+) {
+    var checked by remember { mutableStateOf(item.show) }
+    ListItem(
+        trailing = {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = {
+                    checked = it
+                    setShowHide(item.plaidAccountId, it)
+                }
+            )
+        },
+        icon = {
+            BankLogo(logoBitmap = logo)
+        }
+    ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            Text(text = "${item.name}  ****${item.mask}")
+        }
+    }
+}

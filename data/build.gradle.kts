@@ -2,6 +2,7 @@ plugins {
     id("android-lib")
     id("multiplatform-plugin")
     kotlin("plugin.serialization")
+    id("kotlin-parcelize")
     id("dev.icerock.mobile.multiplatform.android-manifest")
     id("static-analysis")
 }
@@ -10,8 +11,8 @@ kotlin {
     sourceSets {
         all {
             languageSettings.apply {
-                useExperimentalAnnotation("com.russhwolf.settings.ExperimentalSettingsApi")
-                useExperimentalAnnotation(
+                optIn("com.russhwolf.settings.ExperimentalSettingsApi")
+                optIn(
                     "com.russhwolf.settings.ExperimentalSettingsImplementation"
                 )
             }

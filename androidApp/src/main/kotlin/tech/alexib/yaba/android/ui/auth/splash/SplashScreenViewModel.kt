@@ -21,7 +21,7 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import tech.alexib.yaba.android.navigation.AuthRoute
+import tech.alexib.yaba.android.navigation.NestedRoute
 import tech.alexib.yaba.android.navigation.Route
 import tech.alexib.yaba.data.repository.AuthRepository
 
@@ -35,10 +35,10 @@ class SplashScreenViewModel(
         delay(100)
 
         when (authRepository.isLoggedIn().first()) {
-            true -> navController.navigate(Route.HomeFeed.route) { launchSingleTop = true }
+            true -> navController.navigate(NestedRoute.HomeFeed.createRoute(Route.HomeFeed)) { launchSingleTop = true }
             false -> if (authRepository.isShowOnBoarding().first()) navController
-                .navigate(AuthRoute.Registration.route)
-            else navController.navigate(AuthRoute.Login.route) {
+                .navigate(NestedRoute.Registration.createRoute(Route.Auth))
+            else navController.navigate(NestedRoute.Login.createRoute(Route.Auth)) {
                 launchSingleTop = true
             }
         }

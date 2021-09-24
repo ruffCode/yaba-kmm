@@ -15,25 +15,28 @@
  */
 package tech.alexib.yaba.android.ui.accounts.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.StateFlow
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
+import tech.alexib.yaba.android.navigation.NestedRoute
 import tech.alexib.yaba.data.store.AccountDetailScreenState
 import tech.alexib.yaba.data.store.AccountDetailStore
 import tech.alexib.yaba.util.stateInDefault
 
-class AccountDetailScreenViewModel : ViewModel(), KoinComponent {
-    private val store: AccountDetailStore by inject()
+class AccountDetailScreenViewModel(
+    savedStateHandle: SavedStateHandle,
+    store: AccountDetailStore
+) : ViewModel() {
 
+    private val params: AccountDetailScreenParams =
+        NestedRoute.AccountDetail.getArg(savedStateHandle)
     val state: StateFlow<AccountDetailScreenState> =
         store.state.stateInDefault(viewModelScope, AccountDetailScreenState.Empty)
 
-    fun init(accountId: Uuid, itemId: Uuid) {
-        store.init(accountId, itemId)
+
+    init {
+        store.init(params.accountId, params.itemId)
     }
 }
 

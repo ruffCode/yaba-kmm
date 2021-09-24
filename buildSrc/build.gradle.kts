@@ -18,6 +18,7 @@ dependencies {
     api(GradlePlugins.android)
     api("com.android.tools.build:builder:${GradleVersions.androidTools}")
     api("com.android.tools.build:builder-model:${GradleVersions.androidTools}")
+//    api("androidx.navigation:navigation-safe-args-gradle-plugin:2.4.0-alpha07")
 //    api(GradlePlugins.detekt)
     api(GradlePlugins.spotless)
     api(GradlePlugins.ktLint)

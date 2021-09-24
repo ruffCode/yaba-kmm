@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
@@ -38,30 +39,27 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.getViewModel
-import tech.alexib.yaba.android.R
+import tech.alexib.yaba.android.ui.components.BackArrowButton
 import tech.alexib.yaba.android.ui.components.LoadingScreenWithCrossFade
 import tech.alexib.yaba.android.ui.components.TransactionItem
 import tech.alexib.yaba.android.ui.theme.YabaTheme
@@ -91,11 +89,10 @@ private fun TransactionListScreen(
         initial = TransactionsStore.State.Empty
     )
 
-    val scope = rememberCoroutineScope()
     val loading = remember(state.transactions) { mutableStateOf(state.transactions.isEmpty()) }
 
-    SideEffect {
-        scope.launch {
+    LaunchedEffect(key1 = loading) {
+        if (loading.value) {
             delay(400)
             loading.value = false
         }
@@ -123,15 +120,13 @@ private fun TransactionListScreen(
                     .fillMaxWidth()
                     .wrapContentHeight(Alignment.CenterVertically)
             ) {
-                IconButton(
-                    onClick = {
-                        handleBack()
-                    },
-                    modifier = Modifier
+
+                BackArrowButton(
+                    Modifier
                         .align(Alignment.TopStart)
                         .padding(top = 4.dp)
                 ) {
-                    Icon(Icons.Filled.ArrowBack, stringResource(R.string.back_arrow))
+                    handleBack()
                 }
 
                 AnimatedVisibility(
@@ -139,6 +134,8 @@ private fun TransactionListScreen(
                     modifier = Modifier.align(Alignment.TopCenter)
                 ) {
                     val query = remember { mutableStateOf(TextFieldValue(state.query)) }
+
+                    val focusRequester = remember { FocusRequester() }
                     TextField(
                         value = query.value,
                         onValueChange = {
@@ -155,7 +152,9 @@ private fun TransactionListScreen(
                                     alpha = 0.4f
                                 )
                             ),
-
+                        keyboardActions = KeyboardActions {
+                            focusRequester.requestFocus()
+                        },
                         leadingIcon = {
                             AnimatedVisibility(visible = state.query.isEmpty()) {
                                 Icon(
