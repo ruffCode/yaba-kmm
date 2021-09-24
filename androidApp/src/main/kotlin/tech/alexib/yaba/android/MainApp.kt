@@ -23,6 +23,8 @@ import androidx.work.await
 import io.sentry.SentryLevel
 import io.sentry.android.core.SentryAndroid
 import kotlinx.coroutines.runBlocking
+import logcat.AndroidLogcatLogger
+import logcat.LogPriority
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.qualifier.named
@@ -57,7 +59,7 @@ class MainApp : Application() {
             workManagerFactory()
             modules(createAppModule(serverUrl, isSandbox), viewModelModule)
         }
-
+        AndroidLogcatLogger.installOnDebuggableApp(this, minPriority = LogPriority.VERBOSE)
         SentryAndroid.init(this) { options ->
             options.setBeforeSend { event, _ ->
                 if (SentryLevel.DEBUG == event.level) {

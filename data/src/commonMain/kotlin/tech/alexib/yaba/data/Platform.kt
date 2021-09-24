@@ -21,3 +21,12 @@ package tech.alexib.yaba.data
 @Retention(AnnotationRetention.BINARY)
 @OptionalExpectation
 expect annotation class Immutable()
+
+@OptIn(ExperimentalMultiplatform::class)
+@MustBeDocumented
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.BINARY)
+@OptionalExpectation
+expect annotation class Parcelize()
+
+expect interface Parcelable

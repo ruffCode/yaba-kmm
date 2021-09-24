@@ -15,6 +15,7 @@
  */
 package tech.alexib.yaba.android.ui.transactions
 
+import android.os.Bundle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,13 +30,11 @@ import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ReceiptLong
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -46,8 +45,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.benasher44.uuid.Uuid
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.getStateViewModel
+import tech.alexib.yaba.android.ui.components.BackArrowButton
 import tech.alexib.yaba.android.ui.components.LoadingScreenWithCrossFade
 import tech.alexib.yaba.android.ui.theme.MoneyGreen
 import tech.alexib.yaba.android.ui.theme.YabaTheme
@@ -58,11 +57,11 @@ import tech.alexib.yaba.data.store.TransactionDetailScreenState
 import tech.alexib.yaba.model.TransactionDetail
 import tech.alexib.yaba.stubs.TransactionStubs
 
-
 @Composable
-fun TransactionDetailScreen(id: Uuid, onBackPressed: () -> Unit) {
-    val viewModel: TransactionDetailScreenViewModel = getViewModel()
-    viewModel.getDetail(id)
+fun TransactionDetailScreen(bundle: Bundle?, onBackPressed: () -> Unit) {
+
+    val viewModel: TransactionDetailScreenViewModel =
+        getStateViewModel(state = { bundle ?: Bundle() })
 
     TransactionDetailScreen(viewModel, onBackPressed)
 }
@@ -94,16 +93,14 @@ private fun TransactionDetailScreen(
                     .fillMaxWidth()
                     .wrapContentHeight(Alignment.CenterVertically),
             ) {
-                IconButton(
-                    onClick = {
-                        actioner(TransactionDetailScreenAction.NavigateBack)
-                    },
+
+                BackArrowButton(
                     modifier = Modifier
                         .align(Alignment.TopStart)
-
                 ) {
-                    Icon(Icons.Filled.ArrowBack, "Back arrow")
+                    actioner(TransactionDetailScreenAction.NavigateBack)
                 }
+
                 Text(
                     text = "Transaction detail",
                     modifier = Modifier

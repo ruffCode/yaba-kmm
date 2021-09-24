@@ -21,9 +21,11 @@ object Lib {
     const val statelyConcurrency = "co.touchlab:stately-concurrency:1.1.10"
     const val desugar = "com.android.tools:desugar_jdk_libs:1.1.5"
     const val uuid = "com.benasher44:uuid:0.3.0"
-    const val turbine = "app.cash.turbine:turbine:0.6.0"
+    const val turbine = "app.cash.turbine:turbine:0.6.1"
     const val junit = "junit:junit:4.13.2"
     const val robolectric = "org.robolectric:robolectric:4.6.1"
+    const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.7"
+    const val logCat = "com.squareup.logcat:logcat:0.1"
 
     object Koin {
         private const val version = "3.1.2"
@@ -49,7 +51,7 @@ object Lib {
     }
 
     object MultiplatformSettings {
-        private const val version = "0.7.7"
+        private const val version = "0.8"
         const val settings = "com.russhwolf:multiplatform-settings:$version"
         const val coroutines = "com.russhwolf:multiplatform-settings-coroutines:$version"
         const val datastore = "com.russhwolf:multiplatform-settings-datastore:$version"
@@ -58,18 +60,27 @@ object Lib {
 
     object AndroidX {
 
-        const val activity = "androidx.activity:activity-compose:1.3.0"
+        const val activity = "androidx.activity:activity-compose:1.3.1"
         const val biometric = "androidx.biometric:biometric-ktx:1.2.0-alpha03"
         const val browser = "androidx.browser:browser:1.3.0"
         const val constrainLayout =
             "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02"
         const val crypto = "androidx.security:security-crypto-ktx:1.1.0-alpha03"
         const val dataStore = "androidx.datastore:datastore-preferences:1.0.0"
-        const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha04"
+
+        //to match navigation-animation
+        const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha07"
         const val startup = "androidx.startup:startup-runtime:1.0.0"
-        const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
-        const val work = "androidx.work:work-runtime-ktx:2.7.0-alpha05"
-        const val workMultiProcess = "androidx.work:work-multiprocess:2.7.0-alpha05"
+        const val work = "androidx.work:work-runtime-ktx:2.7.0-beta01"
+        const val workMultiProcess = "androidx.work:work-multiprocess:2.7.0-beta01"
+
+        object Lifecycle {
+            private const val version = "2.4.0-beta01"
+            const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
+            const val runtime = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
+            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
+            const val savedState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:$version"
+        }
     }
 
     object KotlinX {
@@ -120,7 +131,7 @@ object Lib {
 
 
     object Accompanist {
-        private const val version = "0.17.0"
+        private const val version = "0.18.0"
         const val coil = "com.google.accompanist:accompanist-coil:0.15.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val insetsUi = "com.google.accompanist:accompanist-insets-ui:$version"
@@ -159,13 +170,12 @@ object Lib {
 }
 
 object Version {
-    const val kotlin = "1.5.21"
+    const val kotlin = "1.5.30"
     const val sqlDelight = "1.5.1"
     const val apollo = "3.0.0-alpha03"
-    const val compose = "1.0.1"
-    const val coroutines = "1.5.1-native-mt"
+    const val compose = "1.1.0-alpha04"
+    const val coroutines = "1.5.2-native-mt"
     const val ktLint = "0.42.1"
-
 
     object AndroidX {
         val test = "1.4.0"
@@ -175,7 +185,7 @@ object Version {
 
 object GradleVersions {
     const val detekt = "1.17.1"
-    const val androidTools = "7.1.0-alpha11"
+    const val androidTools = "7.1.0-alpha12"
     const val ktLint = "10.1.0"
     const val spotless = "5.14.1"
     const val googleServices = "4.3.8"

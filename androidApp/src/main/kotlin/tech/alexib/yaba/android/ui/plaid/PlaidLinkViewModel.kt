@@ -15,7 +15,6 @@
  */
 package tech.alexib.yaba.android.ui.plaid
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Kermit
@@ -37,6 +36,7 @@ import tech.alexib.yaba.data.repository.ItemRepository
 import tech.alexib.yaba.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
 import tech.alexib.yaba.model.response.PlaidLinkResult
+import tech.alexib.yaba.model.response.plaidLinkResultSuccessStub
 import tech.alexib.yaba.util.stateInDefault
 
 class PlaidLinkViewModel(
@@ -48,10 +48,20 @@ class PlaidLinkViewModel(
         resultFlow.stateInDefault(viewModelScope, PlaidLinkResult.Empty)
     private val log: Kermit by inject { parametersOf("PlaidLinkViewModel") }
 
+    //uncomment to debug PlaidLinkResultScreen
+//    init {
+//        log.d { "PlaidLinkViewModel init" }
+//        resultFlow.value = plaidLinkResultSuccessStub
+//    }
     fun handleResult(linkResult: LinkResult) {
         when (linkResult) {
             is LinkSuccess -> {
-                Log.d("PLAID SUCCESS", linkResult.metadata.toString())
+                log.d {
+                    """
+                    PLAID SUCCESS
+                    ${linkResult.metadata}
+                """.trimIndent()
+                }
                 resultFlow.value = PlaidLinkResult.AwaitingResult
                 handleSuccess(linkResult)
             }
@@ -70,7 +80,7 @@ class PlaidLinkViewModel(
 
                 repository.sendLinkEvent(linkResult.toRequest())
             } else {
-                Log.d("PLAID EXIT", linkResult.metadata.toString())
+                log.d { "PLAID EXIT  ${linkResult.metadata}" }
             }
         }
     }

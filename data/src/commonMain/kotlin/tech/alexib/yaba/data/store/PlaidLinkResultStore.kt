@@ -18,14 +18,16 @@ package tech.alexib.yaba.data.store
 import co.touchlab.kermit.Kermit
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
 import tech.alexib.yaba.data.Immutable
+import tech.alexib.yaba.data.Parcelable
+import tech.alexib.yaba.data.Parcelize
 import tech.alexib.yaba.data.interactor.AddItem
 import tech.alexib.yaba.data.interactor.SetAccountsToHide
 import tech.alexib.yaba.data.util.SupervisorScope
@@ -39,14 +41,14 @@ class PlaidLinkResultStore(
     private val addItem: AddItem,
     private val setAccountsToHide: SetAccountsToHide,
     private val log: Kermit,
-    dispatcher: CoroutineDispatcher
+    dispatcher: CoroutineDispatcher,
 ) {
     private val coroutineScope = SupervisorScope(dispatcher)
-    private lateinit var itemId: Uuid
     private val loader = ObservableLoadingCounter()
     private val accountsFlow = MutableStateFlow<List<PlaidLinkScreenResult.Account>>(emptyList())
     private val shouldNavigateHomeFlow = MutableStateFlow(false)
-
+    private lateinit var itemId: Uuid
+    private val actions = MutableSharedFlow<Action>()
     val state = combine(
         loader.observable,
         accountsFlow,
@@ -55,62 +57,94 @@ class PlaidLinkResultStore(
         PlaidLinkResultScreenState(loading, shouldNavigate, accounts)
     }
 
-    fun init(plaidLinkScreenResult: PlaidLinkScreenResult) {
-        itemId = plaidLinkScreenResult.id
-        accountsFlow.value = plaidLinkScreenResult.accounts
+    fun init(itemId: Uuid, accounts: List<PlaidLinkScreenResult.Account>) {
+        this.itemId = itemId
+        accountsFlow.value = accounts
     }
 
-    fun setAccountShown(plaidAccountId: String, show: Boolean) {
-        val currentAccounts = accountsFlow.value.toMutableList()
-        val currentItem = currentAccounts.first { it.plaidAccountId == plaidAccountId }
-        currentAccounts[currentAccounts.indexOf(currentItem)] = currentItem.copy(show = show)
-        accountsFlow.value = currentAccounts
+    fun submit(action: Action) {
+        coroutineScope.launch {
+            actions.emit(action)
+        }
     }
 
-    fun submitAccountsToHide() {
-        val accountsToHide = accountsFlow.value.filter { !it.show }.map { it.plaidAccountId }
-        coroutineScope.launch(Dispatchers.Default) {
-            setAccountsToHide(SetAccountsToHide.Params(itemId, accountsToHide)).collect {
-                when (it) {
-                    is InvokeStarted -> loader.addLoader()
-                    is InvokeSuccess -> addItem(AddItem.Params(itemId)).collect { status ->
-                        if (status != InvokeStarted) {
-                            loader.removeLoader()
-                            shouldNavigateHomeFlow.emit(true)
-                        }
+    init {
+        coroutineScope.launch {
+            actions.collectLatest { action ->
+                when (action) {
+                    is Action.SetAccountShown -> {
+                        accountsFlow.emit(getUpdatedAccounts(action.plaidAccountId, action.show))
                     }
-                    is InvokeError -> {
-                        log.e(it.throwable) { "Error loading transactions" }
-                        loader.removeLoader()
-                        shouldNavigateHomeFlow.emit(true)
+                    is Action.Submit -> {
+                        val accountsToHide = accountsFlow.value
+                            .filter { !it.show }
+                            .map { it.plaidAccountId }
+                        setAccountsToHide(
+                            SetAccountsToHide.Params(itemId, accountsToHide)
+                        ).collect {
+                            when (it) {
+                                is InvokeStarted -> loader.addLoader()
+                                is InvokeSuccess -> {
+                                    val job = launch {
+                                        addItem.executeSync(AddItem.Params(itemId))
+                                    }
+                                    job.invokeOnCompletion {
+                                        loader.removeLoader()
+                                    }
+                                    job.join()
+                                    shouldNavigateHomeFlow.emit(true)
+                                }
+                                is InvokeError -> {
+                                    log.e(it.throwable) { "Error loading transactions" }
+                                    loader.removeLoader()
+                                    shouldNavigateHomeFlow.emit(true)
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
+    private fun getUpdatedAccounts(
+        plaidAccountId: String,
+        show: Boolean
+    ): List<PlaidLinkScreenResult.Account> {
+        val currentAccounts = accountsFlow.value.toMutableList()
+        val currentItem = currentAccounts.first { it.plaidAccountId == plaidAccountId }
+        currentAccounts[currentAccounts.indexOf(currentItem)] = currentItem.copy(show = show)
+        return currentAccounts
+    }
+
     fun dispose() {
         coroutineScope.clear()
+    }
+
+    sealed class Action {
+        object Submit : Action()
+        data class SetAccountShown(val plaidAccountId: String, val show: Boolean) :
+            Action()
     }
 }
 
 @Immutable
-@Serializable
+@Parcelize
 data class PlaidLinkScreenResult(
     @Contextual
     val id: Uuid,
     val name: String,
     val logo: String = defaultLogoBase64,
     val accounts: List<Account>
-) {
+) : Parcelable {
     @Immutable
-    @Serializable
+    @Parcelize
     data class Account(
         val mask: String,
         val name: String,
         val plaidAccountId: String,
         var show: Boolean = true
-    )
+    ) : Parcelable
 }
 
 @Immutable

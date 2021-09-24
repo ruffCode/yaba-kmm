@@ -29,30 +29,27 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.benasher44.uuid.Uuid
-import org.koin.androidx.compose.getViewModel
+import tech.alexib.yaba.android.R
 import tech.alexib.yaba.android.ui.AddSpace
+import tech.alexib.yaba.android.ui.components.BackArrowButton
 import tech.alexib.yaba.android.ui.components.BankLogoSmall
 import tech.alexib.yaba.android.ui.components.Money
-import tech.alexib.yaba.android.ui.components.SlideInContent
 import tech.alexib.yaba.android.ui.components.TransactionItem
 import tech.alexib.yaba.android.ui.components.YabaRow
 import tech.alexib.yaba.android.ui.transactions.TransactionDateHeader
@@ -63,19 +60,6 @@ import tech.alexib.yaba.model.Account
 
 @Composable
 fun AccountDetailScreen(
-    params: AccountDetailScreenParams,
-    onBack: () -> Unit,
-    onTransactionSelected: (Uuid) -> Unit
-) {
-    val viewModel: AccountDetailScreenViewModel = getViewModel()
-
-    viewModel.init(params.accountId, params.itemId)
-
-    AccountDetailScreen(viewModel, onBack, onTransactionSelected)
-}
-
-@Composable
-private fun AccountDetailScreen(
     viewModel: AccountDetailScreenViewModel,
     onBack: () -> Unit,
     onTransactionSelected: (Uuid) -> Unit
@@ -98,6 +82,7 @@ private fun AccountDetailScreen(
     state: AccountDetailScreenState,
     actioner: (AccountDetailScreenAction) -> Unit
 ) {
+
     Scaffold(
         topBar = {
             Box(
@@ -105,14 +90,9 @@ private fun AccountDetailScreen(
                     .fillMaxWidth()
                     .wrapContentHeight(Alignment.CenterVertically),
             ) {
-                IconButton(
-                    onClick = {
-                        actioner(AccountDetailScreenAction.NavigateBack)
-                    },
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                ) {
-                    Icon(Icons.Filled.ArrowBack, "Back arrow")
+                BackArrowButton( modifier = Modifier
+                    .align(Alignment.TopStart)) {
+                    actioner(AccountDetailScreenAction.NavigateBack)
                 }
                 state.plaidItem?.let {
                     BankLogoSmall(
@@ -129,17 +109,15 @@ private fun AccountDetailScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(4.dp),
         ) {
 
             item {
-                SlideInContent(visible = state.account != null) {
-                    val modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp, horizontal = 4.dp)
-
-                    state.account?.let {
-                        AccountDetailHeader(account = it, modifier)
-                    }
+                val modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 4.dp)
+                state.account?.let {
+                    AccountDetailHeader(account = it, modifier)
                 }
             }
             if (state.transactions.isEmpty()) {
@@ -153,7 +131,7 @@ private fun AccountDetailScreen(
                     ) {
                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                             Text(
-                                text = "There are no transactions available for this account",
+                                text = stringResource(R.string.no_transactions_for_account),
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.body1.merge(),
                                 modifier = Modifier.paddingFromBaseline(top = 30.dp)
@@ -171,8 +149,7 @@ private fun AccountDetailScreen(
                         TransactionItem(
                             transaction = transaction,
                             needsDivider,
-
-                        ) {
+                            ) {
                             actioner(AccountDetailScreenAction.OnTransactionSelected(it))
                         }
                     }
@@ -201,7 +178,7 @@ private fun AccountDetailHeader(account: Account, modifier: Modifier = Modifier)
                 textStyle = TextStyle(fontSize = 20.sp)
             )
             AddSpace(8.dp)
-            Text(text = "Current balance", style = MaterialTheme.typography.body1)
+            Text(text = stringResource(R.string.current_balance), style = MaterialTheme.typography.body1)
             AddSpace()
             Text(
                 text = "${account.name} ****${account.mask}",
@@ -210,19 +187,19 @@ private fun AccountDetailHeader(account: Account, modifier: Modifier = Modifier)
             )
             Divider()
             account.availableBalance?.let {
-                YabaRow(name = "Available balance") {
+                YabaRow(name = stringResource(R.string.available_balance)) {
                     Money(amount = it)
                 }
                 Divider()
             }
             account.creditLimit?.let {
-                YabaRow(name = "Total limit") {
+                YabaRow(name = stringResource(R.string.total_limit)) {
                     Money(amount = it)
                 }
                 Divider()
             }
 
-            YabaRow(name = "Institution", value = account.institutionName)
+            YabaRow(name = stringResource(R.string.institution), value = account.institutionName)
         }
     }
 }

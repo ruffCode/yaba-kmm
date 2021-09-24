@@ -29,12 +29,10 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import co.touchlab.kermit.Kermit
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import tech.alexib.yaba.android.ui.MainAppLayout
 import tech.alexib.yaba.android.ui.theme.YabaTheme
@@ -52,7 +50,6 @@ val LocalIsSandBoxProvider = staticCompositionLocalOf<IsSandbox>() {
 class MainActivity : AppCompatActivity(), KoinComponent {
 
     private val appSettings: AppSettings by inject()
-    private val log: Kermit by inject { parametersOf("MainActivity") }
     private val isSandBox: Boolean by inject(named("isSandbox"))
 
     @SuppressLint("SourceLockedOrientationActivity")

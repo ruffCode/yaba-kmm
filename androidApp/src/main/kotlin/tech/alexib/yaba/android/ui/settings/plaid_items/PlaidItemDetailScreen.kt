@@ -29,16 +29,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
 import kotlinx.parcelize.Parcelize
-import org.koin.androidx.compose.getViewModel
+import tech.alexib.yaba.android.ui.components.BackArrowButton
 import tech.alexib.yaba.android.ui.components.BankLogo
 import tech.alexib.yaba.android.util.base64ToBitmap
 import tech.alexib.yaba.model.AccountSubtype
@@ -58,10 +54,30 @@ import tech.alexib.yaba.model.PlaidItemWithAccounts
 
 @Composable
 fun PlaidItemDetailScreen(
-    item: PlaidItemDetail,
+    viewModel: PlaidItemDetailScreenViewModel,
     handleBack: () -> Unit,
 ) {
-    val viewModel: PlaidItemDetailScreenViewModel = getViewModel()
+    PlaidItemDetailScreen(
+        item = viewModel.item,
+        handleBack = { handleBack() },
+        unlinkItem = { viewModel.unlinkItem() },
+        setAccountHidden = { hidden: Boolean, accountId: Uuid ->
+            viewModel.setAccountHidden(
+                hidden,
+                accountId
+            )
+        }
+    )
+}
+
+@Composable
+private fun PlaidItemDetailScreen(
+    item: PlaidItemDetail,
+    handleBack: () -> Unit,
+    unlinkItem: () -> Unit,
+    setAccountHidden: (hidden: Boolean, accountId: Uuid) -> Unit
+
+) {
     Scaffold(
         topBar = {
             Box(
@@ -69,21 +85,20 @@ fun PlaidItemDetailScreen(
                     .fillMaxWidth()
                     .wrapContentHeight(Alignment.CenterVertically)
             ) {
-                IconButton(
+                BackArrowButton(
                     onClick = handleBack,
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(top = 4.dp)
-                ) {
-                    Icon(Icons.Filled.ArrowBack, "Back arrow")
-                }
+                )
+
                 BankLogo(
                     modifier = Modifier.align(Alignment.TopCenter),
                     logoBitmap = base64ToBitmap(item.base64Logo)
                 )
                 TextButton(
                     onClick = {
-                        viewModel.unlinkItem(item.id)
+                        unlinkItem()
                         handleBack()
                     },
                     modifier = Modifier
@@ -98,7 +113,7 @@ fun PlaidItemDetailScreen(
         PlaidItemDetailScreen(
             item = item,
             setAccountHidden = { hidden, accountId ->
-                viewModel.setAccountHidden(hidden, accountId)
+                setAccountHidden(hidden, accountId)
             }
         )
     }
@@ -197,6 +212,7 @@ fun AccountItemDetail(account: PlaidItemDetail.Account, onChange: (Uuid, Boolean
         Divider()
     }
 }
+
 
 @Suppress("ConstructorParameterNaming")
 @Parcelize

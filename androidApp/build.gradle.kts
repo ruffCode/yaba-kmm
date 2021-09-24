@@ -10,12 +10,13 @@ plugins {
     id("io.sentry.android.gradle") version "2.1.4"
 }
 
+
 val hasReleaseKey: Boolean = project.rootProject.file("release/yaba-release.jks").exists()
 
 dependencies {
 
     implementation(projects.data)
-    implementation("androidx.core:core-ktx:1.7.0-alpha02")
+//    implementation("androidx.core:core-ktx:1.7.0-beta01")
     implementation("com.google.android.material:material:1.4.0")
     implementation(Lib.Compose.animation)
     implementation(Lib.Compose.foundation)
@@ -30,17 +31,20 @@ dependencies {
     implementation(platform(Lib.KotlinX.Coroutines.bom))
     implementation(Lib.KotlinX.Coroutines.core)
     implementation(Lib.KotlinX.Coroutines.android)
-    implementation(Lib.Koin.core)
+
     implementation(Lib.Koin.android)
     implementation(Lib.Koin.compose)
     implementation(Lib.kermit)
     implementation(Lib.KotlinX.dateTime)
     implementation(Lib.KotlinX.Serialization.json)
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha03")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-beta01")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0-beta01")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-beta01")
     implementation("androidx.activity:activity-compose:1.3.1")
-    //2.4.0-alpha05 uses crossfade by default and breaks the app
-    implementation("androidx.navigation:navigation-compose:2.4.0-alpha04")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
+
+    implementation(Lib.Accompanist.navigationAnimation)
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0-beta01")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02")
     implementation("androidx.core:core-splashscreen:1.0.0-alpha01")
     implementation("com.plaid.link:sdk-core:3.5.1")
@@ -72,6 +76,8 @@ dependencies {
     testImplementation(Lib.AndroidXTest.robolectric)
     testImplementation(Lib.AndroidXTest.mockito)
     testImplementation(Lib.KotlinX.Coroutines.test)
+    debugImplementation(Lib.leakCanary)
+    implementation(Lib.logCat)
 }
 
 android {
@@ -165,17 +171,18 @@ android {
         freeCompilerArgs = freeCompilerArgs + listOf(
             "-Xopt-in=kotlin.RequiresOptIn",
             "-Xskip-prerelease-check",
-            "-Xuse-experimental=kotlin.Experimental",
-            "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "-Xuse-experimental=kotlinx.coroutines.FlowPreview",
-            "-Xuse-experimental=kotlin.ExperimentalStdlibApi",
-            "-Xuse-experimental=androidx.compose.foundation.ExperimentalFoundationApi",
-            "-Xuse-experimental=androidx.compose.material.ExperimentalMaterialApi",
-            "-Xuse-experimental=androidx.compose.animation.ExperimentalAnimationApi",
-            "-Xuse-experimental=kotlin.time.ExperimentalTime",
-            "-Xuse-experimental=androidx.compose.ui.ExperimentalComposeUiApi",
-            "-Xuse-experimental=org.koin.core.KoinExperimentalAPI",
-            "-Xuse-experimental=coil.annotation.ExperimentalCoilApi"
+            "-Xopt-in=kotlin.Experimental",
+            "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+            "-Xopt-in=kotlinx.coroutines.FlowPreview",
+            "-Xopt-in=kotlin.ExperimentalStdlibApi",
+            "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+            "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi",
+            "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi",
+            "-Xopt-in=kotlin.time.ExperimentalTime",
+            "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi",
+            "-Xopt-in=org.koin.core.KoinExperimentalAPI",
+            "-Xopt-in=coil.annotation.ExperimentalCoilApi",
+            "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi"
         )
     }
     packagingOptions {

@@ -15,22 +15,28 @@
  */
 package tech.alexib.yaba.android.ui.settings.plaid_items
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import tech.alexib.yaba.android.navigation.NestedRoute
 import tech.alexib.yaba.data.repository.AccountRepository
 import tech.alexib.yaba.data.repository.ItemRepository
 
-class PlaidItemDetailScreenViewModel : ViewModel(), KoinComponent {
+class PlaidItemDetailScreenViewModel(savedStateHandle: SavedStateHandle) : ViewModel(),
+    KoinComponent {
+
+    val item = NestedRoute.InstitutionDetail.getArg(savedStateHandle)
 
     private val accountRepository: AccountRepository by inject()
     private val itemRepository: ItemRepository by inject()
-    fun unlinkItem(itemId: Uuid) {
+
+    fun unlinkItem() {
         viewModelScope.launch {
-            itemRepository.unlinkItem(itemId)
+            itemRepository.unlinkItem(item.id)
         }
     }
 

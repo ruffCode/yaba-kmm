@@ -32,7 +32,6 @@ import androidx.compose.ui.Alignment
 
 @Composable
 fun SlideInContent(visible: Boolean, content: @Composable () -> Unit) {
-
     val enterFadeIn = remember {
         fadeIn(
             animationSpec = TweenSpec(

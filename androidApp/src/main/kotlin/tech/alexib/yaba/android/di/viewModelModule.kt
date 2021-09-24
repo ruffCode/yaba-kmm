@@ -1,6 +1,8 @@
 package tech.alexib.yaba.android.di
 
+import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 import tech.alexib.yaba.android.fcm.PushTokenManagerImpl
 import tech.alexib.yaba.android.ui.accounts.AccountsScreenViewModel
@@ -24,15 +26,17 @@ val viewModelModule = module {
     viewModel { LoginScreenViewModel(get(), get()) }
     viewModel { RegisterScreenViewModel() }
     viewModel { SettingsScreenViewModel() }
-    viewModel { PlaidLinkViewModel(get()) }
-    viewModel { PlaidLinkResultScreenViewModel() }
+    single { PlaidLinkViewModel(get()) }
+    single {
+        PlaidLinkResultScreenViewModel()
+    }
     viewModel { BiometricSetupScreenViewModel() }
     viewModel { HomeViewModel() }
     viewModel { PlaidItemsScreenViewModel() }
-    viewModel { PlaidItemDetailScreenViewModel() }
+    viewModel { PlaidItemDetailScreenViewModel(get()) }
     viewModel { TransactionListScreenViewModel() }
-    viewModel { TransactionDetailScreenViewModel() }
+    viewModel { TransactionDetailScreenViewModel(get()) }
     single<PushTokenManager> { PushTokenManagerImpl() }
     viewModel { AccountsScreenViewModel() }
-    viewModel { AccountDetailScreenViewModel() }
+    viewModel { AccountDetailScreenViewModel(get(), get()) }
 }
