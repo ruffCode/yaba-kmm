@@ -11,6 +11,7 @@
 
 **Bug fixes:**
 
+- Spending widget disappears when no transactions in selected time frame [\#60](https://github.com/ruffCode/yaba-kmm/issues/60)
 - Transfer and Payment should be excluded from spending categories [\#55](https://github.com/ruffCode/yaba-kmm/issues/55)
 
 ## [v1.1.1-alpha](https://github.com/ruffCode/yaba-kmm/releases/tag/v1.1.1-alpha) (2021-09-24)
