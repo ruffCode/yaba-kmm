@@ -23,3 +23,19 @@ dependencies {
     api(GradlePlugins.spotless)
     api(GradlePlugins.ktLint)
 }
+
+tasks {
+    build {
+        doLast {
+
+            val version = YabaAndroidConfig.versionName
+            val file = rootDir.resolve("../version.properties")
+            val newVersion = file.readText().replaceAfter("version=", version)
+            file.writeText(newVersion)
+
+            println("""
+                writing new version $version
+            """.trimIndent())
+        }
+    }
+}
