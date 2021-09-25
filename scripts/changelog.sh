@@ -3,7 +3,7 @@ set -e
 #V_PROP="../version.properties"
 #CURRENT_VERSION=$(grep -w version $V_PROP | cut -d '=' -f 2 | tr -d '\n')
 RELEASE_URL="https://github.com/ruffCode/yaba-kmm/releases/tag/%s"
-since=$(source tags.sh; previous_tag)
+since=$(source scripts/tags.sh; previous_tag)
 prev=$(git describe --tags 2>/dev/null || git rev-parse --short HEAD)
 function release() {
     github_changelog_generator -u ruffcode -p yaba-kmm -t "$GITHUB_CHANGELOG_API_KEY" \

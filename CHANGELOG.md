@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/ruffcode/yaba-kmm/compare/v1.1.1-alpha...HEAD)
 
+**Enhancements:**
+
+- add detekt [\#58](https://github.com/ruffCode/yaba-kmm/issues/58)
+
 **Bug fixes:**
 
 - Transfer and Payment should be excluded from spending categories [\#55](https://github.com/ruffCode/yaba-kmm/issues/55)
