@@ -37,14 +37,18 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -53,6 +57,7 @@ import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.R
 import tech.alexib.yaba.android.ui.AddSpace
 import tech.alexib.yaba.android.ui.components.LoadingScreenWithCrossFade
+import tech.alexib.yaba.android.ui.components.NoSpendingInSelectedRange
 import tech.alexib.yaba.android.ui.components.SlideInContent
 import tech.alexib.yaba.android.ui.components.SpendingWidget
 import tech.alexib.yaba.android.ui.components.TotalCashBalanceRow
@@ -158,14 +163,29 @@ private fun Home(
                     }
                 }
 
-                SlideInContent(visible = state.spendingByCategory?.spend?.isNotEmpty() ?: false) {
-                    if (!state.spendingByCategory?.spend.isNullOrEmpty()) {
-                        SpendingWidget(state.spendingByCategory!!) {
-                            coroutineScope.launch {
-                                sheetState.show()
+                var spendingVisible by remember { mutableStateOf(false) }
+
+                state.spendingByCategory?.let {
+                    when {
+                        it.spend.isEmpty() -> SlideInContent(visible = spendingVisible) {
+                            NoSpendingInSelectedRange(it.rangeOption.name) {
+                                coroutineScope.launch {
+                                    sheetState.show()
+                                }
+                            }
+                        }
+                        else -> SlideInContent(visible = spendingVisible) {
+                            SpendingWidget(it) {
+                                coroutineScope.launch {
+                                    sheetState.show()
+                                }
                             }
                         }
                     }
+                }
+                LaunchedEffect(key1 = state.spendingByCategory == null) {
+                    delay(500)
+                    spendingVisible = true
                 }
             }
         }
@@ -213,6 +233,7 @@ private fun RecentTransactions(
         }
     }
 }
+
 @Suppress("ComplexMethod")
 @Composable
 private fun DateRangeBottomSheet(
