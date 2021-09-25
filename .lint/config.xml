@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <lint>
-<issue id="GoogleAppIndexingWarning" severity="ignore" />
-<issue id="UnusedIds" severity="ignore" />
-<issue id="UnusedResources" severity="ignore" />
-<issue id="InvalidPackage" severity="ignore">
-<ignore path="**/**.jar" />
-</issue>
+    <issue id="GoogleAppIndexingWarning" severity="ignore" />
+    <issue id="UnusedIds" severity="ignore" />
+    <issue id="UnusedResources" severity="ignore" />
+    <issue id="InvalidPackage" severity="ignore">
+        <ignore path="**/**.jar" />
+    </issue>
+    <issue id="GradlePluginVersion" severity="ignore" />
+    <issue id="GradleDependency" severity="ignore" />
 </lint>

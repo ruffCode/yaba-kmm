@@ -1,10 +1,7 @@
 plugins {
-//    id("android-lib")
     id("multiplatform-plugin")
     kotlin("plugin.serialization")
     id("kotlin-parcelize")
-//    id("dev.icerock.mobile.multiplatform.android-manifest")
-//    id("static-analysis")
 }
 
 kotlin {
@@ -25,17 +22,22 @@ dependencies {
     commonMainImplementation(projects.data.network)
     commonMainImplementation(projects.data.db)
     commonTestImplementation(Lib.turbine)
-    commonMainImplementation(Lib.Koin.work)
-    commonMainImplementation(Lib.MultiplatformSettings.settings)
-    commonMainImplementation(Lib.MultiplatformSettings.coroutines)
-    commonTestImplementation(Lib.MultiplatformSettings.test)
-    androidMainImplementation(Lib.MultiplatformSettings.datastore)
-    androidMainImplementation(Lib.AndroidX.dataStore)
-    androidMainImplementation(Lib.AndroidX.crypto)
-    androidMainImplementation(Lib.AndroidX.biometric)
-    androidMainImplementation(Lib.AndroidX.work)
-    androidMainImplementation(Lib.AndroidX.workMultiProcess)
-    androidMainApi(Lib.Compose.runtime)
+    commonMainImplementation(Koin.workManager)
+
+    with(RussHWolf) {
+        commonMainImplementation(multiplatformSettings.settings)
+        commonMainImplementation(multiplatformSettings.coroutines)
+        commonTestImplementation(multiplatformSettings.test)
+        androidMainImplementation(multiplatformSettings.dataStore)
+    }
+    with(AndroidX) {
+        androidMainImplementation(dataStore.preferences)
+        androidMainImplementation(security.cryptoKtx)
+        androidMainImplementation(biometricKtx)
+        androidMainImplementation(work.runtimeKtx)
+        androidMainImplementation(work.multiprocess)
+        androidMainApi(compose.runtime)
+    }
 }
 
 tasks {

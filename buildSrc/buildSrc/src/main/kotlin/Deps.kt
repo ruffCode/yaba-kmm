@@ -24,17 +24,12 @@ object Lib {
     const val turbine = "app.cash.turbine:turbine:0.6.1"
     const val junit = "junit:junit:4.13.2"
     const val robolectric = "org.robolectric:robolectric:4.6.1"
-    const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.7"
     const val logCat = "com.squareup.logcat:logcat:0.1"
 
     object Koin {
         private const val version = "3.1.2"
         const val core = "io.insert-koin:koin-core:$version"
         const val test = "io.insert-koin:koin-test:$version"
-        const val testJunit = "io.insert-koin:koin-test-junit4:$version"
-        const val android = "io.insert-koin:koin-android:$version"
-        const val compose = "io.insert-koin:koin-androidx-compose:$version"
-        const val work = "io.insert-koin:koin-androidx-workmanager:$version"
     }
 
     object Firebase {
@@ -46,50 +41,11 @@ object Lib {
 
     object Apollo {
         private const val version = Version.apollo
-        const val runtimeKotlin = "com.apollographql.apollo3:apollo-runtime:$version"
+        const val runtime = "com.apollographql.apollo3:apollo-runtime:$version"
         const val adapters = "com.apollographql.apollo3:apollo-adapters:$version"
     }
 
-    object MultiplatformSettings {
-        private const val version = "0.8"
-        const val settings = "com.russhwolf:multiplatform-settings:$version"
-        const val coroutines = "com.russhwolf:multiplatform-settings-coroutines:$version"
-        const val datastore = "com.russhwolf:multiplatform-settings-datastore:$version"
-        const val test = "com.russhwolf:multiplatform-settings-test:$version"
-    }
-
-    object AndroidX {
-
-        const val activity = "androidx.activity:activity-compose:1.3.1"
-        const val biometric = "androidx.biometric:biometric-ktx:1.2.0-alpha03"
-        const val browser = "androidx.browser:browser:1.3.0"
-        const val constrainLayout =
-            "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02"
-        const val crypto = "androidx.security:security-crypto-ktx:1.1.0-alpha03"
-        const val dataStore = "androidx.datastore:datastore-preferences:1.0.0"
-
-        //to match navigation-animation
-        const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha07"
-        const val startup = "androidx.startup:startup-runtime:1.0.0"
-        const val work = "androidx.work:work-runtime-ktx:2.7.0-beta01"
-        const val workMultiProcess = "androidx.work:work-multiprocess:2.7.0-beta01"
-
-        object Lifecycle {
-            private const val version = "2.4.0-beta01"
-            const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
-            const val runtime = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
-            const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
-            const val savedState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:$version"
-        }
-    }
-
     object KotlinX {
-
-        object Serialization {
-            private const val version = "1.2.2"
-            const val core = "org.jetbrains.kotlinx:kotlinx-serialization-core:$version"
-            const val json = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version"
-        }
 
         const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.2.1"
 
@@ -132,34 +88,10 @@ object Lib {
 
     object Accompanist {
         private const val version = "0.18.0"
-        const val coil = "com.google.accompanist:accompanist-coil:0.15.0"
-        const val insets = "com.google.accompanist:accompanist-insets:$version"
-        const val insetsUi = "com.google.accompanist:accompanist-insets-ui:$version"
         const val navigationAnimation =
             "com.google.accompanist:accompanist-navigation-animation:$version"
-        const val systemUiController =
-            "com.google.accompanist:accompanist-systemuicontroller:$version"
     }
 
-
-    object Compose {
-        private const val snapshot = ""
-        private const val version = Version.compose
-
-        const val animation = "androidx.compose.animation:animation:$version"
-        const val foundation = "androidx.compose.foundation:foundation:$version"
-        const val layout = "androidx.compose.foundation:foundation-layout:$version"
-        const val iconsExtended = "androidx.compose.material:material-icons-extended:$version"
-        const val material = "androidx.compose.material:material:$version"
-        const val runtime = "androidx.compose.runtime:runtime:$version"
-        const val tooling = "androidx.compose.ui:ui-tooling:$version"
-        const val preview = "androidx.compose.ui:ui-tooling-preview:$version"
-        const val ui = "androidx.compose.ui:ui:$version"
-        const val uiUtil = "androidx.compose.ui:ui-util:$version"
-        const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
-        const val uiTestJunit = "androidx.compose.ui:ui-test-junit4:$version"
-        const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:$version"
-    }
 
     object Moko {
         const val resourcesGenerator = "dev.icerock.moko:resources-generator:0.16.1"

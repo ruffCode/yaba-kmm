@@ -4,11 +4,10 @@ plugins {
     id("base-convention")
     id("com.android.application")
     kotlin("android")
-//    kotlin("kapt")
     id("kotlin-parcelize")
     kotlin("plugin.serialization")
     id("com.google.gms.google-services")
-    id("io.sentry.android.gradle") version "2.1.4"
+    id("io.sentry.android.gradle")
 }
 
 val hasReleaseKey: Boolean = project.rootProject.file("release/yaba-release.jks").exists()
@@ -16,66 +15,94 @@ val hasReleaseKey: Boolean = project.rootProject.file("release/yaba-release.jks"
 dependencies {
 
     implementation(projects.data)
-    implementation("com.google.android.material:material:1.4.0")
-    implementation(Lib.Compose.animation)
-    implementation(Lib.Compose.foundation)
-    implementation(Lib.Compose.layout)
-    implementation(Lib.Compose.iconsExtended)
-    implementation(Lib.Compose.material)
-    implementation(Lib.Compose.runtime)
-    implementation(Lib.Compose.tooling)
-    implementation(Lib.Compose.ui)
-    implementation(Lib.Compose.preview)
+    implementation(Google.Android.material)
+    // Compose
+    with(AndroidX) {
+        implementation(compose.animation)
+        implementation(compose.ui.graphics)
+        implementation(compose.foundation.layout)
+        implementation(compose.material.icons.extended)
+        implementation(compose.material)
+        implementation(compose.runtime)
+        implementation(compose.ui.tooling)
+        implementation(compose.ui)
+        implementation(compose.ui.toolingPreview)
+        debugImplementation(compose.ui.testManifest)
+    }
+    implementation("io.coil-kt:coil-compose:_")
 
-    implementation(platform(Lib.KotlinX.Coroutines.bom))
-    implementation(Lib.KotlinX.Coroutines.core)
-    implementation(Lib.KotlinX.Coroutines.android)
+    with(Lib.KotlinX.Coroutines) {
+        implementation(platform(bom))
+        implementation(core)
+        implementation(android)
+        testImplementation(test)
+    }
 
-    implementation(Lib.Koin.android)
-    implementation(Lib.Koin.compose)
+    with(KotlinX) {
+        implementation(datetime)
+        implementation(serialization.json)
+    }
+
+    with(AndroidX) {
+        implementation(lifecycle.runtimeKtx)
+        implementation(lifecycle.viewModelKtx)
+        implementation(lifecycle.viewModelCompose)
+        implementation(activity.compose)
+        implementation(lifecycle.viewModelSavedState)
+        implementation(constraintLayoutCompose)
+        implementation(core.splashscreen)
+        implementation(work.runtimeKtx)
+        implementation(work.multiprocess)
+    }
+    // Koin
+    with(Koin) {
+        implementation(android)
+        implementation(compose)
+        implementation(workManager)
+        testImplementation(test)
+        testImplementation(junit4)
+    }
     implementation(Lib.kermit)
-    implementation(Lib.KotlinX.dateTime)
-    implementation(Lib.KotlinX.Serialization.json)
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-beta01")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0-beta01")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-beta01")
-    implementation("androidx.activity:activity-compose:1.3.1")
 
     implementation(Lib.Accompanist.navigationAnimation)
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0-beta01")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02")
-    implementation("androidx.core:core-splashscreen:1.0.0-alpha01")
-    implementation("com.plaid.link:sdk-core:3.6.0")
-    implementation(Lib.Accompanist.coil)
-    implementation(Lib.Accompanist.insets)
-    implementation(Lib.Accompanist.insetsUi)
-    implementation(Lib.Accompanist.systemUiController)
+    implementation("com.plaid.link:sdk-core:_")
+
+    with(Google) {
+        implementation(accompanist.insets)
+        implementation(accompanist.insets.ui)
+        implementation(accompanist.systemuicontroller)
+    }
     implementation(Lib.uuid)
-    implementation(platform(Lib.Firebase.bom))
-    implementation(Lib.Firebase.analytics)
-    implementation(Lib.Firebase.cloudMessaging)
-    implementation(Lib.Firebase.messagingDirectBoot)
-    implementation(Lib.AndroidX.work)
-    implementation(Lib.AndroidX.workMultiProcess)
-    implementation(Lib.Koin.work)
-    implementation(platform("io.sentry:sentry-bom:5.2.0"))
+
+    with(Lib.Firebase) {
+        implementation(platform(bom))
+        implementation(analytics)
+        implementation(cloudMessaging)
+        implementation(messagingDirectBoot)
+    }
+
+    implementation(platform("io.sentry:sentry-bom:_"))
     implementation("io.sentry:sentry-android")
+
     coreLibraryDesugaring(Lib.desugar)
-    androidTestImplementation(Lib.AndroidXTest.core)
-    androidTestImplementation(Lib.AndroidXTest.rules)
-    androidTestImplementation(Lib.AndroidXTest.runner)
-    androidTestImplementation(Lib.Compose.uiTest)
-    androidTestImplementation(Lib.Compose.uiTestJunit)
-    debugImplementation(Lib.Compose.uiTestManifest)
-    testImplementation(Lib.Koin.test)
-    testImplementation(Lib.Koin.testJunit)
+
+    // Test
+    with(AndroidX) {
+        androidTestImplementation(test.ext.junitKtx)
+        androidTestImplementation(test.rules)
+        androidTestImplementation(test.runner)
+        androidTestImplementation(compose.ui.test)
+        androidTestImplementation(compose.ui.testJunit4)
+        testImplementation(test.coreKtx)
+    }
+
     testImplementation(Lib.junit)
-    testImplementation(Lib.AndroidXTest.core)
-    testImplementation(Lib.AndroidXTest.robolectric)
-    testImplementation(Lib.AndroidXTest.mockito)
-    testImplementation(Lib.KotlinX.Coroutines.test)
-    debugImplementation(Lib.leakCanary)
+
+    testImplementation(Testing.robolectric)
+    testImplementation(Testing.mockito.inline)
+
+    debugImplementation(Square.leakCanary.android)
     implementation(Lib.logCat)
 }
 

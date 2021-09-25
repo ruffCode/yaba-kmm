@@ -5,11 +5,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-serialization:1.5.30")
-        classpath("dev.icerock.moko:resources-generator:0.16.1")
-        classpath("com.squareup.sqldelight:gradle-plugin:1.5.1")
-        classpath("com.apollographql.apollo3:apollo-gradle-plugin:${Version.apollo}")
-        classpath("com.google.gms:google-services:4.3.10")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:_")
+        classpath("dev.icerock.moko:resources-generator:_")
+        classpath("com.squareup.sqldelight:gradle-plugin:_")
+        classpath("com.apollographql.apollo3:apollo-gradle-plugin:_")
+        classpath("com.google.gms:google-services:_")
     }
 }
 

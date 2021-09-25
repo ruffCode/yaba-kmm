@@ -1,15 +1,14 @@
 plugins {
-//    id("android-lib")
     id("multiplatform-plugin")
     kotlin("plugin.serialization")
-//    id("dev.icerock.mobile.multiplatform.android-manifest")
-//    id("static-analysis")
     id("com.apollographql.apollo3")
 }
 
 dependencies {
-    commonMainImplementation(Lib.Apollo.runtimeKotlin)
-    commonMainImplementation(Lib.Apollo.adapters)
+    with(Lib.Apollo) {
+        commonMainImplementation(runtime)
+        commonMainImplementation(adapters)
+    }
     commonMainImplementation(projects.data.domain)
 }
 
