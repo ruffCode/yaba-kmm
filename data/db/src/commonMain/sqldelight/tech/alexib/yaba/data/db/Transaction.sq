@@ -135,6 +135,6 @@ ORDER BY date DESC;
 spendingCategoriesByDate:
 SELECT category, SUM(amount) AS amount
 FROM UserTransaction
-WHERE user_id = :userId
+WHERE user_id = :userId AND category NOT IN ('Transfer','Payment')
 AND date BETWEEN :date1 AND :date2
 GROUP BY category;
