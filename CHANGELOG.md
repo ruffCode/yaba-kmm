@@ -6,6 +6,7 @@
 
 **Enhancements:**
 
+- migrate to refreshVersions [\#59](https://github.com/ruffCode/yaba-kmm/issues/59)
 - add detekt [\#58](https://github.com/ruffCode/yaba-kmm/issues/58)
 
 **Bug fixes:**
