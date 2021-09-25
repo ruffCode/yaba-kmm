@@ -37,8 +37,8 @@ internal class BiometricSettingsImpl(
 ) : BiometricSettings {
     private val encryptionManager = EncryptionManager
 
-    private fun String.encrypt(): String = EncryptionManager.encrypt(this)
-    private fun String.decrypt(): String = EncryptionManager.decrypt(this)
+    private fun String.encrypt(): String = encryptionManager.encrypt(this)
+    private fun String.decrypt(): String = encryptionManager.decrypt(this)
 
     override suspend fun setIsBiometricEnabled(enabled: Boolean) {
         flowSettings.putBoolean(IS_BIO_ENABLED, enabled)

@@ -26,7 +26,8 @@ import tech.alexib.yaba.data.store.TransactionDetailScreenState
 import tech.alexib.yaba.data.store.TransactionDetailStore
 import tech.alexib.yaba.util.stateInDefault
 
-class TransactionDetailScreenViewModel(handle: SavedStateHandle) : ViewModel(),
+class TransactionDetailScreenViewModel(handle: SavedStateHandle) :
+    ViewModel(),
     KoinComponent {
 
     private val id = NestedRoute.TransactionDetail.getArg(handle)

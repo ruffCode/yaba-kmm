@@ -18,24 +18,7 @@ dependencies {
     api(GradlePlugins.android)
     api("com.android.tools.build:builder:${GradleVersions.androidTools}")
     api("com.android.tools.build:builder-model:${GradleVersions.androidTools}")
-//    api("androidx.navigation:navigation-safe-args-gradle-plugin:2.4.0-alpha07")
-//    api(GradlePlugins.detekt)
+    api(GradlePlugins.detekt)
     api(GradlePlugins.spotless)
     api(GradlePlugins.ktLint)
-}
-
-tasks {
-    build {
-        doLast {
-
-            val version = YabaAndroidConfig.versionName
-            val file = rootDir.resolve("../version.properties")
-            val newVersion = file.readText().replaceAfter("version=", version)
-            file.writeText(newVersion)
-
-            println("""
-                writing new version $version
-            """.trimIndent())
-        }
-    }
 }

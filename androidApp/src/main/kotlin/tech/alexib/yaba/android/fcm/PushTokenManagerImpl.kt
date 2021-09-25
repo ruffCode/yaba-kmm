@@ -23,7 +23,6 @@ import tech.alexib.yaba.data.fcm.PushTokenManager
 import tech.alexib.yaba.data.repository.PushTokenRepository
 import tech.alexib.yaba.data.task.UserPushTokenWorker
 
-
 class PushTokenManagerImpl : PushTokenManager, KoinComponent {
     private val workManager: WorkManager by inject()
     private val pushTokenRepository: PushTokenRepository by inject()

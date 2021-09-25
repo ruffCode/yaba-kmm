@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("TooManyFunctions")
 package tech.alexib.yaba.android.navigation
 
 import android.os.Bundle
@@ -89,7 +90,6 @@ sealed class NestedRoute(val route: String) {
     object Settings : NestedRoute("settings")
     object PlaidLink : NestedRoute("plaid")
 
-
     object Login : NestedRoute("login")
     object Registration : NestedRoute("registration")
     object BiometricSetup : NestedRoute("biometricSetup")
@@ -100,9 +100,11 @@ sealed class NestedRoute(val route: String) {
 
         private const val key = "plaidItemDetail"
 
-        val arguments = listOf(navArgument(key) {
-            NavType.ParcelableType(PlaidItemDetail::class.java)
-        })
+        val arguments = listOf(
+            navArgument(key) {
+                NavType.ParcelableType(PlaidItemDetail::class.java)
+            }
+        )
 
         fun createRoute(
             root: Route,
@@ -153,9 +155,11 @@ sealed class NestedRoute(val route: String) {
 
     object PlaidLinkResult : NestedRoute("plaidLinkResult") {
         private const val key = "linkResult"
-        val arguments = listOf(navArgument(key) {
-            NavType.ParcelableType(PlaidLinkScreenResult::class.java)
-        })
+        val arguments = listOf(
+            navArgument(key) {
+                NavType.ParcelableType(PlaidLinkScreenResult::class.java)
+            }
+        )
 
         fun createRoute(
             root: Route,
@@ -192,8 +196,8 @@ fun AppNavigation(
 
     val viewModel = getViewModel<SplashScreenViewModel> { parametersOf(navController) }
 
-
-    AnimatedNavHost(navController = navController,
+    AnimatedNavHost(
+        navController = navController,
         startDestination = Route.Auth.route,
         enterTransition = { initial, target -> defaultYabaEnterTransition(initial, target) },
         exitTransition = { initial, target -> defaultYabaExitTransition(initial, target) },
@@ -355,7 +359,8 @@ private fun NavGraphBuilder.addSettingsMain(
 }
 
 private fun NavGraphBuilder.addLinkedInstitutions(
-    navController: NavController, root: Route
+    navController: NavController,
+    root: Route
 ) {
     composable(NestedRoute.LinkedInstitutions.createRoute(root)) {
         BackHandler {
@@ -385,9 +390,11 @@ private fun NavGraphBuilder.addInstitutionDetail(navController: NavController, r
         route = NestedRoute.InstitutionDetail.createRoute(root),
         arguments = NestedRoute.InstitutionDetail.arguments
     ) {
-        PlaidItemDetailScreen(viewModel = getStateViewModel(state = {
-            navController.previousBackStackEntry?.arguments ?: Bundle()
-        })) {
+        PlaidItemDetailScreen(
+            viewModel = getStateViewModel(state = {
+                navController.previousBackStackEntry?.arguments ?: Bundle()
+            })
+        ) {
             navController.handleBack()
         }
     }
@@ -519,7 +526,6 @@ private fun NavGraphBuilder.addAccounts(navController: NavController, root: Rout
     }
 }
 
-
 private fun NavGraphBuilder.addAccountDetail(navController: NavController, root: Route) {
 
     composable(
@@ -531,7 +537,8 @@ private fun NavGraphBuilder.addAccountDetail(navController: NavController, root:
             viewModel = getStateViewModel(state = {
                 navController.currentBackStackEntry?.arguments ?: Bundle()
             }),
-            onBack = { navController.handleBack() }) { transactionId: Uuid? ->
+            onBack = { navController.handleBack() }
+        ) { transactionId: Uuid? ->
             transactionId?.let {
                 navController.navigate(
                     NestedRoute.TransactionDetail.createRoute(
@@ -558,7 +565,6 @@ private fun NavController.navigateHome() {
     }
 }
 
-
 @ExperimentalAnimationApi
 private fun AnimatedContentScope<*>.defaultYabaEnterTransition(
     initial: NavBackStackEntry,
@@ -575,7 +581,8 @@ private fun AnimatedContentScope<*>.defaultYabaEnterTransition(
         initialAlpha = 0.3f
     )
     val slideIn = slideIntoContainer(
-        AnimatedContentScope.SlideDirection.Start, animationSpec = TweenSpec(
+        AnimatedContentScope.SlideDirection.Start,
+        animationSpec = TweenSpec(
             durationMillis = 350,
             easing = FastOutSlowInEasing
         )
@@ -601,7 +608,8 @@ private fun AnimatedContentScope<*>.defaultYabaExitTransition(
         ),
     )
     val slideOut = slideOutOfContainer(
-        AnimatedContentScope.SlideDirection.Start, animationSpec = TweenSpec(
+        AnimatedContentScope.SlideDirection.Start,
+        animationSpec = TweenSpec(
             durationMillis = 350,
             easing = FastOutSlowInEasing
         )
@@ -625,11 +633,7 @@ private fun AnimatedContentScope<*>.defaultYabaPopExitTransition(): ExitTransiti
     return fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.End)
 }
 
-
 private inline fun <reified T> SavedStateHandle.getSerialized(key: String): T =
     jSerializer.decodeFromString(this.get(key)!!)
-
-private inline fun <reified T> Bundle?.putSerialized(key: String, arg: T) =
-    this?.putString(key, jSerializer.encodeToString(arg))
 
 private fun SavedStateHandle.getUuid(key: String): Uuid = uuidFrom(this.get(key)!!)

@@ -41,7 +41,7 @@ enum class RangeOption(val value: String) {
     LastYear("Last year"),
     AllTime("All time");
 }
-
+@Suppress("MagicNumber")
 fun RangeOption.toDatePair(): Pair<LocalDate, LocalDate> {
     val today = Clock.System.todayAt(TimeZone.currentSystemDefault())
     return when (val ordinal = this.ordinal) {

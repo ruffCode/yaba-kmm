@@ -164,6 +164,7 @@ class BiometricsManager(
             .build()
     }
 
+    @Suppress("ComplexMethod")
     internal fun Int.shouldDisable() = when (this) {
         BiometricPrompt.ERROR_HW_UNAVAILABLE -> false
         BiometricPrompt.ERROR_UNABLE_TO_PROCESS -> false

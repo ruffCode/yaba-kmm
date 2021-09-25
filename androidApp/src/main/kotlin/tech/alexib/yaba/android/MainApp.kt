@@ -51,6 +51,7 @@ class MainApp : Application() {
         try {
             appInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
         } catch (e: PackageManager.NameNotFoundException) {
+            @Suppress("PrintStackTrace")
             e.printStackTrace()
         }
 

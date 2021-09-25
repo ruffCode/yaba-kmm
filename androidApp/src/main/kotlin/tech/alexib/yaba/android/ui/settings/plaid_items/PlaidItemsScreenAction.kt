@@ -15,17 +15,9 @@
  */
 package tech.alexib.yaba.android.ui.settings.plaid_items
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import tech.alexib.yaba.data.store.PlaidItemsScreenState
-import tech.alexib.yaba.data.store.PlaidItemsStore
-import tech.alexib.yaba.util.stateInDefault
+import tech.alexib.yaba.model.PlaidItemWithAccounts
 
-class PlaidItemsScreenViewModel : ViewModel(), KoinComponent {
-
-    private val store: PlaidItemsStore by inject()
-
-    val state = store.state.stateInDefault(viewModelScope, PlaidItemsScreenState.Empty)
+sealed class PlaidItemsScreenAction {
+    data class OnItemSelected(val item: PlaidItemWithAccounts) : PlaidItemsScreenAction()
+    object NavigateToLinkInstitution : PlaidItemsScreenAction()
 }

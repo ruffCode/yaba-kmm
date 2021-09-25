@@ -17,7 +17,6 @@ package tech.alexib.yaba.android.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Kermit
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
@@ -30,7 +29,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.fcm.PushTokenManager
 import tech.alexib.yaba.data.interactor.ClearAppData
 import tech.alexib.yaba.data.repository.AuthRepository
@@ -44,7 +42,6 @@ class SettingsScreenViewModel : ViewModel(), KoinComponent {
     private val authRepository: AuthRepository by inject()
     private val pushTokenManager: PushTokenManager by inject()
     private val clearAppData: ClearAppData by inject()
-    private val log: Kermit by inject { parametersOf("SettingsScreenViewModel") }
 
     val state: StateFlow<SettingsScreenState> = appSettings.theme().mapLatest {
         SettingsScreenState(it)

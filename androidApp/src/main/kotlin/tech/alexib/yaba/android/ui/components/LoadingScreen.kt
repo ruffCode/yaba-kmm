@@ -95,6 +95,7 @@ fun LoadingScreen(
     }
 }
 
+@Suppress("UnusedPrivateMember")
 @Preview
 @Composable
 private fun LoadingScreenPreview() {

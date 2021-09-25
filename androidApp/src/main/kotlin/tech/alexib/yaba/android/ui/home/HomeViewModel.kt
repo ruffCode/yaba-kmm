@@ -21,13 +21,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
-import kotlinx.datetime.todayAt
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -35,7 +29,6 @@ import tech.alexib.yaba.data.store.HomeScreenAction
 import tech.alexib.yaba.data.store.HomeScreenState
 import tech.alexib.yaba.data.store.HomeStore
 import tech.alexib.yaba.util.stateInDefault
-
 
 class HomeViewModel : ViewModel(), KoinComponent {
 

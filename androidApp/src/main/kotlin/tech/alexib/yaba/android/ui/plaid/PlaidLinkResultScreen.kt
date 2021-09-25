@@ -45,14 +45,12 @@ import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.getViewModel
 import tech.alexib.yaba.android.ui.AddSpace
 import tech.alexib.yaba.android.ui.components.BankLogo
-import tech.alexib.yaba.android.ui.components.LoadingScreen
 import tech.alexib.yaba.android.ui.components.LoadingScreenWithCrossFade
 import tech.alexib.yaba.android.util.base64ToBitmap
 import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.data.store.PlaidLinkResultScreenState
 import tech.alexib.yaba.data.store.PlaidLinkResultStore.Action
 import tech.alexib.yaba.data.store.PlaidLinkScreenResult
-
 
 @Composable
 fun PlaidLinkResultScreen(
@@ -112,7 +110,6 @@ private fun PlaidLinkResultScreen(
     }
 }
 
-
 @Composable
 private fun PlaidLinkResultScreen(
     logo: Bitmap,
@@ -150,7 +147,6 @@ private fun PlaidLinkResultScreen(
             },
             modifier = Modifier
                 .padding(top = 50.dp)
-
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
         ) {
@@ -158,7 +154,6 @@ private fun PlaidLinkResultScreen(
         }
     }
 }
-
 
 @Composable
 private fun AccountItem(

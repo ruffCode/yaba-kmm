@@ -31,7 +31,7 @@ class SplashScreenViewModel(
 ) : ViewModel() {
 
     suspend fun splashScreenNavigation() = viewModelScope.launch {
-//This is here to make sure we get the most recent value
+// This is here to make sure we get the most recent value
         delay(100)
 
         when (authRepository.isLoggedIn().first()) {

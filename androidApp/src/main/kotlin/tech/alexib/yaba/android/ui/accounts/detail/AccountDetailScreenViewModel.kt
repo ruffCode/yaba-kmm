@@ -34,9 +34,7 @@ class AccountDetailScreenViewModel(
     val state: StateFlow<AccountDetailScreenState> =
         store.state.stateInDefault(viewModelScope, AccountDetailScreenState.Empty)
 
-
     init {
         store.init(params.accountId, params.itemId)
     }
 }
-

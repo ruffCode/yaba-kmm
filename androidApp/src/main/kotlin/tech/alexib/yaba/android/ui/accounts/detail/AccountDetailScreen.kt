@@ -90,8 +90,10 @@ private fun AccountDetailScreen(
                     .fillMaxWidth()
                     .wrapContentHeight(Alignment.CenterVertically),
             ) {
-                BackArrowButton( modifier = Modifier
-                    .align(Alignment.TopStart)) {
+                BackArrowButton(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                ) {
                     actioner(AccountDetailScreenAction.NavigateBack)
                 }
                 state.plaidItem?.let {
@@ -149,7 +151,7 @@ private fun AccountDetailScreen(
                         TransactionItem(
                             transaction = transaction,
                             needsDivider,
-                            ) {
+                        ) {
                             actioner(AccountDetailScreenAction.OnTransactionSelected(it))
                         }
                     }

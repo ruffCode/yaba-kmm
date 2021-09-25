@@ -36,7 +36,6 @@ import tech.alexib.yaba.data.repository.ItemRepository
 import tech.alexib.yaba.model.request.PlaidItemCreateRequest
 import tech.alexib.yaba.model.request.PlaidLinkEventCreateRequest
 import tech.alexib.yaba.model.response.PlaidLinkResult
-import tech.alexib.yaba.model.response.plaidLinkResultSuccessStub
 import tech.alexib.yaba.util.stateInDefault
 
 class PlaidLinkViewModel(
@@ -48,7 +47,7 @@ class PlaidLinkViewModel(
         resultFlow.stateInDefault(viewModelScope, PlaidLinkResult.Empty)
     private val log: Kermit by inject { parametersOf("PlaidLinkViewModel") }
 
-    //uncomment to debug PlaidLinkResultScreen
+    // uncomment to debug PlaidLinkResultScreen
 //    init {
 //        log.d { "PlaidLinkViewModel init" }
 //        resultFlow.value = plaidLinkResultSuccessStub
@@ -60,7 +59,7 @@ class PlaidLinkViewModel(
                     """
                     PLAID SUCCESS
                     ${linkResult.metadata}
-                """.trimIndent()
+                    """.trimIndent()
                 }
                 resultFlow.value = PlaidLinkResult.AwaitingResult
                 handleSuccess(linkResult)
@@ -109,7 +108,6 @@ class PlaidLinkViewModel(
                 publicToken = linkSuccess.publicToken
             )
             resultFlow.value = repository.createPlaidItem(request).first()
-
         }
     }
 

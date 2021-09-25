@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package tech.alexib.yaba.stubs
-
+@Suppress("MaxLineLength")
 internal val wellFargoStub = """
 {
   "plaidItem": {
@@ -52,7 +52,7 @@ internal val wellFargoStub = """
   ]
 }
 """.trimIndent()
-
+@Suppress("MaxLineLength")
 internal val chaseStub = """
 {
   "plaidItem": {

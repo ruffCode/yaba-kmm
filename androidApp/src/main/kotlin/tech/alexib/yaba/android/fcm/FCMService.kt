@@ -28,7 +28,6 @@ import org.koin.core.parameter.parametersOf
 import tech.alexib.yaba.data.fcm.PushTokenManager
 import tech.alexib.yaba.data.task.UpdateTransactionsWorker
 
-
 class FCMService : FirebaseMessagingService(), KoinComponent {
 
     private val log: Kermit by inject { parametersOf("FCMService") }

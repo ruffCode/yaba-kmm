@@ -115,7 +115,6 @@ private fun TransactionDetailScreen(
                 TransactionDetailScreenContent(it)
             } ?: Text(text = "Nothing here")
         }
-
     }
 }
 

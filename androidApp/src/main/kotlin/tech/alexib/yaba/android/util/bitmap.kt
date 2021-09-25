@@ -21,7 +21,7 @@ import android.util.Log
 import tech.alexib.yaba.android.ui.components.defaultLogo
 import java.util.Base64
 
-@Suppress("FunctionParameterNaming", "FunctionNaming")
+@Suppress("FunctionParameterNaming", "FunctionNaming", "TooGenericExceptionCaught")
 fun base64ToBitmap(b64: String): Bitmap {
     return try {
         val imageAsBytes: ByteArray = Base64.getDecoder().decode(b64.toByteArray())

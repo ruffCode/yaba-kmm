@@ -103,6 +103,7 @@ class TransactionsStore(
         val name = (transaction.merchantName ?: transaction.name).lowercase()
         val query = q.lowercase()
 
+        @Suppress("MagicNumber")
         val cutOff = when (query.length) {
             in 0..2 -> 0.65
             in 3..5 -> 0.75

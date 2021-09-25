@@ -31,5 +31,4 @@ class AccountsScreenViewModel : ViewModel(), KoinComponent {
 
     val state: StateFlow<AccountsScreenState> =
         store.state.stateInDefault(viewModelScope, AccountsScreenState.Empty)
-
 }

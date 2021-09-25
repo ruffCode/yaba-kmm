@@ -47,7 +47,7 @@ data class Transaction(
     val merchantName: String? = null,
     val pending: Boolean = false
 ) {
-    companion object {}
+    companion object
 }
 
 @Serializable

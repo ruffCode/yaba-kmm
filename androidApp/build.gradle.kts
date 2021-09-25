@@ -1,22 +1,21 @@
 import util.getLocalProperty
 
 plugins {
+    id("base-convention")
     id("com.android.application")
     kotlin("android")
-    kotlin("kapt")
+//    kotlin("kapt")
     id("kotlin-parcelize")
     kotlin("plugin.serialization")
     id("com.google.gms.google-services")
     id("io.sentry.android.gradle") version "2.1.4"
 }
 
-
 val hasReleaseKey: Boolean = project.rootProject.file("release/yaba-release.jks").exists()
 
 dependencies {
 
     implementation(projects.data)
-//    implementation("androidx.core:core-ktx:1.7.0-beta01")
     implementation("com.google.android.material:material:1.4.0")
     implementation(Lib.Compose.animation)
     implementation(Lib.Compose.foundation)

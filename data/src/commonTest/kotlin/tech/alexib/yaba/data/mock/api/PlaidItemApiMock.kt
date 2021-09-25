@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EmptyFunctionBlock")
 package tech.alexib.yaba.data.mock.api
 
 import com.benasher44.uuid.Uuid

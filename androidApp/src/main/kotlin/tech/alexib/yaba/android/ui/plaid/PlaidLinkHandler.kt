@@ -22,7 +22,6 @@ import com.plaid.link.OpenPlaidLink
 import com.plaid.link.configuration.LinkTokenConfiguration
 import com.plaid.link.result.LinkResult
 
-
 @Composable
 fun PlaidLinkHandler(
     onResult: (LinkResult) -> Unit,

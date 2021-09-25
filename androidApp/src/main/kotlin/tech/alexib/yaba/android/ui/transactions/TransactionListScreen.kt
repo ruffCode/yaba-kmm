@@ -69,7 +69,6 @@ import tech.alexib.yaba.data.store.TransactionsStore
 import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.stubs.TransactionStubs
 
-
 @Composable
 fun TransactionListScreen(onBack: () -> Unit, onSelected: (Uuid) -> Unit) {
     val viewModel: TransactionListScreenViewModel = getViewModel()
@@ -102,7 +101,6 @@ private fun TransactionListScreen(
             viewModel.store.submit(it)
         }
     }
-
 }
 
 @Composable
@@ -179,12 +177,12 @@ private fun TransactionListScreen(
                                     )
                                 }
                             }
-
                         }
                     )
                 }
                 AnimatedVisibility(
-                    visible = !state.searching, modifier = Modifier.align(
+                    visible = !state.searching,
+                    modifier = Modifier.align(
                         Alignment.TopEnd
                     )
                 ) {
@@ -219,7 +217,6 @@ private fun TransactionListScreen(
                 }
             }
         }
-
     }
 }
 
@@ -234,7 +231,7 @@ private fun TransactionList(
             .padding(horizontal = 8.dp, vertical = 8.dp),
         elevation = 3.dp,
 
-        ) {
+    ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -267,7 +264,7 @@ fun TransactionDateHeader(date: LocalDate) {
         )
     }
 }
-
+@Suppress("UnusedPrivateMember")
 @Preview
 @Composable
 private fun TransactionItemPreview() {
@@ -275,7 +272,7 @@ private fun TransactionItemPreview() {
         TransactionItem(transaction = TransactionStubs.transactionsWellsFargo1.first()) {}
     }
 }
-
+@Suppress("UnusedPrivateMember")
 @Preview
 @Composable
 private fun TransactionListScreenPreview() {

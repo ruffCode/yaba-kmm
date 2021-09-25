@@ -164,7 +164,6 @@ fun AccountItemDetail(account: PlaidItemDetail.Account, onChange: (Uuid, Boolean
     ) {
         val rowModifier = Modifier
             .fillMaxWidth()
-
             .wrapContentHeight(Alignment.CenterVertically)
             .padding(vertical = 16.dp)
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
@@ -212,7 +211,6 @@ fun AccountItemDetail(account: PlaidItemDetail.Account, onChange: (Uuid, Boolean
         Divider()
     }
 }
-
 
 @Suppress("ConstructorParameterNaming")
 @Parcelize

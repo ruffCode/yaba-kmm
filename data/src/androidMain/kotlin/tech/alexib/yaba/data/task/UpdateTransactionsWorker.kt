@@ -31,6 +31,7 @@ class UpdateTransactionsWorker(
 ) : CoroutineWorker(context, workerParameters) {
 
     companion object {
+        private const val DELAY = 2000L
         const val key = "request"
         fun addData(updateId: Uuid) = Data.Builder()
             .putString(key, updateId.toString()).build()
@@ -40,7 +41,7 @@ class UpdateTransactionsWorker(
         val requestString = inputData.getString(key)
         requestString?.let {
             val updateId = uuidFrom(it)
-            delay(2000)
+            delay(DELAY)
             updateTransactions.executeSync(UpdateTransactions.Params(updateId))
         }
         return Result.success()

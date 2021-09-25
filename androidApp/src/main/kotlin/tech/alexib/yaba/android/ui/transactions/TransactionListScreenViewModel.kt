@@ -37,5 +37,4 @@ class TransactionListScreenViewModel : ViewModel(), KoinComponent {
     init {
         store.init()
     }
-
 }

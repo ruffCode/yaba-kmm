@@ -28,7 +28,7 @@ import kotlin.time.Duration
 
 suspend fun <T> Deferred<T>.await(timeoutMillis: Long) =
     withTimeout(timeoutMillis) { await() }
-
+@Suppress("MagicNumber")
 fun suspendTest(block: suspend CoroutineScope.() -> Unit): Unit =
     runBlockingTest(context = EmptyCoroutineContext) {
         withTimeout(Duration.seconds(10)) {

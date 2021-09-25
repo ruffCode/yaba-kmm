@@ -18,9 +18,10 @@ package tech.alexib.yaba.data.mock.api
 import tech.alexib.yaba.data.network.api.PushTokenApi
 
 internal class PushTokenApiMock : PushTokenApi {
+    @Suppress("EmptyFunctionBlock")
     override suspend fun save(token: String) {
     }
-
+    @Suppress("EmptyFunctionBlock")
     override suspend fun delete(token: String) {
     }
 }

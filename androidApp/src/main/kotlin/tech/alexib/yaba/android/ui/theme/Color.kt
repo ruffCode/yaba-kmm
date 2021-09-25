@@ -45,8 +45,6 @@ val deepOrange200 = Color(0xFFFFAB91)
 val teal200a = Color(0xff80deea)
 val blue200 = Color(0xFF90CAF9)
 
-
-
 val lightColorsForChart = listOf(
     green200,
     purple200a,

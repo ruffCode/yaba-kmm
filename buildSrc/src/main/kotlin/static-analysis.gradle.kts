@@ -1,7 +1,8 @@
-plugins{
+plugins {
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jlleitschuh.gradle.ktlint-idea")
     id("com.diffplug.spotless")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 ktlint {
@@ -24,7 +25,7 @@ ktlint {
     additionalEditorconfigFile.set(file("${rootProject.rootDir}/.editorConfig"))
 }
 
-spotless{
+spotless {
     kotlin {
         target("**/src/**/*.kt")
         licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
@@ -39,4 +40,17 @@ spotless{
         target("*.gradle.kts")
         ktlint(Version.ktLint)
     }
+}
+
+detekt {
+    source.setFrom(
+        "src/commonMain/kotlin",
+        "src/androidMain/kotlin",
+        "src/iosMain/kotlin",
+        "src/main/kotlin",
+        "src/main/java"
+    )
+    config = files(rootProject.file("config/detekt.yml"))
+
+    parallel = true
 }

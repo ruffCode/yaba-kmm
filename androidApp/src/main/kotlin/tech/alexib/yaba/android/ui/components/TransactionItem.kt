@@ -46,7 +46,6 @@ import tech.alexib.yaba.model.Transaction
 import tech.alexib.yaba.stubs.TransactionStubs
 import kotlin.math.absoluteValue
 
-
 @Composable
 fun TransactionItem(
     transaction: Transaction,

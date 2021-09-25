@@ -69,7 +69,6 @@ sealed class PlaidLinkScreenAction {
     data class HandleLinkResult(val data: LinkResult) : PlaidLinkScreenAction()
 }
 
-
 @Composable
 private fun PlaidLinkScreen(
     navigateHome: () -> Unit,
@@ -233,6 +232,7 @@ fun SandboxInstructions(modifier: Modifier = Modifier, onProceed: () -> Unit) {
     }
 }
 
+@Suppress("UnusedPrivateMember")
 @Preview
 @Composable
 private fun SandboxInstructionsPreview() {

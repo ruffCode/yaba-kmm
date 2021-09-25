@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNCHECKED_CAST", "LongParameterList")
+@file:Suppress("UNCHECKED_CAST", "LongParameterList", "MagicNumber")
 
 package tech.alexib.yaba.util
 

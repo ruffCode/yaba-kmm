@@ -115,7 +115,6 @@ private fun Home(
                     sheetState.hide()
                 }
                 actioner(HomeScreenAction.SetSpendingWidgetDateRange(rangeOption))
-
             }
         }
     ) {
@@ -170,11 +169,8 @@ private fun Home(
                 }
             }
         }
-
     }
-
 }
-
 
 @Composable
 private fun RecentTransactions(
@@ -217,8 +213,7 @@ private fun RecentTransactions(
         }
     }
 }
-
-
+@Suppress("ComplexMethod")
 @Composable
 private fun DateRangeBottomSheet(
     modifier: Modifier = Modifier,
@@ -267,7 +262,6 @@ private fun DateRangeBottomSheet(
                 Text(text = it.monthString())
             }
             Divider()
-
         }
         val whiteButtons =
             ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface)
@@ -295,7 +289,4 @@ private fun DateRangeBottomSheet(
             Text(text = "All time")
         }
     }
-
 }
-
-

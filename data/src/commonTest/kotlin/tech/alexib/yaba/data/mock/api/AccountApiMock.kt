@@ -27,6 +27,7 @@ import tech.alexib.yaba.data.network.api.AccountApi
 import tech.alexib.yaba.data.stubs.UserDataDtoStubs
 
 internal class AccountApiMock : AccountApi {
+    @Suppress("EmptyFunctionBlock")
     override suspend fun setHideAccount(hide: Boolean, accountId: Uuid) {
     }
 

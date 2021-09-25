@@ -107,7 +107,7 @@ fun AccountsList(
             .padding(4.dp),
         elevation = 3.dp,
 
-        ) {
+    ) {
         LazyColumn(
             modifier = Modifier
                 .background(MaterialTheme.colors.surface)
@@ -180,7 +180,7 @@ fun AccountItem(balance: Double, logo: Bitmap, label: String) {
             Money(balance)
         },
 
-        ) {
+    ) {
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
                 text = label,

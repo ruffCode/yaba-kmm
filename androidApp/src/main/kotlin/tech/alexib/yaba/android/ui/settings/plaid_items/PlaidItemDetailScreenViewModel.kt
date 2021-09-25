@@ -26,7 +26,8 @@ import tech.alexib.yaba.android.navigation.NestedRoute
 import tech.alexib.yaba.data.repository.AccountRepository
 import tech.alexib.yaba.data.repository.ItemRepository
 
-class PlaidItemDetailScreenViewModel(savedStateHandle: SavedStateHandle) : ViewModel(),
+class PlaidItemDetailScreenViewModel(savedStateHandle: SavedStateHandle) :
+    ViewModel(),
     KoinComponent {
 
     val item = NestedRoute.InstitutionDetail.getArg(savedStateHandle)

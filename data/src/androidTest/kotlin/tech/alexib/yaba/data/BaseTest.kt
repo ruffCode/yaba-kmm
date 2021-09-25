@@ -20,7 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.runner.RunWith
-
+@Suppress("UnnecessaryAbstractClass")
 @RunWith(AndroidJUnit4::class)
 actual abstract class BaseTest {
     @get:Rule

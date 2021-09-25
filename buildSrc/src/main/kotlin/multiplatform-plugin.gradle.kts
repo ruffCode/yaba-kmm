@@ -1,6 +1,9 @@
 plugins {
-    id("android-lib")
     id("kotlin-multiplatform")
+    id("base-convention")
+    id("com.android.library")
+    id("android-base-convention")
+    id("android-lib")
     id("dev.icerock.mobile.multiplatform.android-manifest")
 }
 

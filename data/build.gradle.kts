@@ -1,10 +1,10 @@
 plugins {
-    id("android-lib")
+//    id("android-lib")
     id("multiplatform-plugin")
     kotlin("plugin.serialization")
     id("kotlin-parcelize")
-    id("dev.icerock.mobile.multiplatform.android-manifest")
-    id("static-analysis")
+//    id("dev.icerock.mobile.multiplatform.android-manifest")
+//    id("static-analysis")
 }
 
 kotlin {

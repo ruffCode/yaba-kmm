@@ -35,7 +35,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -53,13 +52,6 @@ import tech.alexib.yaba.android.util.rememberFlowWithLifecycle
 import tech.alexib.yaba.data.store.PlaidItemsScreenState
 import tech.alexib.yaba.model.PlaidItemStubs.itemsWithAccounts
 import tech.alexib.yaba.model.PlaidItemWithAccounts
-
-sealed class PlaidItemsScreenAction {
-    data class OnItemSelected(val item: PlaidItemWithAccounts) : PlaidItemsScreenAction()
-    object NavigateToLinkInstitution : PlaidItemsScreenAction()
-}
-
-
 
 @Composable
 fun PlaidItemsScreen(
@@ -198,9 +190,10 @@ private fun LinkInstitutionButton(
     }
 }
 
+@Suppress("UnusedPrivateMember")
 @Preview
 @Composable
-fun PlaidItemsScreenPreview() {
+private fun PlaidItemsScreenPreview() {
     YabaTheme {
         PlaidItemsScreen(
             state = PlaidItemsScreenState(
@@ -211,6 +204,7 @@ fun PlaidItemsScreenPreview() {
     }
 }
 
+@Suppress("UnusedPrivateMember")
 @Preview
 @Composable
 private fun PlaidItemsScreenEmptyPreview() {

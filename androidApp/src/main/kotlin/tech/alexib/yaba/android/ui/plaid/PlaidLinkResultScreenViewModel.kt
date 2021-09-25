@@ -27,7 +27,6 @@ import tech.alexib.yaba.data.store.PlaidLinkResultStore
 import tech.alexib.yaba.data.store.PlaidLinkScreenResult
 import tech.alexib.yaba.util.stateInDefault
 
-
 class PlaidLinkResultScreenViewModel : ViewModel(), KoinComponent {
     private val store: PlaidLinkResultStore by inject { parametersOf(Dispatchers.Main) }
 
@@ -40,5 +39,4 @@ class PlaidLinkResultScreenViewModel : ViewModel(), KoinComponent {
     fun submit(action: PlaidLinkResultStore.Action) {
         store.submit(action)
     }
-
 }

@@ -16,7 +16,7 @@
 package tech.alexib.yaba.data
 
 import kotlinx.coroutines.CoroutineScope
-
-expect abstract class BaseTest() {
+@Suppress("UnnecessaryAbstractClass")
+expect abstract class BaseTest {
     fun <T> runTest(block: suspend CoroutineScope.() -> T)
 }
