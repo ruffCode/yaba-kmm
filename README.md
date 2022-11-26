@@ -62,7 +62,7 @@ MFA credentials if the institution you are attempting to link requires them.
 
 ## Prior Art
 
-### [tivi by Chris Banes](https://github.com/chisbanes/tivi)
+### [tivi by Chris Banes](https://github.com/chrisbanes/tivi)
 
 This project is a great example of how to build a large and stable project. I was greatly inspired
 by Chris' state management technique and do use some of his code, including Flow extensions,
