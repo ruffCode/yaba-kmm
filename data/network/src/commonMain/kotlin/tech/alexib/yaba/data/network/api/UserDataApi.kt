@@ -48,7 +48,7 @@ interface UserDataApi {
 
         override fun testSub(): Flow<Int> {
             val sub = TestSubSubscription("Alexi")
-            return client.subscribe(sub).mapLatest { it.dataOrThrow.testSub }
+            return client.subscribe(sub).mapLatest { it.dataAssertNoErrors.testSub}
         }
     }
 }

@@ -16,6 +16,9 @@ dependencies {
     commonMainImplementation(projects.base)
     commonMainImplementation(projects.data.domain)
 }
+android {
+    namespace = "tech.alexib.yaba.data.db"
+}
 
 sqldelight {
     database("YabaDb") {

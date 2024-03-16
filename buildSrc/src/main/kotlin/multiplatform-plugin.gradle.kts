@@ -9,14 +9,14 @@ plugins {
 
 kotlin {
     android()
-    val isMac = System.getProperty("os.name").startsWith("Mac")
-    if (isMac) {
-        if (System.getenv("SDK_NAME")?.startsWith("iphoneos") == true) {
-            iosArm64("ios")
-        } else {
-            iosX64("ios") {}
-        }
-    }
+//    val isMac = System.getProperty("os.name").startsWith("Mac")
+//    if (isMac) {
+//        if (System.getenv("SDK_NAME")?.startsWith("iphoneos") == true) {
+//            iosArm64("ios")
+//        } else {
+//            iosX64("ios") {}
+//        }
+//    }
 
     sourceSets {
         named("commonMain") {
@@ -65,20 +65,20 @@ kotlin {
         }
 
 
-        if (isMac) {
-
-            named("iosMain") {
-                dependencies {
-                    implementation(Lib.KotlinX.Coroutines.core) {
-                        version {
-                            strictly(Version.coroutines)
-                        }
-                    }
-                }
-            }
-            named("iosTest") {}
-
-        }
+//        if (isMac) {
+//
+//            named("iosMain") {
+//                dependencies {
+//                    implementation(Lib.KotlinX.Coroutines.core) {
+//                        version {
+//                            strictly(Version.coroutines)
+//                        }
+//                    }
+//                }
+//            }
+//            named("iosTest") {}
+//
+//        }
     }
 }
 

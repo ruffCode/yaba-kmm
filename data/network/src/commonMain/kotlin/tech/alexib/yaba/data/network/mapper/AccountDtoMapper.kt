@@ -35,6 +35,6 @@ internal fun yaba.schema.fragment.Account.toDto(): AccountDto = AccountDto(
 
 internal fun yaba.schema.fragment.AccountWithTransactions.toAccountWithTransactions() =
     AccountWithTransactionsDto(
-        account = this.fragments.account.toDto(),
-        transactions = transactions.map { it.fragments.transaction.toDto() }
+        account = this.account.toDto(),
+        transactions = transactions.map { it.transaction.toDto() }
     )

@@ -28,6 +28,5 @@ internal fun yaba.schema.fragment.Institution.toDto(): InstitutionDto = this.run
 
 internal fun yaba.schema.fragment.ItemWithInstitution.Institution.toDto(): InstitutionDto =
     this.run {
-        val institution = fragments.institution
         institution.toDto()
     }

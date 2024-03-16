@@ -11,6 +11,9 @@ dependencies {
     }
     commonMainImplementation(projects.data.domain)
 }
+android {
+    namespace = "tech.alexib.yaba.data.network"
+}
 
 configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
     customScalarsMapping.set(

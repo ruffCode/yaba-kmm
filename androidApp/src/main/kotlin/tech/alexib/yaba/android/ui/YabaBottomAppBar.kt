@@ -99,6 +99,7 @@ private fun YabaBottomNavIcon(selected: Boolean, route: Route) {
                 tint = tint
             ) else
                 Icon(Icons.Outlined.Settings, "Settings")
+        else ->{}
     }
 }
 

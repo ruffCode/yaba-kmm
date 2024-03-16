@@ -33,11 +33,14 @@ dependencies {
     with(AndroidX) {
         androidMainImplementation(dataStore.preferences)
         androidMainImplementation(security.cryptoKtx)
-        androidMainImplementation(biometricKtx)
+        androidMainImplementation(biometric.ktx)
         androidMainImplementation(work.runtimeKtx)
         androidMainImplementation(work.multiprocess)
         androidMainApi(compose.runtime)
     }
+}
+android {
+    namespace = "tech.alexib.yaba.data"
 }
 
 tasks {

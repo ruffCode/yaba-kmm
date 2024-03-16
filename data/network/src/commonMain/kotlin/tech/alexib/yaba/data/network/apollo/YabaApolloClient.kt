@@ -18,7 +18,7 @@ package tech.alexib.yaba.data.network.apollo
 import co.touchlab.kermit.Kermit
 import co.touchlab.stately.ensureNeverFrozen
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.adapter.LocalDateAdapter
+import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Mutation
@@ -26,8 +26,8 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.http.withHttpHeader
-import com.apollographql.apollo3.api.http.withHttpHeaders
+//import com.apollographql.apollo3.api.http.withHttpHeader
+//import com.apollographql.apollo3.api.http.withHttpHeaders
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
@@ -92,41 +92,26 @@ interface YabaApolloClient {
             ensureNeverFrozen()
         }
 
+
+
+
         private val apolloClient: ApolloClient by lazy {
 
-//            val netTransport = HttpNetworkTransport(
-//                serverUrl = serverUrl,
-//
-//                interceptors = listOf(BearerTokenInterceptor(this))
-//            )
-//            val wsTransport = WebSocketNetworkTransport(
-//                serverUrl = serverUrl.replace("graphql", "subscriptions").replace("http", "ws"),
-//
-//                )
-//            val netInterceptor = NetworkInterceptor(netTransport, wsTransport)
-            ApolloClient(
-                networkTransport = HttpNetworkTransport(
-                    serverUrl = serverUrl,
-
-                    interceptors = listOf(BearerTokenInterceptor(this))
-                ),
-                subscriptionNetworkTransport = WebSocketNetworkTransport(
-                    serverUrl = serverUrl.replace("graphql", "subscriptions").replace("http", "ws"),
-
-                ),
-                customScalarAdapters = customScalarTypeAdapters,
-                interceptors = listOf(
-                    MyLoggingInterceptor(log)
-                )
-            )
-                .withCustomScalarAdapter(UUID.type, uuidAdapter)
-                .withCustomScalarAdapter(LocalDate.type, LocalDateAdapter)
-                .withHttpHeaders(
-                    listOf(
-                        HttpHeader("Accept", "application/json"),
-                        HttpHeader("Content-Type", "application/json")
-                    )
-                )
+            ApolloClient.Builder().networkTransport(
+                HttpNetworkTransport.Builder().serverUrl(
+                    serverUrl
+                ).interceptors(
+                    listOf(BearerTokenInterceptor(this))
+                ).build()
+            ).subscriptionNetworkTransport(
+                WebSocketNetworkTransport.Builder(
+                ).serverUrl(serverUrl.replace("graphql", "subscriptions").replace("http", "ws")).build()
+            ).addInterceptor( MyLoggingInterceptor(log))
+                .addCustomScalarAdapter(UUID.type, uuidAdapter)
+                .addCustomScalarAdapter(LocalDate.type, KotlinxLocalDateAdapter)
+                .addHttpHeader( "Accept", "application/json")
+                .addHttpHeader("Content-Type", "application/json")
+                .build()
         }
 
         override suspend fun currentToken(): String = authTokenProvider.token().firstOrNull() ?: ""
@@ -137,32 +122,30 @@ interface YabaApolloClient {
             queryData: Query<T>,
             mapper: (T) -> R,
         ): Flow<DataResult<R>> =
-            apolloClient.queryAsFlow(ApolloRequest(queryData)).map(checkResponse(mapper))
+            apolloClient.query(queryData).toFlow().map(checkResponse(mapper))
 
         override fun <T : Mutation.Data, R> mutate(
             mutationData: Mutation<T>,
             mapper: (T) -> R,
         ): Flow<DataResult<R>> =
-            apolloClient.mutateAsFlow(ApolloRequest(mutationData)).map(checkResponse(mapper))
+            apolloClient.mutation(mutationData).toFlow().map(checkResponse(mapper))
 
         override fun <T : Mutation.Data> mutate(
             mutationData: Mutation<T>
         ): Flow<ApolloResponse<T>> {
-            return apolloClient.mutateAsFlow(ApolloRequest(mutationData))
+            return apolloClient.mutation(mutationData).toFlow()
         }
 
         override fun <T : Subscription.Data> subscribe(
             subscriptionData: Subscription<T>
-        ): Flow<ApolloResponse<T>> = apolloClient.subscribe(
-            ApolloRequest(subscriptionData)
-        )
+        ): Flow<ApolloResponse<T>> = apolloClient.subscription(subscriptionData).toFlow()
 
         override fun <T : Subscription.Data, R> subscribe(
             subscriptionData: Subscription<T>,
             mapper: (T) -> R
-        ): Flow<DataResult<R>> = apolloClient.subscribe(
-            ApolloRequest(subscriptionData)
-        ).map(checkResponse(mapper))
+        ): Flow<DataResult<R>> = apolloClient.subscription(
+            subscriptionData
+        ).toFlow().map(checkResponse(mapper))
 
         private fun <T : Operation.Data, R> checkResponse(mapper: (T) -> R): suspend (
             ApolloResponse<T>
@@ -187,7 +170,7 @@ internal class MyLoggingInterceptor(private val log: Kermit) : ApolloInterceptor
     ): Flow<ApolloResponse<D>> {
         val uuid = request.requestUuid.toString()
         val operation = request.operation.name()
-        val variables = request.operation.variables(customScalarTypeAdapters).valueMap.toString()
+//        val variables = request.operation.variables(customScalarTypeAdapters).valueMap.toString()
         val (response, elapsed) = measureTimedValue {
             chain.proceed(request)
         }
@@ -195,7 +178,7 @@ internal class MyLoggingInterceptor(private val log: Kermit) : ApolloInterceptor
         val props = mutableMapOf<String, String>()
         props["Request UUID"] = uuid
         props["Request Name"] = operation
-        props["Request Variables"] = variables
+//        props["Request Variables"] = variables
         props["Response Time"] = timeInMillis
         val propsString = props.toString()
         log.d { propsString }
@@ -220,9 +203,7 @@ class NInt(
                 is Query<*> -> networkTransport.execute(request = request)
                 is Mutation<*> -> networkTransport.execute(request = request)
                 is Subscription<*> -> subscriptionNetworkTransport.execute(
-                    request = request.withHttpHeader(
-                        HttpHeader("Authorization", "Bearer $token")
-                    )
+                    request = request.newBuilder().addHttpHeader("Authorization", "Bearer $token").build()
                 )
                 else -> error("")
             }

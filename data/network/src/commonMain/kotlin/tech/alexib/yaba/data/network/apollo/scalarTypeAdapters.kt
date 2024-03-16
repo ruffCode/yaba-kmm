@@ -36,10 +36,12 @@ internal val uuidAdapter = object : Adapter<Uuid> {
         writer.value(value.toString())
     }
 }
-
-internal val customScalarTypeAdapters = CustomScalarAdapters(
-    mapOf(
-        "UUID" to uuidAdapter,
-        "id" to uuidAdapter,
-    )
-)
+//
+//internal val customScalarTypeAdapters = CustomScalarAdapters.Builder().add(
+//    "UUID" to uuidAdapter)
+//
+//    mapOf(
+//        "UUID" to uuidAdapter,
+//        "id" to uuidAdapter,
+//    )
+//)

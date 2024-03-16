@@ -28,6 +28,7 @@ import yaba.schema.AccountByIdWithTransactionQuery
 import yaba.schema.AccountSetHiddenMutation
 import yaba.schema.AccountsByItemIdQuery
 
+
 interface AccountApi {
     suspend fun setHideAccount(hide: Boolean, accountId: Uuid)
     fun accountByIdWithTransactions(id: Uuid): Flow<DataResult<AccountWithTransactionsDto>>
@@ -45,14 +46,14 @@ interface AccountApi {
             Flow<DataResult<AccountWithTransactionsDto>> {
             val query = AccountByIdWithTransactionQuery(id)
             return client.query(query) {
-                it.accountById.fragments.accountWithTransactions.toAccountWithTransactions()
+                it.accountById.accountWithTransactions.toAccountWithTransactions()
             }
         }
 
         override fun accountsByItemId(itemId: Uuid): Flow<DataResult<List<AccountDto>>> {
             val query = AccountsByItemIdQuery(itemId)
             return client.query(query) { data ->
-                data.accountsByItemId.map { it.fragments.account.toDto() }
+                data.accountsByItemId.map { it.account.toDto() }
             }
         }
     }

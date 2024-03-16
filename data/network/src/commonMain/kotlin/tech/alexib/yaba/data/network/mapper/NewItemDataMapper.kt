@@ -21,24 +21,24 @@ import tech.alexib.yaba.data.domain.dto.TransactionDto
 import tech.alexib.yaba.model.User
 
 internal fun yaba.schema.NewItemDataQuery.Data.toDto(): NewItemDto = this.run {
-    val item = itemById.fragments.itemWithInstitution
+    val item = itemById.itemWithInstitution
     val accountTransactionPair = itemById.accountsAndTransactions()
     NewItemDto(
         item = item.toDto(me.id),
         accounts = accountTransactionPair.first,
         transactions = accountTransactionPair.second,
         user = User(me.id, me.email),
-        institutionDto = item.institution.fragments.institution.toDto()
+        institutionDto = item.institution.institution.toDto()
     )
 }
 
 internal fun yaba.schema.NewItemDataQuery.ItemById.accountsAndTransactions():
     Pair<List<AccountDto>, List<TransactionDto>> {
     return Pair(
-        this.accounts.map { it.fragments.accountWithTransactions.fragments.account.toDto() },
+        this.accounts.map { it.accountWithTransactions.account.toDto() },
         this.accounts.flatMap {
-            it.fragments.accountWithTransactions.transactions.map { t ->
-                t.fragments.transaction.toDto()
+            it.accountWithTransactions.transactions.map { t ->
+                t.transaction.toDto()
             }
         }
     )

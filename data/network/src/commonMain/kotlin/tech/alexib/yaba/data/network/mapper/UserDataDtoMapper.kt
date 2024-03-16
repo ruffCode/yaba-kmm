@@ -25,16 +25,16 @@ internal fun yaba.schema.AllUserDataQuery.Data.toDto(): UserDataDto {
     return UserDataDto(
         user = User(userId, data.email),
         institutions = data.items.map {
-            it.fragments.itemWithInstitution.institution.toDto()
+            it.itemWithInstitution.institution.toDto()
         },
         items = data.items.map {
-            it.fragments.itemWithInstitution.toDto(userId)
+            it.itemWithInstitution.toDto(userId)
         },
         accounts = data.accounts.map { account ->
-            account.fragments.account.toDto()
+            account.account.toDto()
         },
         transactions = data.transactions.map { transaction ->
-            transaction.fragments.transaction.toDto()
+            transaction.transaction.toDto()
         }
     )
 }

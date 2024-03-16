@@ -28,7 +28,7 @@ internal fun yaba.schema.fragment.ItemWithInstitution.toDto(userId: Uuid) = this
 }
 
 internal fun yaba.schema.fragment.ItemWithInstitution.toPlaidItem() = this.run {
-    val institution = institution.fragments.institution
+    val institution = institution.institution
     PlaidItem(
         id = id,
         plaidInstitutionId = plaidInstitutionId,

@@ -37,8 +37,8 @@ import androidx.navigation.NavGraph
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.NamedNavArgument
-import androidx.navigation.compose.navArgument
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.navArgument
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 import com.google.accompanist.navigation.animation.AnimatedNavHost

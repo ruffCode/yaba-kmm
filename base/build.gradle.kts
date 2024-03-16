@@ -9,6 +9,9 @@ dependencies {
         commonMainApi(serialization.json)
     }
 }
+android {
+    namespace = "tech.alexib.yaba.base"
+}
 tasks {
     ktlintFormat {
         doLast {

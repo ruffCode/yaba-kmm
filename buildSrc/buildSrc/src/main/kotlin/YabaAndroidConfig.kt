@@ -20,11 +20,11 @@ object YabaAndroidConfig {
     private const val versionMinor = 1
     private const val versionPatch = 1
     const val minSdk = 29
-    const val targetSdk = 31
+    const val targetSdk = 33
     val versionCode = generateVersionCode()
     const val versionName = "$versionMajor.$versionMinor.$versionPatch"
-    const val compileSdk = 31
-    const val buildToolsVersion = "31.0.0"
+    const val compileSdk = 33
+    const val buildToolsVersion = "33.0.0"
 
     private fun generateVersionCode(): Int {
         return minSdk * 10000000 + versionMajor * 10000 + versionMinor * 100 + versionPatch

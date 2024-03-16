@@ -20,7 +20,7 @@ import tech.alexib.yaba.data.domain.dto.TransactionsUpdateDto
 internal fun yaba.schema.TransactionsUpdateQuery.Data.toDto(): TransactionsUpdateDto? = this.run {
     transactionsUpdated?.let { data ->
         val added =
-            data.added?.map { it.fragments.transaction.toDto() }
+            data.added?.map { it.transaction.toDto() }
         val removed = data.removed
         TransactionsUpdateDto(added, removed)
     }

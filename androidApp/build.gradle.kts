@@ -29,7 +29,7 @@ dependencies {
         implementation(compose.ui.toolingPreview)
         debugImplementation(compose.ui.testManifest)
     }
-    implementation("io.coil-kt:coil-compose:_")
+    implementation(COIL.compose)
 
     with(Lib.KotlinX.Coroutines) {
         implementation(platform(bom))
@@ -44,12 +44,12 @@ dependencies {
     }
 
     with(AndroidX) {
-        implementation(lifecycle.runtimeKtx)
+        implementation(lifecycle.runtime)
         implementation(lifecycle.viewModelKtx)
         implementation(lifecycle.viewModelCompose)
         implementation(activity.compose)
         implementation(lifecycle.viewModelSavedState)
-        implementation(constraintLayoutCompose)
+        implementation(constraintLayout.compose)
         implementation(core.splashscreen)
         implementation(work.runtimeKtx)
         implementation(work.multiprocess)
@@ -66,12 +66,12 @@ dependencies {
 
     implementation(Lib.Accompanist.navigationAnimation)
 
-    implementation("com.plaid.link:sdk-core:_")
+    implementation(libs.sdk.core)
 
     with(Google) {
         implementation(accompanist.insets)
         implementation(accompanist.insets.ui)
-        implementation(accompanist.systemuicontroller)
+        implementation(accompanist.systemUiController)
     }
     implementation(Lib.uuid)
 
@@ -82,14 +82,14 @@ dependencies {
         implementation(messagingDirectBoot)
     }
 
-    implementation(platform("io.sentry:sentry-bom:_"))
-    implementation("io.sentry:sentry-android")
+//    implementation(platform(libs.sentry.bom))
+//    implementation(libs.sentry.android)
 
     coreLibraryDesugaring(Lib.desugar)
 
     // Test
     with(AndroidX) {
-        androidTestImplementation(test.ext.junitKtx)
+//        androidTestImplementation(test.ext.junitKtx)
         androidTestImplementation(test.rules)
         androidTestImplementation(test.runner)
         androidTestImplementation(compose.ui.test)
@@ -108,7 +108,7 @@ dependencies {
 
 android {
     compileSdk = YabaAndroidConfig.compileSdk
-    buildToolsVersion = "31.0.0"
+    buildToolsVersion = "33.0.0"
     defaultConfig {
         applicationId = "tech.alexib.yaba"
         minSdk = YabaAndroidConfig.minSdk
@@ -231,6 +231,7 @@ android {
             isIncludeAndroidResources = true
         }
     }
+    namespace = "tech.alexib.yaba.android"
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
